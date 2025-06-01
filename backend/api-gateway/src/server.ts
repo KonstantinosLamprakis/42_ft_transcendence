@@ -1,22 +1,22 @@
-import Fastify from 'fastify';
-import path from 'path';
-import fastifyStatic from '@fastify/static';
-import fastifyCors from '@fastify/cors';
+import Fastify from "fastify";
+import path from "path";
+import fastifyStatic from "@fastify/static";
+import fastifyCors from "@fastify/cors";
 
 const fastify = Fastify({ logger: true });
 
 fastify.register(fastifyCors, {
-  origin: '*', // Adjust CORS as needed
+	origin: "*", // Adjust CORS as needed
 });
 
 fastify.register(fastifyStatic, {
-  root: path.join(__dirname, '..', 'public'),
-  prefix: '/public/',
+	root: path.join(__dirname, "..", "public"),
+	prefix: "/public/",
 });
 
-fastify.get('/', async (request, reply) => {
-  // Simple SSR: send HTML with embedded minimal frontend
-  reply.type('text/html').send(`
+fastify.get("/", async (request, reply) => {
+	// Simple SSR: send HTML with embedded minimal frontend
+	reply.type("text/html").send(`
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -32,13 +32,13 @@ fastify.get('/', async (request, reply) => {
 });
 
 const start = async () => {
-  try {
-    await fastify.listen({ port: 3000, host: '0.0.0.0' });
-    console.log('API Gateway running at http://localhost:3000');
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
+	try {
+		await fastify.listen({ port: 3000, host: "0.0.0.0" });
+		console.log("API Gateway running at http://localhost:3000");
+	} catch (err) {
+		fastify.log.error(err);
+		process.exit(1);
+	}
 };
 
 start();

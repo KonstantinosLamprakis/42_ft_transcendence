@@ -3,18 +3,14 @@
   "private": true,
   "version": "1.0.0",
   "workspaces": [
-    "backend/auth-service",
-    "backend/game-service",
-    "backend/chat-service",
-    "backend/api-gateway",
-    "backend/monitoring",
-    "backend/logging",
-    "backend/common",
-    "frontend"
+    "backend/api-gateway"
   ],
   "scripts": {
-    "install-all": "npm install",
     "build": "npm run build --workspaces",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "start:api-gateway": "npm run start --workspace=backend/api-gateway"
   },
   "dependencies": {
@@ -22,8 +18,12 @@
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
-    "eslint": "^8.42.0",
-    "prettier": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "prettier": "^3.5.3",
     "ts-node": "^10.0.0"
   }
 }
