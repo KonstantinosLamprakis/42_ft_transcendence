@@ -1,0 +1,29 @@
+{
+  "name": "pong-tournament-root",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "backend/auth-service",
+    "backend/game-service",
+    "backend/chat-service",
+    "backend/api-gateway",
+    "backend/monitoring",
+    "backend/logging",
+    "backend/common",
+    "frontend"
+  ],
+  "scripts": {
+    "install-all": "npm install",
+    "build": "npm run build --workspaces",
+    "start:api-gateway": "npm run start --workspace=backend/api-gateway"
+  },
+  "dependencies": {
+    "typescript": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "eslint": "^8.42.0",
+    "prettier": "^3.0.0",
+    "ts-node": "^10.0.0"
+  }
+}
