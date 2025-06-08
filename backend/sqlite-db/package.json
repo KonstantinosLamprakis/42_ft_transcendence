@@ -1,0 +1,24 @@
+{
+  "name": "sqlite-db",
+  "private": true,
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.5.0",
+    "@fastify/static": "^6.10.1",
+    "fastify": "^4.0.0",
+    "typescript": "^5.0.0",
+    "better-sqlite3": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/sqlite3": "^3.1.11",
+    "@types/better-sqlite3": "^7.0.0",
+    "ts-node": "^10.0.0"
+  }
+}

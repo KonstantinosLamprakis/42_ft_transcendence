@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 
 services:
   api-gateway:
@@ -6,4 +6,18 @@ services:
       context: ./backend/api-gateway
     ports:
       - "3000:3000"
+    depends_on:
+      - sqlite-db
     restart: unless-stopped
+
+  sqlite-db:
+    build: 
+      context: ./backend/sqlite-db
+    ports:
+      - "4000:4000"
+    volumes:
+      - sqlite-data:/data
+    restart: unless-stopped
+
+volumes:
+  sqlite-data:
