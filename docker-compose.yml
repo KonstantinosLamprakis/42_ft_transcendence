@@ -19,5 +19,19 @@ services:
       - sqlite-data:/data
     restart: unless-stopped
 
+  live-chat:
+    build:
+      context: ./backend/live-chat
+    ports:
+      - "3003:3003"
+    restart: unless-stopped
+
+  web-server:
+    build:
+      context: ./backend/web-server
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
 volumes:
   sqlite-data:
