@@ -18,6 +18,10 @@ lint-fix:
 clean:
 	rm -rf node_modules
 	rm -rf dist
+	rm -rf *.js 
+	rm -rf *.d.ts 
+	rm -rf *.tsbuildinfo
+
 
 start:
 	npm run start

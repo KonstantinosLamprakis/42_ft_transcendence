@@ -12,7 +12,7 @@ type ServerResponse = {
 	type: MessageType;
 	content: string;
 	timestamp: number;
-	name: string | undefined;
+	name: string;
 	senderId: string;
 };
 

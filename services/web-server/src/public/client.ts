@@ -1,5 +1,3 @@
-// import { MessageType, ServerResponse } from "@/common/types/live-chat/types";
-
 enum MessageType {
 	STATUS = "status",
 	CHAT_MESSAGE = "chatMessage",
@@ -10,7 +8,7 @@ type ServerResponse = {
 	type: MessageType;
 	content: string;
 	timestamp: number;
-	name: string | undefined;
+	name: string;
 	senderId: string;
 };
 
@@ -76,7 +74,7 @@ function connectWebSocket(): void {
 
 	socket.onmessage = (event: MessageEvent) => {
 		try {
-			const data = JSON.parse(event.data);
+			const data: ServerResponse = JSON.parse(event.data);
 			console.log("Received:", data);
 
 			if (data.type === MessageType.STATUS) {
