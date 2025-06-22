@@ -1,8 +1,15 @@
 import Fastify from "fastify";
 import fastifyHttpProxy from "@fastify/http-proxy";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+enum Runtime {
+	LOCAL = "local",
+	DOCKER = "docker",
+}
 
 const fastify = Fastify({ logger: true });
-
 
 // For HTTP should be something like this:
 // fastify.register(fastifyHttpProxy, {
@@ -21,8 +28,8 @@ const fastify = Fastify({ logger: true });
 
 // For websockets:
 fastify.register(fastifyHttpProxy, {
-	// upstream: "ws://localhost:3003", // use this for local development
-	upstream: "ws://live-chat:3003", // use this for docker
+	// depending on the env variable we use different URL when running locally or in Docker. If env doesn't exists, we assume it's running in Docker
+	upstream: process.env.RUNTIME === Runtime.LOCAL ? "ws://localhost:3003" : "ws://live-chat:3003",
 	prefix: "/chat",
 	websocket: true,
 	rewritePrefix: "/chat",
@@ -30,6 +37,7 @@ fastify.register(fastifyHttpProxy, {
 
 // Example: health check endpoint for the gateway itself
 fastify.get("/", (request, reply) => {
+	console.log(process.env.STAGE);
 	reply.send({ hello: "world" });
 });
 
