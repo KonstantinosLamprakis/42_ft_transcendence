@@ -1,12 +1,13 @@
 {
     "name": "web-server",
     "version": "1.0.0",
+    "type": "module",
     "scripts": {
         "lint": "eslint . --ext .ts,.js",
         "lint:fix": "eslint . --ext .ts,.js --fix",
         "format": "prettier --check .",
         "format:fix": "prettier --write .",
-        "build": "tsc; tsc src/public/client.ts --outDir public",
+        "build": "tsc; tsc  -p src/public/tsconfig.json --outDir public",
         "start": "node dist/server.js",
         "dev": "ts-node src/server.ts",
         "build:frontend": "tsc src/public/client.ts --outDir public",

@@ -1,18 +1,9 @@
 # version: '3.8'
 
 services:
-  api-gateway:
-    build:
-      context: ./backend/api-gateway
-    ports:
-      - "3000:3000"
-    depends_on:
-      - sqlite-db
-    restart: unless-stopped
-
   sqlite-db:
     build: 
-      context: ./backend/sqlite-db
+      context: ./services/sqlite-db
     ports:
       - "4000:4000"
     volumes:
@@ -21,14 +12,14 @@ services:
 
   live-chat:
     build:
-      context: ./backend/live-chat
+      context: ./services/live-chat
     ports:
       - "3003:3003"
     restart: unless-stopped
 
   web-server:
     build:
-      context: ./backend/web-server
+      context: ./services/web-server
     ports:
       - "8080:8080"
     restart: unless-stopped
