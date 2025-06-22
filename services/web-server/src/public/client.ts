@@ -12,6 +12,9 @@ type ServerResponse = {
 	senderId: string;
 };
 
+const CN_API_REST_GATEWAY_PORT = 3000;
+const CN_WEBSOCKET_SERVER_URL = `ws://localhost:${CN_API_REST_GATEWAY_PORT}`;
+
 // frontend/src/client.ts
 const messagesDiv = document.getElementById("messages") as HTMLDivElement;
 const messageInput = document.getElementById("messageInput") as HTMLInputElement;
@@ -53,7 +56,7 @@ function appendMessage(
 // Function to connect to the WebSocket server
 function connectWebSocket(): void {
 	// Use 'ws://' for development. For production, consider 'wss://' with HTTPS.
-	socket = new WebSocket("ws://localhost:3003/chat");
+	socket = new WebSocket(CN_WEBSOCKET_SERVER_URL + "/chat");
 	statusParagraph.textContent = "Connecting...";
 
 	socket.onopen = (event: Event) => {
@@ -101,7 +104,7 @@ function connectWebSocket(): void {
 		statusParagraph.textContent = "Disconnected. Reconnecting in 3 seconds...";
 		sendButton.disabled = true;
 		messageInput.disabled = true;
-		setTimeout(connectWebSocket, 3003); // Attempt to reconnect
+		setTimeout(connectWebSocket, CN_API_REST_GATEWAY_PORT); // Attempt to reconnect
 	};
 
 	socket.onerror = (error: Event) => {
