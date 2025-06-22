@@ -13,8 +13,8 @@ services:
   live-chat:
     build:
       context: ./services/live-chat
-    ports:
-      - "3003:3003"
+    expose:
+      - "3003"  
     restart: unless-stopped
 
   web-server:
@@ -22,6 +22,17 @@ services:
       context: ./services/web-server
     ports:
       - "8080:8080"
+    restart: unless-stopped
+
+  api-rest-gateway:
+    build:
+      context: ./services/api-rest-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - live-chat
+      - sqlite-db
+      - web-server
     restart: unless-stopped
 
 volumes:
