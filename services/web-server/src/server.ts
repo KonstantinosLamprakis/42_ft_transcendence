@@ -23,8 +23,8 @@ fastify.get("/", async (_, reply) => {
 
 const start = async () => {
 	try {
-		await fastify.listen({ port: 8080, host: "0.0.0.0" });
-		console.log("API Gateway running at http://localhost:8080");
+		await fastify.listen({ port: 80, host: "0.0.0.0" });
+		console.log("API Gateway running at http://localhost:80");
 	} catch (err) {
 		fastify.log.error(err);
 		process.exit(1);

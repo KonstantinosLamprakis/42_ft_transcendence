@@ -21,12 +21,14 @@ services:
     build:
       context: ./services/web-server
     ports:
-      - "8080:8080"
+      - "80:80"
     restart: unless-stopped
 
   api-rest-gateway:
     build:
       context: ./services/api-rest-gateway
+    environment:
+      - RUNTIME=docker
     ports:
       - "3000:3000"
     depends_on:
