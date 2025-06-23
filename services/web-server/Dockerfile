@@ -11,5 +11,6 @@ RUN npm run build
 RUN npm run build:frontend
 
 EXPOSE 80
+EXPOSE 443
 
 CMD ["node", "dist/server.js"]

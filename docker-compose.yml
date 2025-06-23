@@ -22,6 +22,7 @@ services:
       context: ./services/web-server
     ports:
       - "80:80"
+      - "443:443"
     restart: unless-stopped
 
   api-rest-gateway:

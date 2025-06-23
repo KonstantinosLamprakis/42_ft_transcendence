@@ -27,6 +27,13 @@ interface Connection {
 
 const connections = new Map<string, Connection>();
 
+fastify.addHook("onRequest", (request, reply, done) => {
+	if (request.raw.url?.startsWith("/chat") && request.raw.headers.upgrade === "websocket") {
+		fastify.log.info(`WebSocket request for /chat from ${request.ip}`);
+	}
+	done();
+});
+
 fastify.register(async function (fastify) {
 	fastify.get("/chat", { websocket: true }, (socket, req) => {
 		const connId = randomUUID();

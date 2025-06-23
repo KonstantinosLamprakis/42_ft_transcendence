@@ -6,3 +6,5 @@ dist
 *.js
 *.d.ts
 *.tsbuildinfo
+certs
+shared-certs
