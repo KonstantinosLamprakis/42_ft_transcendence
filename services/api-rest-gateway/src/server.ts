@@ -1,6 +1,9 @@
 import Fastify from "fastify";
 import fastifyHttpProxy from "@fastify/http-proxy";
 import * as dotenv from "dotenv";
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
@@ -9,7 +12,15 @@ enum Runtime {
 	DOCKER = "docker",
 }
 
-const fastify = Fastify({ logger: true });
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const fastify = Fastify({
+	logger: true,
+	https: {
+		key: fs.readFileSync(path.join(dirname, "../certs/key.pem")),
+		cert: fs.readFileSync(path.join(dirname, "../certs/cert.pem")),
+	},
+});
 
 // For HTTP should be something like this:
 // fastify.register(fastifyHttpProxy, {
@@ -27,9 +38,16 @@ const fastify = Fastify({ logger: true });
 // });
 
 // For websockets:
+fastify.addHook("onRequest", (request, reply, done) => {
+	if (request.raw.url?.startsWith("/chat") && request.raw.headers.upgrade === "websocket") {
+		fastify.log.info(`WebSocket request for /chat from ${request.ip}`);
+	}
+	done();
+});
+
 fastify.register(fastifyHttpProxy, {
 	// depending on the env variable we use different URL when running locally or in Docker. If env doesn't exists, we assume it's running in Docker
-	upstream: process.env.RUNTIME === Runtime.LOCAL ? "ws://localhost:3003" : "ws://live-chat:3003",
+	upstream: process.env.RUNTIME === Runtime.LOCAL ? "ws://localhost:3003" : "ws://live-chat:3003", // we dont need wss as this is done on docker internal network
 	prefix: "/chat",
 	websocket: true,
 	rewritePrefix: "/chat",

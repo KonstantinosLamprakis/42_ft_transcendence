@@ -13,7 +13,7 @@ type ServerResponse = {
 };
 
 const CN_API_REST_GATEWAY_PORT = 3000;
-const CN_WEBSOCKET_SERVER_URL = `ws://localhost:${CN_API_REST_GATEWAY_PORT}`;
+const CN_WEBSOCKET_SERVER_URL = `wss://localhost:${CN_API_REST_GATEWAY_PORT}`;
 
 // frontend/src/client.ts
 const messagesDiv = document.getElementById("messages") as HTMLDivElement;
