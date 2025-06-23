@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+.*
+.*/** # Ignore all hidden files and directories
+**/*.json
+**/*.md
+**/*.yml
+**/*.cjs
