@@ -10,6 +10,6 @@ RUN npm install
 RUN npm run build
 RUN npm run build:frontend
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["node", "dist/server.js"]
