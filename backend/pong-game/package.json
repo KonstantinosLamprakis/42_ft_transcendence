@@ -1,0 +1,13 @@
+{
+  "name": "pong-game",
+  "version": "1.0.0",
+  "dependencies": {
+    "fastify": "^4.0.0",
+    "fastify-websocket": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js"
+  }
+}
