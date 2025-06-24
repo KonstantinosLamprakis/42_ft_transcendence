@@ -22,20 +22,55 @@ const fastify = Fastify({
 	},
 });
 
-// For HTTP should be something like this:
-// fastify.register(fastifyHttpProxy, {
-// 	upstream: "http://live-chat:3003", // Use Docker service name or localhost:3003 if running locally
-// 	prefix: "/chat-api", // All requests to /chat-api/* will be proxied
-// 	rewritePrefix: "", // Remove /chat-api prefix when forwarding
-// });
-// Or
-// fastify.get('/chat', async (request, reply) => {
-//     const res = await fastify.inject({
-//         method: 'GET',
-//         url: 'http://live-chat:3003/some-endpoint'
-//     });
-//     reply.status(res.statusCode).send(res.body);
-// });
+const proxyConfigs = [
+	// auth
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+		prefix: "/me",
+		rewritePrefix: "/me",
+		websocket: false,
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+		prefix: "/login",
+		rewritePrefix: "/login",
+		websocket: false,
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+		prefix: "/signup",
+		rewritePrefix: "/signup",
+		websocket: false,
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+		prefix: "/avatar",
+		rewritePrefix: "",
+		websocket: false,
+	},
+
+	// live-chat
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "ws://localhost:3003" : "ws://live-chat:3003",
+		prefix: "/chat",
+		rewritePrefix: "/chat",
+		websocket: true,
+	},
+];
+
+for (const cfg of proxyConfigs) {
+	fastify.register(fastifyHttpProxy, {
+		upstream: cfg.upstream,
+		prefix: cfg.prefix,
+		rewritePrefix: cfg.rewritePrefix,
+		websocket: cfg.websocket,
+	});
+}
 
 // For websockets:
 fastify.addHook("onRequest", (request, reply, done) => {
@@ -43,20 +78,6 @@ fastify.addHook("onRequest", (request, reply, done) => {
 		fastify.log.info(`WebSocket request for /chat from ${request.ip}`);
 	}
 	done();
-});
-
-fastify.register(fastifyHttpProxy, {
-	// depending on the env variable we use different URL when running locally or in Docker. If env doesn't exists, we assume it's running in Docker
-	upstream: process.env.RUNTIME === Runtime.LOCAL ? "ws://localhost:3003" : "ws://live-chat:3003", // we dont need wss as this is done on docker internal network
-	prefix: "/chat",
-	websocket: true,
-	rewritePrefix: "/chat",
-});
-
-// Example: health check endpoint for the gateway itself
-fastify.get("/", (request, reply) => {
-	console.log(process.env.STAGE);
-	reply.send({ hello: "world" });
 });
 
 fastify.listen({ port: 3000, host: "0.0.0.0" }, function (err, address) {
