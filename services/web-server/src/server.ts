@@ -18,8 +18,8 @@ const fastify = Fastify({
 // HTTP Fastify instance (redirects to HTTPS)
 const redirectApp = Fastify({ logger: false });
 redirectApp.all("*", (request, reply) => {
-    const host = request.headers.host?.replace(/:\d+$/, ":443") || "";
-    return reply.redirect(308, `https://${host}${request.raw.url}`);
+	const host = request.headers.host?.replace(/:\d+$/, ":443") || "";
+	return reply.redirect(308, `https://${host}${request.raw.url}`);
 });
 
 fastify.register(fastifyCors, {
@@ -37,10 +37,10 @@ fastify.get("/", async (_, reply) => {
 
 const start = async () => {
 	try {
-        await fastify.listen({ port: 443, host: "0.0.0.0" });
-        console.log("HTTPS server running at https://localhost");
-        await redirectApp.listen({ port: 80, host: "0.0.0.0" });
-        console.log("HTTP redirect server running at http://localhost");
+		await fastify.listen({ port: 443, host: "0.0.0.0" });
+		console.log("HTTPS server running at https://localhost");
+		await redirectApp.listen({ port: 80, host: "0.0.0.0" });
+		console.log("HTTP redirect server running at http://localhost");
 	} catch (err) {
 		fastify.log.error(err);
 		process.exit(1);
