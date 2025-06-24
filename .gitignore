@@ -8,3 +8,4 @@ dist
 *.tsbuildinfo
 certs
 shared-certs
+uploads/*

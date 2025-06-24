@@ -30,6 +30,7 @@ clean:
 	find $(REPO_ROOT) . -type d -name "node_modules" -exec rm -rf {} +
 	find $(REPO_ROOT) . -type d -name "dist" -exec rm -rf {} +
 	rm -rf $(REPO_ROOT)services/web-server/public/*.js
+	rm -rf $(REPO_ROOT)services/auth/uploads/*
 
 docker-up: certs
 	cd $(REPO_ROOT) & docker-compose up --build
