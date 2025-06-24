@@ -17,6 +17,13 @@ services:
       - "3003"  
     restart: unless-stopped
 
+  auth:
+    build:
+      context: ./services/auth
+    expose:
+      - "5000"  
+    restart: unless-stopped
+
   web-server:
     build:
       context: ./services/web-server
