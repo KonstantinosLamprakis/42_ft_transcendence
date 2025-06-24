@@ -10,7 +10,7 @@
         "build": "tsc; tsc  -p src/public/tsconfig.json --outDir public",
         "start": "node dist/server.js",
         "dev": "ts-node src/server.ts",
-        "build:frontend": "tsc src/public/client.ts --outDir public",
+        "build:frontend": "tsc src/public/chat-client.ts --outDir public",
         "build:css": "npx tailwindcss -i ./public/input.css -o ./public/styles.css --minify",
         "start:live-server": "live-server public"
     },
