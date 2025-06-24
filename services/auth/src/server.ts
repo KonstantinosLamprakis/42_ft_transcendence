@@ -10,6 +10,7 @@ import fastifyJwt from "@fastify/jwt";
 import { existsSync, mkdirSync } from "fs";
 import * as dotenv from "dotenv";
 
+// TODO(KL) integrate with sqldb service
 dotenv.config();
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 

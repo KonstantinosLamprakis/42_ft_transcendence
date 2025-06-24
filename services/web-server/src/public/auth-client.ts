@@ -1,5 +1,8 @@
 let token = "";
 
+// TODO(KL) add const from env for api rest port and name
+// TODO(KL) combine chat and auth together
+
 document.getElementById("signup-form")!.addEventListener("submit", async (e) => {
 	e.preventDefault();
 	const form = e.target as HTMLFormElement;
@@ -9,7 +12,7 @@ document.getElementById("signup-form")!.addEventListener("submit", async (e) => 
 		console.log(`FormData: ${key} = ${value}`);
 	});
 
-	const res = await fetch("http://localhost:5000/signup", {
+	const res = await fetch("https://localhost:3000/signup", {
 		method: "POST",
 		body: formData,
 	});
@@ -26,7 +29,7 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 		password: (form.password as HTMLInputElement).value,
 	};
 
-	const res = await fetch("http://localhost:5000/login", {
+	const res = await fetch("https://localhost:3000/login", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(body),
@@ -38,7 +41,7 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 });
 
 (window as any).getProfile = async () => {
-	const res = await fetch("http://localhost:5000/me", {
+	const res = await fetch("https://localhost:3000/me", {
 		headers: { Authorization: `Bearer ${token}` },
 	});
 
@@ -48,6 +51,6 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 	profileDiv.innerHTML = `
     <p>Name: ${data.name}</p>
     <p>Age: ${data.age}</p>
-    <img src="http://localhost:5000/${data.avatar}" width="100" />
+    <img src="https://localhost:3000/avatar/${data.avatar}" width="100" />
   `;
 };
