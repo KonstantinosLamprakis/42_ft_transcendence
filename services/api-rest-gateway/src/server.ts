@@ -52,6 +52,13 @@ const proxyConfigs = [
 		rewritePrefix: "",
 		websocket: false,
 	},
+		{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+		prefix: "/uploads/",
+		rewritePrefix: "/uploads/",
+		websocket: false,
+	},
 
 	// live-chat
 	{
@@ -60,6 +67,53 @@ const proxyConfigs = [
 		prefix: "/chat",
 		rewritePrefix: "/chat",
 		websocket: true,
+	},
+
+	// sqlite-db
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL
+				? "http://localhost:4000"
+				: "http://sqlite-db:4000",
+		prefix: "/list-users",
+		rewritePrefix: "/list-users",
+		websocket: false,
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL
+				? "http://localhost:4000"
+				: "http://sqlite-db:4000",
+		prefix: "/get-user/:id",
+		rewritePrefix: "/get-user/:id",
+		websocket: false,
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL
+				? "http://localhost:4000"
+				: "http://sqlite-db:4000",
+		prefix: "/top-user",
+		rewritePrefix: "/top-user",
+		websocket: false,
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL
+				? "http://localhost:4000"
+				: "http://sqlite-db:4000",
+		prefix: "/add-user",
+		rewritePrefix: "/add-user",
+		websocket: false,
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL
+				? "http://localhost:4000"
+				: "http://sqlite-db:4000",
+		prefix: "/update-score",
+		rewritePrefix: "/update-score",
+		websocket: false,
 	},
 ];
 
