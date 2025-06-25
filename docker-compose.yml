@@ -4,8 +4,8 @@ services:
   sqlite-db:
     build: 
       context: ./services/sqlite-db
-    ports:
-      - "4000:4000"
+    expose:
+      - "4000"
     volumes:
       - sqlite-data:/data
     restart: unless-stopped
@@ -39,10 +39,6 @@ services:
       - RUNTIME=docker
     ports:
       - "3000:3000"
-    depends_on:
-      - live-chat
-      - sqlite-db
-      - web-server
     restart: unless-stopped
 
 volumes:

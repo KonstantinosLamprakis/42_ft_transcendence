@@ -41,11 +41,11 @@
 ## Code Conventions
 
 - Node.js Naming Conventions
-    - files: use kebab-case e.g. user-controller.js
-    - test files(if exist): _.test.js or _.spec.js
-    - functions/variables/modules: use camelCase e.g. function getUserById(id) {}
-    - classes(if exist): use PascalCase e.g. class UserService {}
-    - env variables / const / enums: use upper snake case e.g. const MAX_ID = 10;
+  - files: use kebab-case e.g. user-controller.js
+  - test files(if exist): _.test.js or _.spec.js
+  - functions/variables/modules: use camelCase e.g. function getUserById(id) {}
+  - classes(if exist): use PascalCase e.g. class UserService {}
+  - env variables / const / enums: use upper snake case e.g. const MAX_ID = 10;
 - try to use constants / enums and avoid hardcoding many times same values
 - try to avoid comments if possible and instead use descriptive variables names etc. as replacement to comments
 - Add TODOs to not forget to implement things. As suffix add your initials so it will be clear for each TODO who is the owner of it.
@@ -57,25 +57,10 @@
 
 ### Lint Rules
 
-The PR will not be able to merged if linter rules are failing. For this reason run these commands before you create the PR.
-
 - npm run lint -> check for linter errors
 - npm run lint:fix -> will fix automatically linter errors
 - npm run format -> check for format errors
 - npm run format:fix -> will fix automatically format errors
-
-### Build & Run
-
-In project root execute the following.
-In order to run the app without docker:
-
-- npm install -> installs all dependencies from package.json for all the services (updates the package-lock.json and node_modules)
-- npm run build -> compile all files from all services(creates .js files from .ts files at dist/ folders)
-- node path_to_js/dist/name_of_file.js -> will run the executable
-
-In order to run the app through docker
-
-- docker-compose up --build -> will automatically start api-gateway service and everything else we already set up
 
 ### Docker
 
@@ -91,3 +76,27 @@ In order to run the app through docker
 - docker system prune: remove all unused images, containers, networks, volumes
 - docker-compose up
 - docker-compose down
+
+### Howtos
+
+- how to read from .env: see api-rest-gateway, we do the same here.
+- how to user **dirname from ESM(**dirname only works at commonJs): see api-rest-gateway
+- how to solve error: package x doesn't have exported members(pkg is on commonJs while you are using ESM): instead of `import a from b` you should write `import * as a from b`
+- how to use an endpoint to frontend: First you need to expose is at api-rest-gateway, similar to others.Then to add it on frontend is a bit complex as we have SPA so better ask your team.
+
+### Build & Run
+
+#### Localy
+
+- you need to use **node 20** (check with `node -v` and install it with `nvm install v20` and `nvm use v20`). I would suggest to uninstall old versions as many times they are the default and cause problems.
+- go to **your service's folder** folder and run `make re`. This will automatically delete old files(dist, node_modules), and automatically runs npm install, npm run build and npm run
+- **for the frontend:** in another terminal go to **services/web-server** and run: `sudo make re`. You need sudo because it runs at ports 80(http) and 443(https) and linux needs admin rights for that. Then create certs for encryption(just run `make certs` in projects root). This will create certs folder both for api-rest-gateway and web-server services.
+- If your service depends on **api-rest-gateway** you need also to go at services/api-rest-gateway, **create an .env file**(use the .env_example). Then run `make re`.
+- run any other service that your service depends on, by going at service's folder and run make re. Be careful some services require a .env file. This services should have a .env_example so can just use take this as a point of reference.
+- when you finish please run `sudo make clean` at root folder to automatically clean all services (you need sudo to clean web-server as it creates some files as admin).
+
+#### In Docker
+
+- at project's root optionally run `sudo make clean` to clean all services in case you run it localy before (you need sudo to clean web-server as it creates some files as admin).
+- good practice to run `doker system prune` and then `docker image prune` to clean potentially old trash images that could cause errors
+- run _make docker-up_
