@@ -22,6 +22,8 @@ services:
       context: ./services/auth
     expose:
       - "5000"  
+    env_file:
+      - ./services/auth/.env
     restart: unless-stopped
 
   web-server:
@@ -35,6 +37,8 @@ services:
   api-rest-gateway:
     build:
       context: ./services/api-rest-gateway
+    env_file:
+      - ./services/api-rest-gateway/.env
     environment:
       - RUNTIME=docker
     ports:

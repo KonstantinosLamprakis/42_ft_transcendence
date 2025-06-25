@@ -30,10 +30,17 @@ clean:
 	find $(REPO_ROOT) . -type d -name "node_modules" -exec rm -rf {} +
 	find $(REPO_ROOT) . -type d -name "dist" -exec rm -rf {} +
 	rm -rf $(REPO_ROOT)services/web-server/public/*.js
+	rm -rf $(REPO_ROOT)services/web-server/public/styles.css 
 	rm -rf $(REPO_ROOT)services/auth/uploads/*
 
-docker-up: certs
-	cd $(REPO_ROOT) & docker-compose up --build
+docker-prune:
+	docker system prune -f
+	docker volume prune -f
+	docker network prune -f
+	docker image prune -f
+
+docker-up: docker-prune certs
+	cd $(REPO_ROOT) && docker-compose up --build
 
 certs:
 	mkdir -p shared-certs
@@ -49,7 +56,4 @@ certs:
 	cp shared-certs/key.pem services/web-server/certs/key.pem
 	cp shared-certs/cert.pem services/web-server/certs/cert.pem
 	
-start-%:
-	cd $(REPO_ROOT)services/$* && npm run start
-
-.PHONY: all re docker-up clean build lint lint-fix certs
+.PHONY: all re docker-up docker-prune clean build lint lint-fix certs

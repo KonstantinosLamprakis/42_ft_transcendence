@@ -7,11 +7,11 @@
         "lint:fix": "eslint . --ext .ts,.js --fix",
         "format": "prettier --check .",
         "format:fix": "prettier --write .",
-        "build": "tsc; tsc  -p src/public/tsconfig.json --outDir public",
+        "build": "tsc -p tsconfig.json ; npm run build:frontend ; npm run build:css",
         "start": "node dist/server.js",
         "dev": "ts-node src/server.ts",
-        "build:frontend": "tsc src/public/*.ts --outDir public",
-        "build:css": "npx tailwindcss -i ./public/input.css -o ./public/styles.css --minify",
+        "build:frontend": "tsc -p src/public/tsconfig.json --outDir public;",
+        "build:css": "npx tailwindcss -i ./src/public/styles.css -o ./public/styles.css --minify",
         "start:live-server": "live-server public"
     },
     "dependencies": {

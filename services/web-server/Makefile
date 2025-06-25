@@ -22,6 +22,7 @@ clean:
 	rm -rf *.d.ts 
 	rm -rf *.tsbuildinfo
 	rm -rf ./public/*.js
+	rm -rf ./public/styles.css
 
 start:
 	npm run start
