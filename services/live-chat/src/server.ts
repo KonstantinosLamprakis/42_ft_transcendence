@@ -75,7 +75,11 @@ fastify.register(async function (fastify) {
 					conn.socket.send(JSON.stringify(chatPayload));
 				});
 				fastify.log.info(`Broadcasted message from ${senderName}: ${parsed.text}`);
-			} else if (parsed.type === ChatMessageType.NAME_UPDATE && parsed.senderId && parsed.name) {
+			} else if (
+				parsed.type === ChatMessageType.NAME_UPDATE &&
+				parsed.senderId &&
+				parsed.name
+			) {
 				const conn = connections.get(parsed.senderId);
 				if (conn) {
 					conn.name = parsed.name;

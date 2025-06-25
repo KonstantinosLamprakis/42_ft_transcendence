@@ -83,6 +83,7 @@
 - how to user **dirname from ESM(**dirname only works at commonJs): see api-rest-gateway
 - how to solve error: package x doesn't have exported members(pkg is on commonJs while you are using ESM): instead of `import a from b` you should write `import * as a from b`
 - how to use an endpoint to frontend: First you need to expose is at api-rest-gateway, similar to others.Then to add it on frontend is a bit complex as we have SPA so better ask your team.
+- how to access your service both locally and from docker: make sure you have `astify.listen({ port: 5000, host:"0.0.0.0" }` instad of only `astify.listen({ port: 5000 }`, this way will listen to all hosts instead of only localhost.
 
 ### Build & Run
 

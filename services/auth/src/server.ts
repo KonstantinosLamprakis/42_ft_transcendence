@@ -130,6 +130,6 @@ fastify.register(fastifyStatic, {
 	prefix: "/uploads/",
 });
 
-fastify.listen({ port: 5000 }, () => {
+fastify.listen({ port: 5000, host:"0.0.0.0" }, () => {
 	console.log("Auth service running at http://localhost:5000");
 });
