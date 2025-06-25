@@ -8,9 +8,7 @@ COPY . .
 
 RUN npm install
 RUN npm run build
-RUN npm run build:frontend
 
-EXPOSE 80
-EXPOSE 443
+EXPOSE 3003
 
 CMD ["node", "dist/server.js"]

@@ -17,7 +17,10 @@
     "dependencies": {
         "fastify": "^4.29.1",
         "@fastify/cors": "^8.5.0",
-        "@fastify/static": "^6.10.1"
+        "@fastify/static": "^6.10.1",
+        "fs": "^0.0.1-security",
+        "path": "^0.12.7",
+        "url": "^0.11.4"
     },
     "devDependencies": {
         "fastify-tsconfig": "^3.0.0",
