@@ -1,19 +1,9 @@
-enum MessageType {
-	STATUS = "status",
-	CHAT_MESSAGE = "chatMessage",
-	NAME_UPDATE = "nameUpdate",
-}
-
-type ServerResponse = {
-	type: MessageType;
-	content: string;
-	timestamp: number;
-	name: string;
-	senderId: string;
-};
-
-const CN_API_REST_GATEWAY_PORT = 3000;
-const CN_WEBSOCKET_SERVER_URL = `wss://localhost:${CN_API_REST_GATEWAY_PORT}`; 
+import {
+	CN_WEBSOCKET_SERVER_URL,
+	CN_API_REST_GATEWAY_PORT,
+	ChatMessageType,
+	ChatServerResponse,
+} from "./types.js";
 
 // frontend/src/client.ts
 const messagesDiv = document.getElementById("messages") as HTMLDivElement;
@@ -77,19 +67,19 @@ function connectWebSocket(): void {
 
 	socket.onmessage = (event: MessageEvent) => {
 		try {
-			const data: ServerResponse = JSON.parse(event.data);
+			const data: ChatServerResponse = JSON.parse(event.data);
 			console.log("Received:", data);
 
-			if (data.type === MessageType.STATUS) {
+			if (data.type === ChatMessageType.STATUS) {
 				statusParagraph.textContent = data.content;
 				if (data.content.includes("Your ID:")) {
 					userId = data.content.split("Your ID: ")[1];
 					console.log("Assigned User ID:", userId);
 				}
-			} else if (data.type === MessageType.CHAT_MESSAGE) {
+			} else if (data.type === ChatMessageType.CHAT_MESSAGE) {
 				const senderName = data.senderId === userId ? userName : data.name;
 				appendMessage(senderName, data.content, data.senderId === userId, data.timestamp);
-			} else if (data.type === MessageType.NAME_UPDATE) {
+			} else if (data.type === ChatMessageType.NAME_UPDATE) {
 				// Optionally update display names in existing messages or maintain a client-side map
 				console.log(`User ${data.senderId} is now known as ${data.name}`);
 				// For simplicity, we'll just log this. In a real app, you'd manage user lists.

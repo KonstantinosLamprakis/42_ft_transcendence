@@ -2,14 +2,14 @@ import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 import { randomUUID } from "crypto";
 
-enum MessageType {
+enum ChatMessageType {
 	STATUS = "status",
 	CHAT_MESSAGE = "chatMessage",
 	NAME_UPDATE = "nameUpdate",
 }
 
-type ServerResponse = {
-	type: MessageType;
+type ChatServerResponse = {
+	type: ChatMessageType;
 	content: string;
 	timestamp: number;
 	name: string;
@@ -42,8 +42,8 @@ fastify.register(async function (fastify) {
 		connections.set(connId, { id: connId, name: userName, socket });
 
 		// Send welcome and assign ID
-		const payload: ServerResponse = {
-			type: MessageType.STATUS,
+		const payload: ChatServerResponse = {
+			type: ChatMessageType.STATUS,
 			content: `Welcome! Your ID: ${connId}`,
 			name: connections.get(connId)?.name || "Anonymous",
 			timestamp: Date.now(),
@@ -60,11 +60,11 @@ fastify.register(async function (fastify) {
 				return;
 			}
 
-			if (parsed.type === MessageType.CHAT_MESSAGE && parsed.senderId && parsed.text) {
+			if (parsed.type === ChatMessageType.CHAT_MESSAGE && parsed.senderId && parsed.text) {
 				const senderConn = connections.get(parsed.senderId);
 				const senderName = senderConn ? senderConn.name : "Anonymous";
-				const chatPayload: ServerResponse = {
-					type: MessageType.CHAT_MESSAGE,
+				const chatPayload: ChatServerResponse = {
+					type: ChatMessageType.CHAT_MESSAGE,
 					name: connections.get(parsed.senderId)?.name || "Anonymous",
 					content: parsed.text,
 					timestamp: parsed.timestamp || Date.now(),
@@ -75,12 +75,12 @@ fastify.register(async function (fastify) {
 					conn.socket.send(JSON.stringify(chatPayload));
 				});
 				fastify.log.info(`Broadcasted message from ${senderName}: ${parsed.text}`);
-			} else if (parsed.type === MessageType.NAME_UPDATE && parsed.senderId && parsed.name) {
+			} else if (parsed.type === ChatMessageType.NAME_UPDATE && parsed.senderId && parsed.name) {
 				const conn = connections.get(parsed.senderId);
 				if (conn) {
 					conn.name = parsed.name;
-					const nameUpdatePayload: ServerResponse = {
-						type: MessageType.NAME_UPDATE,
+					const nameUpdatePayload: ChatServerResponse = {
+						type: ChatMessageType.NAME_UPDATE,
 						name: connections.get(parsed.senderId)?.name || "Anonymous",
 						content: parsed.text,
 						timestamp: parsed.timestamp || Date.now(),
@@ -95,8 +95,8 @@ fastify.register(async function (fastify) {
 		});
 
 		socket.on("close", () => {
-			const disconnectPayload: ServerResponse = {
-				type: MessageType.STATUS,
+			const disconnectPayload: ChatServerResponse = {
+				type: ChatMessageType.STATUS,
 				content: `User ${connections.get(connId)?.name || "Anonymous"} disconnected.`,
 				name: connections.get(connId)?.name || "Anonymous",
 				timestamp: Date.now(),
