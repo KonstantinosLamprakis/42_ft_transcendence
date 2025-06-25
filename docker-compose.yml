@@ -4,6 +4,10 @@ services:
   sqlite-db:
     build: 
       context: ./services/sqlite-db
+    env_file:
+      - ./services/sqlite-db/.env
+    environment:
+      - RUNTIME=docker
     expose:
       - "4000"
     volumes:
