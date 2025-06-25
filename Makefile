@@ -31,7 +31,6 @@ clean:
 	find $(REPO_ROOT) . -type d -name "dist" -exec rm -rf {} +
 	rm -rf $(REPO_ROOT)services/web-server/public/*.js
 	rm -rf $(REPO_ROOT)services/web-server/public/styles.css 
-	rm -rf $(REPO_ROOT)services/auth/uploads/*
 
 docker-prune:
 	docker system prune -f

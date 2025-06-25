@@ -2,9 +2,6 @@ import { CN_HTTPS_SERVER_URL } from "./types.js";
 
 let token = "";
 
-// TODO(KL) add const from env for api rest port and name
-// TODO(KL) combine chat and auth together
-
 document.getElementById("signup-form")!.addEventListener("submit", async (e) => {
 	e.preventDefault();
 	const form = e.target as HTMLFormElement;
@@ -51,8 +48,10 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 
 	const profileDiv = document.getElementById("profile")!;
 	profileDiv.innerHTML = `
-    <p>Name: ${data.name}</p>
-    <p>Age: ${data.age}</p>
-    <img src="${CN_HTTPS_SERVER_URL}/avatar/${data.avatar}" width="100" />
+    <p><b>Name:</b> ${data.name}</p>
+    <p><b>Username:</b> ${data.username}</p>
+    <p><b>Wins:</b> ${data.wins}</p>
+    <p><b>Loses:</b> ${data.loses}</p>
+    <img src="${data.avatar ? `${CN_HTTPS_SERVER_URL}/uploads/${data.avatar}` : ""}" width="100" />
   `;
 };

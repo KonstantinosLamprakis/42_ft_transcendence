@@ -21,7 +21,6 @@ clean:
 	rm -rf *.js 
 	rm -rf *.d.ts 
 	rm -rf *.tsbuildinfo
-	rm -rf ./data/*
 
 start:
 	npm run start

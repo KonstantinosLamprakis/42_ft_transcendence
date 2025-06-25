@@ -28,6 +28,10 @@ services:
       - "5000"  
     env_file:
       - ./services/auth/.env
+    environment:
+      - RUNTIME=docker
+    volumes:
+      - sqlite-data:/data
     restart: unless-stopped
 
   web-server:
