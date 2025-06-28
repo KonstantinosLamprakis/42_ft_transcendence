@@ -38,6 +38,9 @@ docker-prune:
 	docker network prune -f
 	docker image prune -f
 
+docker-delete: docker-prune
+	docker volume rm repo_sqlite-data
+
 docker-up: docker-prune certs
 	cd $(REPO_ROOT) && docker-compose up --build
 
@@ -55,4 +58,4 @@ certs:
 	cp shared-certs/key.pem services/web-server/certs/key.pem
 	cp shared-certs/cert.pem services/web-server/certs/cert.pem
 	
-.PHONY: all re docker-up docker-prune clean build lint lint-fix certs
+.PHONY: all re docker-up docker-prune clean build lint lint-fix certs docker-delete
