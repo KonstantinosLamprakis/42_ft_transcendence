@@ -43,7 +43,7 @@ fastify.register(fastifyMultipart);
 
 // SQLite DB service URL (adjust if needed)
 const SQLITE_DB_URL =
-	process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:4000" : "http://sqlite-db:4000";
+	process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:4000" : "http://sqlite-db:4000";
 
 // Signup: create user in sqlite-db and store avatar
 fastify.post("/signup", async (req, reply) => {
@@ -176,5 +176,5 @@ fastify.register(fastifyStatic, {
 });
 
 fastify.listen({ port: 5000, host: "0.0.0.0" }, () => {
-	console.log("Auth service running at http://localhost:5000");
+	console.log("Auth service running at http://127.0.0.1:5000");
 });
