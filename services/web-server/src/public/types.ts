@@ -1,8 +1,8 @@
 // This file contains all the types and enums used by backend endpoints, which are used by the frontend.
 
-export const CN_API_REST_GATEWAY_PORT = 3000;
-export const CN_WEBSOCKET_SERVER_URL = `wss://localhost:${CN_API_REST_GATEWAY_PORT}`;
-export const CN_HTTPS_SERVER_URL = `https://localhost:${CN_API_REST_GATEWAY_PORT}`;
+export const API_REST_GATEWAY_PORT = 3000;
+export const WEBSOCKET_SERVER_URL = `wss://localhost:${API_REST_GATEWAY_PORT}`;
+export const HTTPS_SERVER_URL = `https://localhost:${API_REST_GATEWAY_PORT}`;
 
 // live-chat
 export enum ChatMessageType {

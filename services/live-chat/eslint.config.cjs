@@ -29,20 +29,9 @@ module.exports = [
                 {
                     selector: 'variable',
                     modifiers: ['const'],
-                    format: ['UPPER_CASE'],
-                    filter: {
-                        regex: '^(CN_.*|MIN_.*|MAX_.*|DEFAULT_.*|CONFIG_.*|VERSION)$',
-                        match: true,
-                    },
+                    format: ['camelCase', 'UPPER_CASE'],
                 },
-                {
-                    selector: 'variable',
-                    format: ['camelCase'],
-                    filter: {
-                        regex: '^(?!CN_.*|MIN_.*|MAX_.*|DEFAULT_.*|CONFIG_.*|VERSION)',
-                        match: true,
-                    },
-                },
+                { selector: 'variable', format: ['camelCase'] },
                 { selector: 'function', format: ['camelCase'] },
                 { selector: 'typeLike', format: ['PascalCase'] },
                 {

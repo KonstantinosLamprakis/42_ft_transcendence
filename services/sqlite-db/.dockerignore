@@ -1,4 +1,9 @@
 dist
 node_modules
 .env
+.env_example
+.prettierignore
+.prettierrc
+eslint.config.cjs
+Makefile
 data
