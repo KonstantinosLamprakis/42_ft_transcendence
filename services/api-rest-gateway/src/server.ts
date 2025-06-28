@@ -68,53 +68,6 @@ const proxyConfigs = [
 		rewritePrefix: "/chat",
 		websocket: true,
 	},
-
-	// sqlite-db
-	{
-		upstream:
-			process.env.RUNTIME === Runtime.LOCAL
-				? "http://127.0.0.1:4000"
-				: "http://sqlite-db:4000",
-		prefix: "/list-users",
-		rewritePrefix: "/list-users",
-		websocket: false,
-	},
-	{
-		upstream:
-			process.env.RUNTIME === Runtime.LOCAL
-				? "http://127.0.0.1:4000"
-				: "http://sqlite-db:4000",
-		prefix: "/get-user/:id",
-		rewritePrefix: "/get-user/:id",
-		websocket: false,
-	},
-	{
-		upstream:
-			process.env.RUNTIME === Runtime.LOCAL
-				? "http://127.0.0.1:4000"
-				: "http://sqlite-db:4000",
-		prefix: "/top-user",
-		rewritePrefix: "/top-user",
-		websocket: false,
-	},
-	{
-		upstream:
-			process.env.RUNTIME === Runtime.LOCAL
-				? "http://127.0.0.1:4000"
-				: "http://sqlite-db:4000",
-		prefix: "/add-user",
-		rewritePrefix: "/add-user",
-		websocket: false,
-	},
-	{
-		upstream:
-			process.env.RUNTIME === Runtime.LOCAL
-				? "http://127.0.0.1:4000"
-				: "http://sqlite-db:4000",
-		prefix: "/update-score",
-		rewritePrefix: "/update-score",
-		websocket: false,
-	},
 ];
 
 for (const cfg of proxyConfigs) {
