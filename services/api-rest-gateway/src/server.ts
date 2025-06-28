@@ -52,7 +52,7 @@ const proxyConfigs = [
 		rewritePrefix: "",
 		websocket: false,
 	},
-		{
+	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
 		prefix: "/uploads/",

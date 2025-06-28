@@ -41,8 +41,19 @@ docker-prune:
 docker-delete: docker-prune
 	docker volume rm repo_sqlite-data
 
-docker-up: docker-prune certs
+docker-up: docker-prune certs setup
 	cd $(REPO_ROOT) && docker-compose up --build
+
+generate-jwt:
+	@openssl rand -base64 48
+
+setup:
+	@if [ ! -f services/auth/.env ]; then \
+		echo "JWT_SECRET=$$(openssl rand -base64 48)" > services/auth/.env; \
+		echo "Created services/auth/.env with a random JWT_SECRET"; \
+	else \
+		echo "services/auth/.env already exists, skipping."; \
+	fi
 
 certs:
 	mkdir -p shared-certs
@@ -58,4 +69,4 @@ certs:
 	cp shared-certs/key.pem services/web-server/certs/key.pem
 	cp shared-certs/cert.pem services/web-server/certs/cert.pem
 	
-.PHONY: all re docker-up docker-prune clean build lint lint-fix certs docker-delete
+.PHONY: all re docker-up docker-prune clean build lint lint-fix certs docker-delete generate-jwt setup

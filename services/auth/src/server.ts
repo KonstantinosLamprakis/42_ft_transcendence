@@ -170,7 +170,6 @@ if (!existsSync(uploadsDir)) {
 	mkdirSync(uploadsDir, { recursive: true });
 }
 
-// TODO(KL) store uploads at data to make the persistent
 fastify.register(fastifyStatic, {
 	root: uploadsDir,
 	prefix: "/uploads/",
