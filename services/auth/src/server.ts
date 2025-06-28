@@ -42,7 +42,7 @@ fastify.register(fastifyCors, { origin: "*" });
 fastify.register(fastifyMultipart);
 
 // SQLite DB service URL (adjust if needed)
-const CN_SQLITE_DB_URL =
+const SQLITE_DB_URL =
 	process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:4000" : "http://sqlite-db:4000";
 
 // Signup: create user in sqlite-db and store avatar
@@ -87,7 +87,7 @@ fastify.post("/signup", async (req, reply) => {
 		await writeFile(avatarPath, buffer);
 
 		// Call sqlite-db to create user
-		const res = await axios.post(`${CN_SQLITE_DB_URL}/add-user`, {
+		const res = await axios.post(`${SQLITE_DB_URL}/add-user`, {
 			username,
 			password: hash,
 			name,
@@ -114,7 +114,7 @@ fastify.post("/login", async (req, reply) => {
 
 	try {
 		const res = await axios.get(
-			`${CN_SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
+			`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
 		);
 		const user = res.data;
 
@@ -140,7 +140,7 @@ fastify.get("/me", async (req, reply) => {
 		const payload = await fastify.jwt.verify<{ username: string }>(auth!);
 
 		const res = await axios.get(
-			`${CN_SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(payload.username)}`,
+			`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(payload.username)}`,
 		);
 		const user = res.data;
 

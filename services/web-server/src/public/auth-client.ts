@@ -1,4 +1,4 @@
-import { CN_HTTPS_SERVER_URL } from "./types.js";
+import { HTTPS_SERVER_URL } from "./types.js";
 
 let token = "";
 
@@ -11,7 +11,7 @@ document.getElementById("signup-form")!.addEventListener("submit", async (e) => 
 		console.log(`FormData: ${key} = ${value}`);
 	});
 
-	const res = await fetch(`${CN_HTTPS_SERVER_URL}/signup`, {
+	const res = await fetch(`${HTTPS_SERVER_URL}/signup`, {
 		method: "POST",
 		body: formData,
 	});
@@ -28,7 +28,7 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 		password: (form.password as HTMLInputElement).value,
 	};
 
-	const res = await fetch(`${CN_HTTPS_SERVER_URL}/login`, {
+	const res = await fetch(`${HTTPS_SERVER_URL}/login`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(body),
@@ -40,7 +40,7 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 });
 
 (window as any).getProfile = async () => {
-	const res = await fetch(`${CN_HTTPS_SERVER_URL}/me`, {
+	const res = await fetch(`${HTTPS_SERVER_URL}/me`, {
 		headers: { Authorization: `Bearer ${token}` },
 	});
 
@@ -52,6 +52,6 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
     <p><b>Username:</b> ${data.username}</p>
     <p><b>Wins:</b> ${data.wins}</p>
     <p><b>Loses:</b> ${data.loses}</p>
-    <img src="${data.avatar ? `${CN_HTTPS_SERVER_URL}/uploads/${data.avatar}` : ""}" width="100" />
+    <img src="${data.avatar ? `${HTTPS_SERVER_URL}/uploads/${data.avatar}` : ""}" width="100" />
   `;
 };
