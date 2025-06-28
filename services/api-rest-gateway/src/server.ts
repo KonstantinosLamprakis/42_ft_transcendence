@@ -26,35 +26,35 @@ const proxyConfigs = [
 	// auth
 	{
 		upstream:
-			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/me",
 		rewritePrefix: "/me",
 		websocket: false,
 	},
 	{
 		upstream:
-			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/login",
 		rewritePrefix: "/login",
 		websocket: false,
 	},
 	{
 		upstream:
-			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/signup",
 		rewritePrefix: "/signup",
 		websocket: false,
 	},
 	{
 		upstream:
-			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/avatar",
 		rewritePrefix: "",
 		websocket: false,
 	},
 	{
 		upstream:
-			process.env.RUNTIME === Runtime.LOCAL ? "http://localhost:5000" : "http://auth:5000",
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/uploads/",
 		rewritePrefix: "/uploads/",
 		websocket: false,
@@ -63,7 +63,7 @@ const proxyConfigs = [
 	// live-chat
 	{
 		upstream:
-			process.env.RUNTIME === Runtime.LOCAL ? "ws://localhost:3003" : "ws://live-chat:3003",
+			process.env.RUNTIME === Runtime.LOCAL ? "ws://127.0.0.1:3003" : "ws://live-chat:3003",
 		prefix: "/chat",
 		rewritePrefix: "/chat",
 		websocket: true,
@@ -73,7 +73,7 @@ const proxyConfigs = [
 	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL
-				? "http://localhost:4000"
+				? "http://127.0.0.1:4000"
 				: "http://sqlite-db:4000",
 		prefix: "/list-users",
 		rewritePrefix: "/list-users",
@@ -82,7 +82,7 @@ const proxyConfigs = [
 	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL
-				? "http://localhost:4000"
+				? "http://127.0.0.1:4000"
 				: "http://sqlite-db:4000",
 		prefix: "/get-user/:id",
 		rewritePrefix: "/get-user/:id",
@@ -91,7 +91,7 @@ const proxyConfigs = [
 	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL
-				? "http://localhost:4000"
+				? "http://127.0.0.1:4000"
 				: "http://sqlite-db:4000",
 		prefix: "/top-user",
 		rewritePrefix: "/top-user",
@@ -100,7 +100,7 @@ const proxyConfigs = [
 	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL
-				? "http://localhost:4000"
+				? "http://127.0.0.1:4000"
 				: "http://sqlite-db:4000",
 		prefix: "/add-user",
 		rewritePrefix: "/add-user",
@@ -109,7 +109,7 @@ const proxyConfigs = [
 	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL
-				? "http://localhost:4000"
+				? "http://127.0.0.1:4000"
 				: "http://sqlite-db:4000",
 		prefix: "/update-score",
 		rewritePrefix: "/update-score",

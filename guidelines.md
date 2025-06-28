@@ -83,26 +83,26 @@
 - how to user **dirname from ESM(**dirname only works at commonJs): see api-rest-gateway
 - how to solve error: package x doesn't have exported members(pkg is on commonJs while you are using ESM): instead of `import a from b` you should write `import * as a from b`
 - how to use an endpoint to frontend: First you need to expose is at api-rest-gateway, similar to others.Then to add it on frontend is a bit complex as we have SPA so better ask your team.
-- how to access your service both locally and from docker: make sure you have `astify.listen({ port: 5000, host:"0.0.0.0" }` instad of only `astify.listen({ port: 5000 }`, this way will listen to all hosts instead of only localhost.
+- how to access your service both locally and from docker: make sure you have `astify.listen({ port: 5000, host:"0.0.0.0" }` instad of only `astify.listen({ port: 5000 }`, this way will listen to all hosts instead of only 127.0.0.1.
 - how to connect to sqlite-db in docker container and run queries:
   - docker ps 
   - docker exec -it docker_id_here sh
   - apk add --no-cache sqlite 
   - sqlite3 /data/database.db
 - how to call API calls from terminal using `curl` to quickly test endpoints: (these are just examples)
-    `curl -X POST https://localhost:3000/add-user \
+    `curl -X POST https://127.0.0.1:3000/add-user \
     -H "Content-Type: application/json" \
     -d '{"name": "Alice"}' -k`: create a new user
 
-    `curl https://localhost:3000/list-users -k `: no URL parameters
+    `curl https://127.0.0.1:3000/list-users -k `: no URL parameters
 
-    `curl https://localhost:3000/get-user/1 -k` : `1` is a URL parameter
+    `curl https://127.0.0.1:3000/get-user/1 -k` : `1` is a URL parameter
 
-    `curl -X POST http://localhost:3000/update-score \
+    `curl -X POST http://127.0.0.1:3000/update-score \
     -H "Content-Type: application/json" \
     -d '{"userId": 1, "score": 42}' -k`: modify an existed user
 
-    `curl -X DELETE https://localhost:3000/delete-user/1 -k` : delete user `1`
+    `curl -X DELETE https://127.0.0.1:3000/delete-user/1 -k` : delete user `1`
 
 ### Build & Run
 

@@ -38,9 +38,9 @@ fastify.get("/", async (_, reply) => {
 const start = async () => {
 	try {
 		await fastify.listen({ port: 443, host: "0.0.0.0" });
-		console.log("HTTPS server running at https://localhost");
+		console.log("HTTPS server running at https://127.0.0.1");
 		await redirectApp.listen({ port: 80, host: "0.0.0.0" });
-		console.log("HTTP redirect server running at http://localhost");
+		console.log("HTTP redirect server running at http://127.0.0.1");
 	} catch (err) {
 		fastify.log.error(err);
 		process.exit(1);
