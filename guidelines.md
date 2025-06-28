@@ -120,4 +120,5 @@
 - at project's root optionally run `sudo make clean` to clean all services in case you run it localy before (you need sudo to clean web-server as it creates some files as admin).
 - run `make docker-up`
   - FYI: there is `make docker-prune` command to clean docker old prune data which can cause various problems but you don't need to run it manually as it runs automatically with `make docker-up`
+  - FYI: this command will automatically create certificates for https/wss and also the necessary .env files for the docker to work
 - if you want to delete to volume and basically start with fresh db you need to run the command make `docker-delete` and the `make docker-up`
