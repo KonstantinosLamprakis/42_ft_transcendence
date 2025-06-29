@@ -35,6 +35,8 @@ services:
   web-server:
     build:
       context: ./services/web-server
+    environment:
+      - RUNTIME=docker
     ports:
       - "80:80"
       - "443:443"
@@ -45,8 +47,8 @@ services:
       context: ./services/api-rest-gateway
     environment:
       - RUNTIME=docker
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     restart: unless-stopped
 
 volumes:

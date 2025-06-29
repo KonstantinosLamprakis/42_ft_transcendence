@@ -1,11 +1,18 @@
 import Fastify from "fastify";
 import path from "path";
 import fastifyStatic from "@fastify/static";
-import fastifyCors from "@fastify/cors";
 import { fileURLToPath } from "url";
+import fastifyHttpProxy from "@fastify/http-proxy";
+import * as dotenv from "dotenv";
 import * as fs from "fs";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config();
+
+enum Runtime {
+	LOCAL = "local",
+	DOCKER = "docker",
+}
 
 const fastify = Fastify({
 	logger: true,
@@ -19,11 +26,7 @@ const fastify = Fastify({
 const redirectApp = Fastify({ logger: false });
 redirectApp.all("*", (request, reply) => {
 	const host = request.headers.host?.replace(/:\d+$/, ":443") || "";
-	return reply.redirect(308, `https://${host}${request.raw.url}`);
-});
-
-fastify.register(fastifyCors, {
-	origin: "*", // Adjust CORS as needed
+	return reply.status(308).redirect(`https://${host}${request.raw.url}`);
 });
 
 fastify.register(fastifyStatic, {
@@ -33,6 +36,17 @@ fastify.register(fastifyStatic, {
 
 fastify.get("/", async (_, reply) => {
 	return reply.sendFile("index.html");
+});
+
+// redirect to api-rest-gateway
+fastify.register(fastifyHttpProxy, {
+	upstream:
+		process.env.RUNTIME === Runtime.LOCAL
+			? "http://127.0.0.1:3000"
+			: "http://api-rest-gateway:3000",
+	prefix: "/api",
+	rewritePrefix: "",
+	websocket: true,
 });
 
 const start = async () => {

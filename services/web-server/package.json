@@ -15,28 +15,29 @@
         "start:live-server": "live-server public"
     },
     "dependencies": {
-        "fastify": "^4.29.1",
-        "@fastify/cors": "^8.5.0",
-        "@fastify/static": "^6.10.1",
+        "@fastify/http-proxy": "^11.3.0",
+        "@fastify/static": "^8.2.0",
+        "dotenv": "^16.5.0",
+        "fastify": "^5.2.1",
         "fs": "^0.0.1-security",
         "path": "^0.12.7",
         "url": "^0.11.4"
     },
     "devDependencies": {
-        "fastify-tsconfig": "^3.0.0",
+        "@types/node": "^18.19.111",
         "@typescript-eslint/eslint-plugin": "^8.34.1",
         "@typescript-eslint/parser": "^8.33.0",
+        "autoprefixer": "^10.4.14",
         "eslint": "^9.29.0",
-        "prettier": "^3.5.3",
         "eslint-config-prettier": "^10.1.5",
-        "eslint-plugin-prettier": "^5.4.1",
         "eslint-plugin-filenames": "^1.3.2",
-        "@types/node": "^18.19.111",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.8.3",
+        "eslint-plugin-prettier": "^5.4.1",
+        "fastify-tsconfig": "^3.0.0",
         "live-server": "^1.2.2",
-        "tailwindcss": "^3.4.1",
         "postcss": "^8.4.24",
-        "autoprefixer": "^10.4.14"
+        "prettier": "^3.5.3",
+        "tailwindcss": "^3.4.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
     }
 }

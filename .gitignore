@@ -7,7 +7,6 @@ dist
 *.d.ts
 *.tsbuildinfo
 certs
-shared-certs
 uploads
 services/web-server/public/styles.css
 services/sqlite-db/data

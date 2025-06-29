@@ -1,6 +1,5 @@
 import {
-	WEBSOCKET_SERVER_URL,
-	API_REST_GATEWAY_PORT,
+	WEBSOCKET_API_URL,
 	ChatMessageType,
 	ChatServerResponse,
 } from "./types.js";
@@ -46,7 +45,7 @@ function appendMessage(
 // Function to connect to the WebSocket server
 function connectWebSocket(): void {
 	// Use 'ws://' for development. For production, consider 'wss://' with HTTPS.
-	socket = new WebSocket(WEBSOCKET_SERVER_URL + "/chat");
+	socket = new WebSocket(WEBSOCKET_API_URL + "/chat");
 	statusParagraph.textContent = "Connecting...";
 
 	socket.onopen = (event: Event) => {
@@ -94,7 +93,7 @@ function connectWebSocket(): void {
 		statusParagraph.textContent = "Disconnected. Reconnecting in 3 seconds...";
 		sendButton.disabled = true;
 		messageInput.disabled = true;
-		setTimeout(connectWebSocket, API_REST_GATEWAY_PORT); // Attempt to reconnect
+		setTimeout(connectWebSocket);
 	};
 
 	socket.onerror = (error: Event) => {

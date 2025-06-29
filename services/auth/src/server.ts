@@ -1,6 +1,5 @@
 import Fastify from "fastify";
 import fastifyMultipart from "@fastify/multipart";
-import fastifyCors from "@fastify/cors";
 import * as bcrypt from "bcryptjs";
 import { writeFile } from "fs/promises";
 import * as path from "path";
@@ -38,7 +37,6 @@ fastify.decorate("authenticate", async function (request: any, reply: any) {
 	}
 });
 
-fastify.register(fastifyCors, { origin: "*" });
 fastify.register(fastifyMultipart);
 
 // SQLite DB service URL (adjust if needed)
@@ -82,7 +80,10 @@ fastify.post("/signup", async (req, reply) => {
 		const ext = path.extname(avatarFile.filename);
 		const avatarName = `${username}${ext}`;
 
-		const avatarPath = process.env.RUNTIME === Runtime.LOCAL ? `uploads/${avatarName}` : `/data/uploads/${avatarName}`;
+		const avatarPath =
+			process.env.RUNTIME === Runtime.LOCAL
+				? `uploads/${avatarName}`
+				: `/data/uploads/${avatarName}`;
 		const buffer = await avatarFile.toBuffer();
 		await writeFile(avatarPath, buffer);
 
@@ -149,14 +150,14 @@ fastify.get("/me", async (req, reply) => {
 		}
 
 		// Check if avatar file exists, else set avatar to undefined
-        if (user.avatar) {
+		if (user.avatar) {
 			const avatarPath = path.join(uploadsDir, user.avatar);
-            try {
-                statSync(avatarPath); // throws an error if it doesn't exist
-            } catch {
-                user.avatar = undefined;
-            }
-        }
+			try {
+				statSync(avatarPath); // throws an error if it doesn't exist
+			} catch {
+				user.avatar = undefined;
+			}
+		}
 
 		reply.send(user);
 	} catch (error: any) {
@@ -165,7 +166,8 @@ fastify.get("/me", async (req, reply) => {
 	}
 });
 
-const uploadsDir = process.env.RUNTIME === Runtime.LOCAL ? path.join(dirname, "..", "uploads") : "/data/uploads";
+const uploadsDir =
+	process.env.RUNTIME === Runtime.LOCAL ? path.join(dirname, "..", "uploads") : "/data/uploads";
 if (!existsSync(uploadsDir)) {
 	mkdirSync(uploadsDir, { recursive: true });
 }
