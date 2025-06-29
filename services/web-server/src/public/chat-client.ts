@@ -1,8 +1,6 @@
-import {
-	WEBSOCKET_API_URL,
-	ChatMessageType,
-	ChatServerResponse,
-} from "./types.js";
+import { WEBSOCKET_API_URL, ChatMessageType, ChatServerResponse } from "./types.js";
+
+const CHAT_CONNECT_RETRY_INTERVAL = 3000; // 3 seconds
 
 // frontend/src/client.ts
 const messagesDiv = document.getElementById("messages") as HTMLDivElement;
@@ -93,7 +91,7 @@ function connectWebSocket(): void {
 		statusParagraph.textContent = "Disconnected. Reconnecting in 3 seconds...";
 		sendButton.disabled = true;
 		messageInput.disabled = true;
-		setTimeout(connectWebSocket);
+		setTimeout(connectWebSocket, CHAT_CONNECT_RETRY_INTERVAL);
 	};
 
 	socket.onerror = (error: Event) => {

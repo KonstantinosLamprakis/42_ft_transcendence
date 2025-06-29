@@ -51,6 +51,12 @@ const proxyConfigs = [
 		prefix: "/2fa/verify",
 		rewritePrefix: "/2fa/verify",
 	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
+		prefix: "/google-login",
+		rewritePrefix: "/google-login",
+	},
 
 	// live-chat
 	{

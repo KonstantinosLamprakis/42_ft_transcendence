@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Auth & Chat SPA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="stylesheet" href="./styles.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -33,6 +34,12 @@
         </div>
 
         <div id="auth" class="tab-content active">
+            <div id="g_id_onload"
+                data-client_id="1047975304392-v6d4bg1uvk93ip443tb943eh18qc3bm3.apps.googleusercontent.com"
+                data-callback="onGoogleSignIn">
+            </div>
+            <div class="g_id_signin" data-type="standard"></div>
+
             <h2 class="text-2xl font-bold mb-4 text-indigo-600">Sign Up</h2>
             <form id="signup-form" class="space-y-3" enctype="multipart/form-data">
                 <input name="name" placeholder="Name" required class="input" />

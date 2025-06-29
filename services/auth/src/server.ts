@@ -11,6 +11,10 @@ import * as dotenv from "dotenv";
 import axios from "axios";
 import QRCode from "qrcode";
 import { generateSecret, verifyTOTP } from "./totp.js";
+import { OAuth2Client } from "google-auth-library";
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 enum Runtime {
 	LOCAL = "local",
@@ -165,7 +169,7 @@ fastify.get("/me", async (req, reply) => {
 			return reply.status(404).send({ error: "User not found" });
 		}
 
-		if (user.avatar) {
+		if (user.avatar && !user.isGoogleAccount) {
 			const avatarPath = path.join(uploadsDir, user.avatar);
 			try {
 				statSync(avatarPath); // throws an error if it doesn't exist
@@ -211,6 +215,59 @@ fastify.post("/2fa/verify", async (req, reply) => {
 
 	if (!verified) return reply.status(401).send({ error: "Invalid 2FA code" });
 
+	const tokenPayload: TokenPayload = {
+		username: user.username,
+		id: user.id,
+	};
+	const jwt = fastify.jwt.sign(tokenPayload);
+
+	reply.send({ token: jwt });
+});
+
+fastify.post("/google-login", async (req, reply) => {
+	const { idToken } = req.body as { idToken: string };
+	if (!idToken) return reply.status(400).send({ error: "Missing Google ID token" });
+
+	let ticket;
+	try {
+		ticket = await googleClient.verifyIdToken({
+			idToken,
+			audience: GOOGLE_CLIENT_ID,
+		});
+	} catch (err) {
+		return reply.status(401).send({ error: "Invalid Google ID token" });
+	}
+
+	const payload = ticket.getPayload();
+	if (!payload || !payload.email) {
+		return reply.status(401).send({ error: "Invalid Google user" });
+	}
+
+	const username = payload.email;
+	const name = payload.name || username.split("@")[0];
+	const avatar = payload.picture || "";
+
+	// Check if user exists, else create
+	let userRes = await axios.get(
+		`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
+	);
+	let user = userRes.data;
+	if (!user || user.error) {
+		// Create user
+		const createRes = await axios.post(`${SQLITE_DB_URL}/add-user`, {
+			username,
+			password: "", // No password for Google users
+			name,
+			avatar,
+			isGoogleAccount: true,
+		});
+		if (!createRes.data || !createRes.data.id) {
+			return reply.status(500).send({ error: "Failed to create Google user" });
+		}
+		user = { id: createRes.data.id, username, name, avatar };
+	}
+
+	// Issue JWT
 	const tokenPayload: TokenPayload = {
 		username: user.username,
 		id: user.id,
