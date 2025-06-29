@@ -103,6 +103,7 @@
     -d '{"userId": 1, "score": 42}' -k`: modify an existed user
 
     `curl -X DELETE https://127.0.0.1:3000/delete-user/1 -k` : delete user `1`
+- how to call a websocket endpoint from terminal for quick testing: npx wscat -c ws://localhost:3000/whatever
 
 ### Build & Run
 
