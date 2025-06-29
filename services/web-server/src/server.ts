@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import fastifyHttpProxy from "@fastify/http-proxy";
 import * as dotenv from "dotenv";
 import * as fs from "fs";
+import fastifyCors from "@fastify/cors";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config();
@@ -27,6 +28,10 @@ const redirectApp = Fastify({ logger: false });
 redirectApp.all("*", (request, reply) => {
 	const host = request.headers.host?.replace(/:\d+$/, ":443") || "";
 	return reply.status(308).redirect(`https://${host}${request.raw.url}`);
+});
+
+fastify.register(fastifyCors, {
+	origin: "*",
 });
 
 fastify.register(fastifyStatic, {
