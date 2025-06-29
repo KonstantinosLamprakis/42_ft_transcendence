@@ -9,11 +9,18 @@ import fastifyJwt from "@fastify/jwt";
 import { existsSync, mkdirSync, statSync } from "fs";
 import * as dotenv from "dotenv";
 import axios from "axios";
+import QRCode from "qrcode";
+import { generateSecret, verifyTOTP } from "./totp.js";
 
 enum Runtime {
 	LOCAL = "local",
 	DOCKER = "docker",
 }
+
+type TokenPayload = {
+	username: string;
+	id: number;
+};
 
 dotenv.config();
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -39,11 +46,9 @@ fastify.decorate("authenticate", async function (request: any, reply: any) {
 
 fastify.register(fastifyMultipart);
 
-// SQLite DB service URL (adjust if needed)
 const SQLITE_DB_URL =
 	process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:4000" : "http://sqlite-db:4000";
 
-// Signup: create user in sqlite-db and store avatar
 fastify.post("/signup", async (req, reply) => {
 	const parts = req.parts();
 	const data: Record<string, string> = {};
@@ -87,7 +92,6 @@ fastify.post("/signup", async (req, reply) => {
 		const buffer = await avatarFile.toBuffer();
 		await writeFile(avatarPath, buffer);
 
-		// Call sqlite-db to create user
 		const res = await axios.post(`${SQLITE_DB_URL}/add-user`, {
 			username,
 			password: hash,
@@ -109,7 +113,6 @@ fastify.post("/signup", async (req, reply) => {
 	}
 });
 
-// Login: fetch user from sqlite-db and verify password
 fastify.post("/login", async (req, reply) => {
 	const { username, password } = req.body as { username: string; password: string };
 
@@ -123,7 +126,17 @@ fastify.post("/login", async (req, reply) => {
 			return reply.status(401).send({ error: "Invalid credentials" });
 		}
 
-		const token = fastify.jwt.sign({ username: user.username, id: user.id });
+		if (user.twofa_secret) {
+			// Require 2FA code from client (do not issue JWT yet)
+			return reply.send({ require2fa: true });
+		}
+
+		const tokenPayload: TokenPayload = {
+			username: user.username,
+			id: user.id,
+		};
+
+		const token = fastify.jwt.sign(tokenPayload);
 		reply.send({ token });
 	} catch (error: any) {
 		if (error.response && error.response.data) {
@@ -134,11 +147,14 @@ fastify.post("/login", async (req, reply) => {
 	}
 });
 
-// Get current user info (all fields)
 fastify.get("/me", async (req, reply) => {
 	try {
+		// extract value from header: Authorization: Bearer <JWT_TOKEN>
 		const auth = req.headers.authorization?.split(" ")[1];
-		const payload = await fastify.jwt.verify<{ username: string }>(auth!);
+		if (!auth) {
+			return reply.status(999).send({ error: "Auth header not found" });
+		}
+		const payload = await fastify.jwt.verify<TokenPayload>(auth);
 
 		const res = await axios.get(
 			`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(payload.username)}`,
@@ -149,7 +165,6 @@ fastify.get("/me", async (req, reply) => {
 			return reply.status(404).send({ error: "User not found" });
 		}
 
-		// Check if avatar file exists, else set avatar to undefined
 		if (user.avatar) {
 			const avatarPath = path.join(uploadsDir, user.avatar);
 			try {
@@ -164,6 +179,45 @@ fastify.get("/me", async (req, reply) => {
 		console.error("Authentication error:", error);
 		reply.status(401).send({ error: "Unauthorized" });
 	}
+});
+
+fastify.post("/2fa/setup", async (req, reply) => {
+	const { username } = req.body as { username: string };
+	if (!username) return reply.status(400).send({ error: "Username required" });
+
+	const secret = generateSecret();
+	await axios.post(`${SQLITE_DB_URL}/set-2fa-secret`, {
+		username,
+		secret,
+	});
+
+	const otpauthUrl = `otpauth://totp/PongApp%20(${encodeURIComponent(username)})?secret=${secret}&issuer=PongApp`;
+	const qr = await QRCode.toDataURL(otpauthUrl);
+
+	reply.send({ qr, secret });
+});
+
+fastify.post("/2fa/verify", async (req, reply) => {
+	const { username, token } = req.body as { username: string; token: string };
+	if (!username || !token) return reply.status(400).send({ error: "Missing fields" });
+
+	const res = await axios.get(
+		`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
+	);
+	const user = res.data;
+	if (!user || !user.twofa_secret) return reply.status(400).send({ error: "2FA not enabled" });
+
+	const verified = verifyTOTP(user.twofa_secret, token);
+
+	if (!verified) return reply.status(401).send({ error: "Invalid 2FA code" });
+
+	const tokenPayload: TokenPayload = {
+		username: user.username,
+		id: user.id,
+	};
+	const jwt = fastify.jwt.sign(tokenPayload);
+
+	reply.send({ token: jwt });
 });
 
 const uploadsDir =

@@ -81,4 +81,11 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 		const user = stmt.get(username);
 		return user || { error: "User not found" };
 	});
+
+	fastify.post("/set-2fa-secret", async (request, reply) => {
+		const { username, secret } = request.body as { username: string; secret: string };
+		const stmt = db.prepare("UPDATE users SET twofa_secret = ? WHERE username = ?");
+		stmt.run(secret, username);
+		reply.send({ success: true });
+	});
 }
