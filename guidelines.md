@@ -111,7 +111,7 @@
 
 - you need to use **node 20** (check with `node -v` and install it with `nvm install v20` and `nvm use v20`). I would suggest to uninstall old versions as many times they are the default and cause problems.
 - go to **your service's folder** folder and run `make re`. This will automatically delete old files(dist, node_modules), and automatically runs npm install, npm run build and npm run
-- **for the frontend:** in another terminal go to **services/web-server** and run: `sudo make re`. You need sudo because it runs at ports 80(http) and 443(https) and linux needs admin rights for that. Then create certs for encryption(just run `make certs` in projects root). This will create certs folder both for api-rest-gateway and web-server services.
+- **for the frontend:** in another terminal go to **services/web-server** and run: `sudo make re`. You need sudo because it runs at ports 80(http) and 443(https) and linux needs admin rights for that. Then create certs for encryption(just run `make certs` in projects root). This will create certs folder for web-server services.
 - If your service depends on **api-rest-gateway** you need also to go at services/api-rest-gateway, **create an .env file**(use the .env_example). Then run `make re`.
 - run any other service that your service depends on, by going at service's folder and run make re. Be careful some services require a .env file. This services should have a .env_example so can just use take this as a point of reference.
 - when you finish please run `sudo make clean` at root folder to automatically clean all services (you need sudo to clean web-server as it creates some files as admin).

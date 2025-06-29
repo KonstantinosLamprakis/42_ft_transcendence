@@ -1,9 +1,6 @@
 import Fastify from "fastify";
 import fastifyHttpProxy from "@fastify/http-proxy";
 import * as dotenv from "dotenv";
-import * as fs from "fs";
-import * as path from "path";
-import { fileURLToPath } from "url";
 
 dotenv.config();
 
@@ -12,14 +9,8 @@ enum Runtime {
 	DOCKER = "docker",
 }
 
-const dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const fastify = Fastify({
 	logger: true,
-	https: {
-		key: fs.readFileSync(path.join(dirname, "../certs/key.pem")),
-		cert: fs.readFileSync(path.join(dirname, "../certs/cert.pem")),
-	},
 });
 
 const proxyConfigs = [
@@ -29,35 +20,24 @@ const proxyConfigs = [
 			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/me",
 		rewritePrefix: "/me",
-		websocket: false,
 	},
 	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/login",
 		rewritePrefix: "/login",
-		websocket: false,
 	},
 	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/signup",
 		rewritePrefix: "/signup",
-		websocket: false,
-	},
-	{
-		upstream:
-			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
-		prefix: "/avatar",
-		rewritePrefix: "",
-		websocket: false,
 	},
 	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/uploads/",
 		rewritePrefix: "/uploads/",
-		websocket: false,
 	},
 
 	// live-chat
@@ -75,7 +55,7 @@ for (const cfg of proxyConfigs) {
 		upstream: cfg.upstream,
 		prefix: cfg.prefix,
 		rewritePrefix: cfg.rewritePrefix,
-		websocket: cfg.websocket,
+		websocket: cfg.websocket ?? false,
 	});
 }
 

@@ -57,17 +57,12 @@ setup:
 	fi
 
 certs:
-	mkdir -p shared-certs
-	@if [ ! -f shared-certs/key.pem ]; then \
-		openssl req -x509 -newkey rsa:4096 -keyout shared-certs/key.pem -out shared-certs/cert.pem -days 365 -nodes -subj "/CN=127.0.0.1"; \
-		rm -rf $(REPO_ROOT)services/api-rest-gateway/certs; \
-		rm -rf $(REPO_ROOT)services/web-server/certs; \
-	fi
-	mkdir -p services/api-rest-gateway/certs
 	mkdir -p services/web-server/certs
-	cp shared-certs/key.pem services/api-rest-gateway/certs/key.pem
-	cp shared-certs/cert.pem services/api-rest-gateway/certs/cert.pem
-	cp shared-certs/key.pem services/web-server/certs/key.pem
-	cp shared-certs/cert.pem services/web-server/certs/cert.pem
+	@if [ ! -f services/web-server/certs/key.pem ]; then \
+		openssl req -x509 -newkey rsa:4096 -keyout services/web-server/certs/key.pem -out services/web-server/certs/cert.pem -days 365 -nodes -subj "/CN=127.0.0.1"; \
+        echo "Created new certs in services/web-server/certs"; \
+    else \
+        echo "Certs already exist in services/web-server/certs, skipping."; \
+	fi
 	
 .PHONY: all re docker-up docker-prune clean build lint lint-fix certs docker-delete generate-jwt setup
