@@ -1,6 +1,33 @@
 import { HTTPS_API_URL } from "./types.js";
+import { getToken, setToken, isLogged } from "./token.js"
 
-let token = "";
+// let token = "";	
+
+function updateLoginUI() {
+  const token = isLogged();
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+  const welcomeMsg = document.getElementById('welcome-msg');
+  const logOut = document.getElementById('logout-btn');
+
+  if (!loginForm || !welcomeMsg || !logOut || !signupForm) return;
+
+  if (token) {
+    loginForm.style.display = 'none';
+	signupForm.style.display = 'none';
+    welcomeMsg.style.display = 'block';
+	logOut.style.display = 'block';
+} else {
+	loginForm.style.display = 'block';
+	signupForm.style.display = 'block';
+    welcomeMsg.style.display = 'none';
+	logOut.style.display = 'none';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', updateLoginUI);
+// And after login success call updateLoginUI();
+
 
 document.getElementById("signup-form")!.addEventListener("submit", async (e) => {
 	e.preventDefault();
@@ -35,13 +62,22 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 	});
 
 	const data = await res.json();
-	token = data.token;
-	alert("Logged in!");
+
+	if (!res.ok) {
+		const error = await res.json();
+		alert(error.error || "Something went wrong.");
+		return;
+	}
+	// token = data.token;
+	setToken(data.token);
+	alert("Logged in");
+	updateLoginUI();
 });
 
 (window as any).getProfile = async () => {
 	const res = await fetch(`${HTTPS_API_URL}/me`, {
-		headers: { Authorization: `Bearer ${token}` },
+		headers: { Authorization: `Bearer ${ getToken() }` },
+		// headers: { Authorization: `Bearer ${ token }` },
 	});
 
 	const data = await res.json();
@@ -55,3 +91,9 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
     <img src="${data.avatar ? `${HTTPS_API_URL}/uploads/${data.avatar}` : ""}" width="100" />
   `;
 };
+
+document.getElementById('logout-btn')!.addEventListener('click', () => {
+  localStorage.removeItem('token');  // Clear token
+  alert('Logged out successfully!');
+  updateLoginUI();
+});
