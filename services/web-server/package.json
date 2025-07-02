@@ -10,7 +10,7 @@
         "build": "tsc -p tsconfig.json ; npm run build:frontend ; npm run build:css",
         "start": "node dist/server.js",
         "dev": "ts-node src/server.ts",
-        "build:frontend": "tsc -p src/public/tsconfig.json --outDir public;",
+        "build:frontend": "tsc -p src/public/tsconfig.json --outDir public",
         "build:css": "npx tailwindcss -i ./src/public/styles.css -o ./public/styles.css --minify",
         "start:live-server": "live-server public"
     },

@@ -7,7 +7,6 @@ RUN npm install
 
 COPY . .
 RUN npm run build
-RUN npm run build:frontend
 
 EXPOSE 80
 EXPOSE 443
