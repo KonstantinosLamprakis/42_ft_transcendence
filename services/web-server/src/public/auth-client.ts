@@ -1,6 +1,16 @@
 import { HTTPS_API_URL } from "./types.js";
+import { getToken, setToken, isLogged } from "./token.js"
 
-let token = "";
+function updateLoginUI() {
+  	const token = isLogged();
+  	if (token) {
+		console.log("User is logged in with token:", token);
+	} else {
+		console.log("User is not logged in.");
+	}
+}
+
+window.addEventListener('DOMContentLoaded', updateLoginUI);
 
 function show2FAForm(username: string) {
 	const authDiv = document.getElementById("auth")!;
@@ -29,7 +39,7 @@ function show2FAForm(username: string) {
 		});
 		const data = await res.json();
 		if (data.token) {
-			token = data.token;
+			setToken(data.token);
 			alert("2FA verified! Logged in.");
 			form.remove();
 		} else {
@@ -75,7 +85,7 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 		alert("2FA required. Please enter your code.");
 		show2FAForm(body.username);
 	} else if (data.token) {
-		token = data.token;
+		setToken(data.token);
 		alert("Logged in!");
 	} else {
 		alert(data.error || "Login failed");
@@ -107,7 +117,7 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 
 (window as any).getProfile = async () => {
 	const res = await fetch(`${HTTPS_API_URL}/me`, {
-		headers: { Authorization: `Bearer ${token}` },
+		headers: { Authorization: `Bearer ${getToken()}` },
 	});
 
 	const data = await res.json();
@@ -131,7 +141,8 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 };
 
 (window as any).logout = () => {
-	token = "";
+	localStorage.removeItem('token');  // Clear token
+	setToken(""); // Clear token in storage
 	alert("Logged out!");
 	// Optionally clear profile and 2FA UI
 	const profileDiv = document.getElementById("profile");
@@ -151,7 +162,7 @@ document.getElementById("login-form")!.addEventListener("submit", async (e) => {
 	});
 	const data = await res.json();
 	if (data.token) {
-		token = data.token;
+		setToken(data.token);
 		alert("Logged in with Google!");
 	} else {
 		alert(data.error || "Google login failed");
