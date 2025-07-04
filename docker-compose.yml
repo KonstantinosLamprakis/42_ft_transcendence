@@ -19,6 +19,13 @@ services:
       - "3003"  
     restart: unless-stopped
 
+  pong-game:
+    build:
+      context: ./services/pong-game
+    expose:
+      - "5003"  
+    restart: unless-stopped
+
   auth:
     build:
       context: ./services/auth

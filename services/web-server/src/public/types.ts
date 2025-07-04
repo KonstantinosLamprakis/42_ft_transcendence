@@ -18,3 +18,18 @@ export type ChatServerResponse = {
 	name: string;
 	senderId: string;
 };
+
+// pong
+export enum PongClientMove {
+	UP = "w",
+	DOWN = "s",
+};
+
+export type PongServerResponse = {
+	ballX: number;
+	ballY: number;
+	playerY: number;
+	oponentY: number;
+	scorePlayer: number;
+	scoreOpponent: number;
+};

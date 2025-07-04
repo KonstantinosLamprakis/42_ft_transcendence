@@ -1,3 +1,16 @@
+import {
+	WEBSOCKET_API_URL,
+	PongClientMove,
+  PongServerResponse,
+} from "./types.js";
+
+
+
+let socket: WebSocket | null = null;
+// let userId: string | null = null; // This will be assigned by the server on connection
+
+
+
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 
@@ -9,14 +22,12 @@ const PADDLE_HEIGHT = 100;
 const BALL_SIZE = 10;
 
 let playerY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
-let aiY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
+let opponentY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
 let ballX = WIDTH / 2;
 let ballY = HEIGHT / 2;
-let ballVX = 5;
-let ballVY = 3;
 
 let playerScore = 0;
-let aiScore = 0;
+let opponentScore = 0;
 
 let keys: Record<string, boolean> = {};
 
@@ -46,72 +57,47 @@ function drawText(text: string, x: number, y: number, size = "30px") {
   ctx.fillText(text, x, y);
 }
 
-function resetBall() {
-  ballX = WIDTH / 2;
-  ballY = HEIGHT / 2;
-  ballVX *= -1;
-  ballVY = Math.random() > 0.5 ? 3 : -3;
-}
-
-function update() {
-  // Player movement
-  if (keys["w"] && playerY > 0) playerY -= 5;
-  if (keys["s"] && playerY < HEIGHT - PADDLE_HEIGHT) playerY += 5;
-
-  // AI movement
-  if (aiY + PADDLE_HEIGHT / 2 < ballY) aiY += 4;
-  else if (aiY + PADDLE_HEIGHT / 2 > ballY) aiY -= 4;
-
-  // Ball movement
-  ballX += ballVX;
-  ballY += ballVY;
-
-  // Wall collision
-  if (ballY < 0 || ballY > HEIGHT - BALL_SIZE) ballVY *= -1;
-
-  // Paddle collision
-  if (
-    ballX < PADDLE_WIDTH &&
-    ballY > playerY &&
-    ballY < playerY + PADDLE_HEIGHT
-  ) {
-    ballVX *= -1.0;
-    ballX = PADDLE_WIDTH; // avoid sticky
-  }
-
-  if (
-    ballX > WIDTH - PADDLE_WIDTH - BALL_SIZE &&
-    ballY > aiY &&
-    ballY < aiY + PADDLE_HEIGHT
-  ) {
-    ballVX *= -1.0;
-    ballX = WIDTH - PADDLE_WIDTH - BALL_SIZE; // avoid sticky
-  }
-
-  // Score
-  if (ballX < 0) {
-    aiScore++;
-    resetBall();
-  }
-  if (ballX > WIDTH) {
-    playerScore++;
-    resetBall();
-  }
-}
-
 function draw() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
   drawRect(0, 0, WIDTH, HEIGHT, "black");
   drawRect(0, playerY, PADDLE_WIDTH, PADDLE_HEIGHT); // player
-  drawRect(WIDTH - PADDLE_WIDTH, aiY, PADDLE_WIDTH, PADDLE_HEIGHT); // AI
+  drawRect(WIDTH - PADDLE_WIDTH, opponentY, PADDLE_WIDTH, PADDLE_HEIGHT); // AI
   drawCircle(ballX, ballY, BALL_SIZE);
-  drawText(`${playerScore} : ${aiScore}`, WIDTH / 2 - 30, 40);
+  drawText(`${playerScore} : ${opponentScore}`, WIDTH / 2 - 30, 40);
 }
 
-function gameLoop() {
-  update();
-  draw();
-  requestAnimationFrame(gameLoop);
+// Function to connect to the WebSocket server
+function connectWebSocket(): void {
+  // Use 'ws://' for development. For production, consider 'wss://' with HTTPS.
+  socket = new WebSocket(WEBSOCKET_API_URL + "/pong");
+
+  socket.onopen = (event: Event) => {
+    console.log("WebSocket connected:", event);
+  };
+
+  socket.onmessage = (event: MessageEvent) => {
+    try {
+      const data: PongServerResponse = JSON.parse(event.data);
+
+      ballX = data.ballX;
+      ballY = data.ballY;
+      playerY = data.playerY;
+      opponentY = data.oponentY;
+      playerScore = data.scorePlayer;
+      opponentScore = data.scoreOpponent;
+      draw();
+
+    } catch (err) {
+      console.error("Failed to parse game state:", err);
+    }
+    if (keys["w"] && !keys["s"]) {
+      socket?.send(JSON.stringify({ move: PongClientMove.UP }));
+    } else if (keys["s"] && !keys["w"]) {
+      socket?.send(JSON.stringify({ move: PongClientMove.DOWN }));
+    }
+  };
+
 }
 
-gameLoop();
+// Initial connection
+connectWebSocket();
