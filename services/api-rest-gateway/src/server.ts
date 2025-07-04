@@ -48,6 +48,15 @@ const proxyConfigs = [
 		rewritePrefix: "/chat",
 		websocket: true,
 	},
+
+	// pong
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "ws://127.0.0.1:5003" : "ws://pong-game:5003",
+		prefix: "/pong",
+		rewritePrefix: "/pong",
+		websocket: true,
+	},
 ];
 
 for (const cfg of proxyConfigs) {

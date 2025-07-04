@@ -1,5 +1,5 @@
 {
-  "name": "blueprint",
+  "name": "pong-game",
   "private": true,
   "version": "1.0.0",
   "main": "dist/server.js",
@@ -13,7 +13,8 @@
     "dev": "ts-node src/server.ts"
   },
   "dependencies": {
-    "fastify": "^5.2.1"
+    "fastify": "^5.2.1",
+    "@fastify/websocket": "^11.0.2"
   },
   "devDependencies": {
     "fastify-tsconfig": "^3.0.0",
