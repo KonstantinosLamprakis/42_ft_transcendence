@@ -21,6 +21,14 @@
         .tab-content.active {
             display: block;
         }
+
+        canvas {
+            background: #999;
+            display: block;
+            margin: auto;
+            margin-top: 50px;
+            border: 3px solid white;
+        }
     </style>
 </head>
 
@@ -30,6 +38,7 @@
         <div class="flex justify-around mb-6">
             <button onclick="showTab('auth')" class="tab-btn text-indigo-700 font-semibold">🔐 Auth</button>
             <button onclick="showTab('chat')" class="tab-btn text-indigo-700 font-semibold">💬 Chat</button>
+            <button onclick="showTab('pong')" class="tab-btn text-indigo-700 font-semibold">🏓 Pong</button>
         </div>
 
         <div id="auth" class="tab-content active">
@@ -73,10 +82,16 @@
 
             <p id="status" class="text-sm text-gray-500 mt-4 text-center">Connecting...</p>
         </div>
+
+        <div id="pong" class="tab-content">
+            <canvas id="game" width="800" height="500"></canvas>
+            <script type="module" src="./pong-client.ts"></script> 
+        </div>
     </div>
 
     <script type="module" src="./auth-client.js"></script>
     <script type="module" src="./chat-client.js"></script>
+    <script type="module" src="./pong-client.js"></script>
 
     <script>
         function showTab(tabId) {
