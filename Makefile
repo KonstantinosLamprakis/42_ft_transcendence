@@ -39,8 +39,7 @@ docker-prune:
 	docker image prune -f
 
 docker-delete: docker-prune
-	docker volume rm repo_sqlite-data
-	docker volume rm repo_upload-avatars
+	docker volume rm $$(docker volume ls -q) 2>/dev/null || true
 
 docker-up: docker-prune certs setup
 	cd $(REPO_ROOT) && docker-compose up --build

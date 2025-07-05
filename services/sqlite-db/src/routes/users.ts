@@ -16,18 +16,19 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 	});
 
 	fastify.post("/add-user", async (request, reply) => {
-		const { username, password, name, avatar } = request.body as {
+		const { username, password, name, avatar, isGoogleAccount } = request.body as {
 			username: string;
 			password: string;
 			name: string;
 			avatar?: string; // path to avatar image
+			isGoogleAccount?: boolean;
 		};
 
 		try {
 			const stmt = db.prepare(
-				"INSERT INTO users (username, password, name, avatar) VALUES (?, ?, ?, ?)",
+				"INSERT INTO users (username, password, name, avatar, isGoogleAccount) VALUES (?, ?, ?, ?, ?)",
 			);
-			const result = stmt.run(username, password, name, avatar || null);
+			const result = stmt.run(username, password, name, avatar || null, isGoogleAccount ? 1 : 0);
 			return { id: result.lastInsertRowid };
 		} catch (err: any) {
 			reply.status(400);
@@ -37,13 +38,14 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 
 	fastify.put("/update-user/:id", async (request, reply) => {
 		const { id } = request.params as { id: string };
-		const { username, password, name, avatar, wins, loses } = request.body as {
+		const { username, password, name, avatar, wins, loses, isGoogleAccount } = request.body as {
 			username?: string;
 			password?: string;
 			name?: string;
 			avatar?: string;
 			wins?: number;
 			loses?: number;
+			isGoogleAccount?: boolean;
 		};
 
 		const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
@@ -59,11 +61,12 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
                 name = COALESCE(?, name),
                 avatar = COALESCE(?, avatar),
                 wins = COALESCE(?, wins),
-                loses = COALESCE(?, loses)
+                loses = COALESCE(?, loses),
+                isGoogleAccount = COALESCE(?, isGoogleAccount)
             WHERE id = ?`,
 		);
 
-		stmt.run(username, password, name, avatar, wins, loses, id);
+		stmt.run(username, password, name, avatar, wins, loses, isGoogleAccount ? 1 : 0, id);
 
 		return { success: true };
 	});
@@ -80,5 +83,12 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 		const stmt = db.prepare("SELECT * FROM users WHERE username = ?");
 		const user = stmt.get(username);
 		return user || { error: "User not found" };
+	});
+
+	fastify.post("/set-2fa-secret", async (request, reply) => {
+		const { username, secret } = request.body as { username: string; secret: string };
+		const stmt = db.prepare("UPDATE users SET twofa_secret = ? WHERE username = ?");
+		stmt.run(secret, username);
+		reply.send({ success: true });
 	});
 }

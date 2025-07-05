@@ -35,6 +35,7 @@ services:
       - ./services/auth/.env
     environment:
       - RUNTIME=docker
+      - GOOGLE_CLIENT_ID=1047975304392-v6d4bg1uvk93ip443tb943eh18qc3bm3.apps.googleusercontent.com
     volumes:
       - upload-avatars:/data
     restart: unless-stopped

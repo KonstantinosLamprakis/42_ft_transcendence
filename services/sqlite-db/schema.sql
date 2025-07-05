@@ -6,5 +6,7 @@ CREATE TABLE
         name TEXT NOT NULL,
         avatar TEXT, -- store the filename or URL of the uploaded image
         wins INTEGER DEFAULT 0,
-        loses INTEGER DEFAULT 0
+        loses INTEGER DEFAULT 0,
+        twofa_secret TEXT,
+        isGoogleAccount BOOLEAN DEFAULT 0
     );
