@@ -4,28 +4,31 @@ import websocket from "@fastify/websocket";
 export enum PongMessageType {
 	INIT = "init",
 	MOVE = "move",
-};
+   	END = "end",
+	DRAW = "draw",
+}
 
 export enum PongClientMove {
 	UP = "w",
 	DOWN = "s",
-};
+}
 
 export type PongClientRequest = {
 	type: PongMessageType;
 	move?: PongClientMove;
 	userId?: string;
-};
+}
 
 export type PongServerResponse = {
+	type: PongMessageType;
 	ballX: number;
 	ballY: number;
 	player1Y: number;
 	player2Y: number;
 	scorePlayer1: number;
 	scorePlayer2: number;
-};
-
+	winner?: string;
+}
 
 const fastify = Fastify({ logger: true });
 fastify.register(websocket);
@@ -33,10 +36,10 @@ fastify.register(websocket);
 interface Connection {
 	userId: string;
 	socket: any;
-};
+}
 
 interface Game {
-	GameId: number;
+	gameId: number;
 	connectionPlayer1: Connection | null;
     connectionPlayer2: Connection | null;
     player1Y: number;
@@ -48,42 +51,24 @@ interface Game {
     ballVY: number;
     scorePlayer1: number;
     scorePlayer2: number;
+    isGameOver: boolean;
+    winner: string | null;
 };
 
 
 const games = new Map<number, Game>();
 
 const FPS = 30;
-
 const WIDTH = 800;
 const HEIGHT = 500;
-
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 100;
 const PADDLE_SPEED = 15;
-const BALL_SIZE = 10;
+const BALL_SIZE = 5;
 const MAX_BALL_SPEED = 25.0;
-
-const SPEED_INCREASE = 1.25
-
-let modifier = 1.0;
-
+const SPEED_INCREASE = 1.4
 const START_BALLVX: number = calculateStartVX();
-
-const game: Game = {
-    GameId: 0,
-    connectionPlayer1: null,
-    connectionPlayer2: null,
-    player1Y: HEIGHT / 2 - PADDLE_HEIGHT / 2,
-    player2Y: HEIGHT / 2 - PADDLE_HEIGHT / 2,
-    ballX: WIDTH / 2,
-    ballY: HEIGHT / 2,
-    ballSpeed: 7.0,
-    ballVX: START_BALLVX,
-    ballVY: calculateStartVY(10, START_BALLVX),
-    scorePlayer1: 0,
-    scorePlayer2: 0,
-};
+let modifier = 1.0;
 
 function calculateStartVX() {
     const startVX = Math.random() * (7 - 4) + 4;
@@ -95,7 +80,6 @@ function calculateStartVY(ballV: number, ballVX: number) {
     return Math.random() > 0.5 ? ballVY : -ballVY;
 }
 
-
 function resetBall(game: Game) {
     game.ballX = WIDTH / 2;
     game.ballY = HEIGHT / 2;
@@ -104,14 +88,33 @@ function resetBall(game: Game) {
     game.ballVY = calculateStartVY(game.ballSpeed, game.ballVX);
 };
 
+function createNewGame(): Game {
+	return {
+        gameId: Date.now(),
+        connectionPlayer1: null,
+        connectionPlayer2: null,
+        player1Y: HEIGHT / 2 - PADDLE_HEIGHT / 2,
+        player2Y: HEIGHT / 2 - PADDLE_HEIGHT / 2,
+        ballX: WIDTH / 2,
+        ballY: HEIGHT / 2,
+        ballSpeed: 7.0,
+        ballVX: START_BALLVX,
+        ballVY: calculateStartVY(10, START_BALLVX),
+        scorePlayer1: 0,
+        scorePlayer2: 0,
+		isGameOver: false,
+		winner: null,
+	};
+}
+
+let game = createNewGame();
+let gameLoop: NodeJS.Timeout | null = null;
+
 function update(game: Game) {
+	game.ballX += game.ballVX;
+	game.ballY += game.ballVY;
 
-    // Ball movement
-    game.ballX += game.ballVX;
-    game.ballY += game.ballVY;
-
-    // Wall collision
-    if (game.ballY < 0 || game.ballY > HEIGHT - BALL_SIZE) game.ballVY *= -1;
+	if (game.ballY < 0 || game.ballY > HEIGHT - BALL_SIZE) game.ballVY *= -1;
 
     // Paddle collision (player 1)
     if (
@@ -189,118 +192,155 @@ function update(game: Game) {
         const oldVXSign = Math.sign(game.ballVX);
         game.ballVX = -oldVXSign * Math.sqrt(
             game.ballSpeed * game.ballSpeed - game.ballVY * game.ballVY);
-        game.ballX = WIDTH - PADDLE_WIDTH - BALL_SIZE; // avoid sticky
+        game.ballX = WIDTH - PADDLE_WIDTH - BALL_SIZE;
     }
 
-    // Score
+    // Check for scoring
     if (game.ballX < 0) {
-        game.scorePlayer2++;
-        resetBall(game);
-    }
-    if (game.ballX > WIDTH) {
-        game.scorePlayer1++;
-        resetBall(game);
-    }
-};
+		game.scorePlayer2++;
+		resetBall(game);
+	}
+	if (game.ballX > WIDTH) {
+		game.scorePlayer1++;
+		resetBall(game);
+	}
+}
+
+function checkGameEnd(game: Game): boolean {
+	const p1 = game.scorePlayer1;
+	const p2 = game.scorePlayer2;
+
+	if ((p1 >= 11 || p2 >= 11) && Math.abs(p1 - p2) >= 2) {
+		game.isGameOver = true;
+		game.winner = p1 > p2
+			? game.connectionPlayer1?.userId || "Player 1"
+			: game.connectionPlayer2?.userId || "Player 2";
+		return true;
+	}
+	return false;
+}
+
+function endGame() {
+	const result: PongServerResponse = {
+		type: PongMessageType.END,
+		ballX: game.ballX,
+		ballY: game.ballY,
+		player1Y: game.player1Y,
+		player2Y: game.player2Y,
+		scorePlayer1: game.scorePlayer1,
+		scorePlayer2: game.scorePlayer2,
+		winner: game.winner,
+	};
+
+	if (game.connectionPlayer1?.socket) {
+		game.connectionPlayer1.socket.send(JSON.stringify(result));
+	}
+	if (game.connectionPlayer2?.socket) {
+		game.connectionPlayer2.socket.send(JSON.stringify(result));
+	}
+
+	if (gameLoop) {
+		clearInterval(gameLoop);
+		gameLoop = null;
+	}
+
+	fastify.log.info(`Game ended. Winner: ${game.winner}`);
+
+	// Reset the game after a short delay to allow rematches
+	setTimeout(() => {
+		game = createNewGame();
+	}, 1000);
+}
 
 fastify.addHook("onRequest", (request, reply, done) => {
 	if (request.raw.url?.startsWith("/pong") && request.raw.headers.upgrade === "websocket") {
-		fastify.log.info(`WebSocket request for /pong from ${request.ip}`);
+		fastify.log.info(`WebSocket request from ${request.ip}`);
 	}
 	done();
 });
 
-let gameLoop: NodeJS.Timeout | null = null;
-
 fastify.register(async function (fastify) {
 	fastify.get("/pong", { websocket: true }, (socket, req) => {
+		socket.on("message", (message: Buffer) => {
+			let parsed: PongClientRequest;
+			try {
+				parsed = JSON.parse(message.toString());
+			} catch {
+				fastify.log.warn("Invalid JSON from client");
+				return;
+			}
 
-        socket.on("message", (message: Buffer) => {
-            let parsed;
+			if (parsed.type === PongMessageType.INIT && parsed.userId) {
+				if (!game.connectionPlayer1) {
+					game.connectionPlayer1 = { userId: parsed.userId, socket };
+				} else if (!game.connectionPlayer2) {
+					game.connectionPlayer2 = { userId: parsed.userId, socket };
+				} else {
+					fastify.log.warn("Game already has two players.");
+					return;
+				}
+			}
 
-            try {
-                parsed = JSON.parse(message.toString());
-                // fastify.log.info("Received message:", parsed);
-            } catch (e) {
-                fastify.log.warn("Invalid JSON from client:", message.toString());
-                return;
-            }
+			if (!game.connectionPlayer1 || !game.connectionPlayer2) return;
 
-            if (parsed.type === PongMessageType.INIT && parsed.userId) {
-                fastify.log.info(`Initialising game for user: ${parsed.userId}`);
-                if (!game.connectionPlayer1) {
-                    game.connectionPlayer1 = { userId: parsed.userId, socket: socket };
-                }
-                else if (!game.connectionPlayer2) {
-                    game.connectionPlayer2 = { userId: parsed.userId, socket: socket };
-                } else {
-                    fastify.log.warn("Game already has two players connected.");
-                    return;
-                }
-            }
+			if (!gameLoop && !game.isGameOver) {
+				gameLoop = setInterval(() => {
+					if (!game.isGameOver) {
+						update(game);
+						if (checkGameEnd(game)) {
+							endGame();
+							return;
+						}
+					}
 
-            if (!game.connectionPlayer1 || !game.connectionPlayer2) {
-                fastify.log.warn("Game not initialised, not yet two players.");
-                return;
-            }
+					const payload: PongServerResponse = {
+                        type: PongMessageType.DRAW,
+						ballX: game.ballX,
+						ballY: game.ballY,
+						player1Y: game.player1Y,
+						player2Y: game.player2Y,
+						scorePlayer1: game.scorePlayer1,
+						scorePlayer2: game.scorePlayer2,
+					};
 
-            if (game.connectionPlayer1 && game.connectionPlayer2 && !gameLoop) {
-                fastify.log.info("Starting game loop");
-                gameLoop = setInterval(() => {
-                    update(game);
-                    // fastify.log.info(`Game state: Player1 Y: ${game.player1Y}, Player2 Y: ${game.player2Y}, Ball X: ${game.ballX}, Ball Y: ${game.ballY}, Score P1: ${game.scorePlayer1}, Score P2: ${game.scorePlayer2}`);
-                    const payload: PongServerResponse = {
-                        ballX: game.ballX,
-                        ballY: game.ballY,
-                        player1Y: game.player1Y,
-                        player2Y: game.player2Y,
-                        scorePlayer1: game.scorePlayer1,
-                        scorePlayer2: game.scorePlayer2,
-                    };
-                    if (game.connectionPlayer1) {
-                        game.connectionPlayer1.socket.send(JSON.stringify(payload));
-                    }
-                    if (game.connectionPlayer2) {
-                        game.connectionPlayer2.socket.send(JSON.stringify(payload));
-                    }
-                }, 1000 / FPS);
-            }
+					if (game.connectionPlayer1?.socket)
+						game.connectionPlayer1.socket.send(JSON.stringify(payload));
+					if (game.connectionPlayer2?.socket)
+						game.connectionPlayer2.socket.send(JSON.stringify(payload));
+				}, 1000 / FPS);
+			}
 
-            if (socket === game.connectionPlayer1.socket && parsed.type === PongMessageType.MOVE) {
-                // fastify.log.info(`Player 1 move: ${parsed.move}`);
-                if (parsed.move === PongClientMove.UP && game.player1Y > 0) {
-                    game.player1Y -= PADDLE_SPEED;
-                } else if (parsed.move === PongClientMove.DOWN && game.player1Y < HEIGHT - PADDLE_HEIGHT) {
-                    game.player1Y += PADDLE_SPEED;
-                }
-            }
-            if (socket === game.connectionPlayer2.socket && parsed.type === PongMessageType.MOVE) {
-                // fastify.log.info(`Player 2 move: ${parsed.move}`);
-                if (parsed.move === PongClientMove.UP && game.player2Y > 0) {
-                    game.player2Y -= PADDLE_SPEED;
-                } else if (parsed.move === PongClientMove.DOWN && game.player2Y < HEIGHT - PADDLE_HEIGHT) {
-                    game.player2Y += PADDLE_SPEED;
-                }
-            }
-        });
+			if (parsed.type === PongMessageType.MOVE && !game.isGameOver) {
+				if (socket === game.connectionPlayer1?.socket) {
+					if (parsed.move === PongClientMove.UP && game.player1Y > 0)
+						game.player1Y -= PADDLE_SPEED;
+					else if (parsed.move === PongClientMove.DOWN && game.player1Y < HEIGHT - PADDLE_HEIGHT)
+						game.player1Y += PADDLE_SPEED;
+				}
+				if (socket === game.connectionPlayer2?.socket) {
+					if (parsed.move === PongClientMove.UP && game.player2Y > 0)
+						game.player2Y -= PADDLE_SPEED;
+					else if (parsed.move === PongClientMove.DOWN && game.player2Y < HEIGHT - PADDLE_HEIGHT)
+						game.player2Y += PADDLE_SPEED;
+				}
+			}
+		});
 
-
-		// socket.on("close", () => {
-		// 	const disconnectPayload: ChatServerResponse = {
-		// 		type: ChatMessageType.STATUS,
-		// 		content: `User ${connections.get(connId)?.name || "Anonymous"} disconnected.`,
-		// 		name: connections.get(connId)?.name || "Anonymous",
-		// 		timestamp: Date.now(),
-		// 		senderId: connId,
-		// 	};
-		// 	connections.delete(connId);
-		// 	connections.forEach((conn) => conn.socket.send(JSON.stringify(disconnectPayload)));
-		// 	fastify.log.info(`Client disconnected: ${connId}`);
-		// });
-
-		// socket.on("error", (err: any) => {
-		// 	fastify.log.error(`WebSocket error for ${connId}: ${err.message}`);
-		// });
+		socket.on("close", () => {
+			if (!game.isGameOver) {
+				if (socket === game.connectionPlayer1?.socket) {
+					game.scorePlayer2 = 11;
+					game.scorePlayer1 = 0;
+					game.winner = game.connectionPlayer2?.userId || "Player 2";
+				} else if (socket === game.connectionPlayer2?.socket) {
+					game.scorePlayer1 = 11;
+					game.scorePlayer2 = 0;
+					game.winner = game.connectionPlayer1?.userId || "Player 1";
+				}
+				game.isGameOver = true;
+				endGame();
+			}
+		});
 	});
 });
 

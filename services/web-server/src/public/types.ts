@@ -23,6 +23,8 @@ export type ChatServerResponse = {
 export enum PongMessageType {
 	INIT = "init",
 	MOVE = "move",
+	END = "end",
+	DRAW = "draw",
 };
 
 export enum PongClientMove {
@@ -37,12 +39,13 @@ export type PongClientRequest = {
 	userId?: string;
 };
 
-
 export type PongServerResponse = {
+	type: PongMessageType;
 	ballX: number;
 	ballY: number;
 	player1Y: number;
 	player2Y: number;
 	scorePlayer1: number;
 	scorePlayer2: number;
+	winner?: string;
 };
