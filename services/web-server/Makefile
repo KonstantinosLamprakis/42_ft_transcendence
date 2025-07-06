@@ -21,7 +21,7 @@ clean:
 	rm -rf *.js 
 	rm -rf *.d.ts 
 	rm -rf *.tsbuildinfo
-	rm -rf ./public/*.js
+	find ./public -name "*.js" -type f -delete
 	rm -rf ./public/styles.css
 
 start:

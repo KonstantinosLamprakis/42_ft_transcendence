@@ -2,116 +2,88 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Auth & Chat SPA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link as="style"
+        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+        onload="this.rel='stylesheet'" rel="stylesheet" />
+    <title>Pong Game</title>
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link rel="stylesheet" href="./styles.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    <style type="text/tailwindcss">
+        :root {
+        /* profile */
+        --primary-color: #0c7ff2;
+        --secondary-color: #ffffff;
+        --border-color: #e5e7eb;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
 
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        canvas {
-            background: #999;
-            display: block;
-            margin: auto;
-            margin-top: 50px;
-            border: 3px solid white;
-        }
+        /* login */
+        --foreground-color: #0d141c;
+        --background-color: #f8fafc;
+        --subtle-background: #eef2f7;
+        --subtle-border: #e2e8f0;
+      }
     </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body class="bg-gradient-to-br from-indigo-50 to-blue-100 min-h-screen p-6">
-
-    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
-        <div class="flex justify-around mb-6">
-            <button onclick="showTab('auth')" class="tab-btn text-indigo-700 font-semibold">🔐 Auth</button>
-            <button onclick="showTab('chat')" class="tab-btn text-indigo-700 font-semibold">💬 Chat</button>
-            <button onclick="showTab('pong')" class="tab-btn text-indigo-700 font-semibold">🏓 Pong</button>
-        </div>
-
-        <div id="auth" class="tab-content active">
-            <div id="g_id_onload"
-                data-client_id="1047975304392-v6d4bg1uvk93ip443tb943eh18qc3bm3.apps.googleusercontent.com"
-                data-callback="onGoogleSignIn">
-            </div>
-            <div class="g_id_signin" data-type="standard"></div>
-
-            <h2 class="text-2xl font-bold mb-4 text-indigo-600">Sign Up</h2>
-            <form id="signup-form" class="space-y-3" enctype="multipart/form-data">
-                <input name="name" placeholder="Name" required class="input" />
-                <input name="username" placeholder="Username" required class="input" />
-                <input name="password" type="password" placeholder="Password" required class="input" />
-                <input name="avatar" type="file" required class="block" />
-                <button type="submit" class="btn-primary">Sign Up</button>
-            </form>
-
-            <h2 class="text-2xl font-bold mt-6 mb-4 text-indigo-600">Login</h2>
-            <form id="login-form" class="space-y-3">
-                <input name="username" placeholder="Username" required class="input" />
-                <input name="password" type="password" placeholder="Password" required class="input" />
-                <button type="submit" class="btn-primary">Login</button>
-            </form>
-
-            <h2 class="text-2xl font-bold mt-6 mb-4 text-indigo-600">Profile</h2>
-            <button onclick="getProfile()" class="btn-secondary">Get Profile</button>
-            <div id="profile" class="mt-4"></div>
-            <button onclick="logout()" class="btn-secondary mt-2">Logout</button>
-            <!-- 2FA QR code and form will be injected here by JS -->
-        </div>
-
-        <div id="chat" class="tab-content">
-            <h2 class="text-2xl font-bold text-indigo-600 mb-4 text-center">Website 1 Chat</h2>
-
-            <div class="mb-4">
-                <label for="userName" class="block text-gray-700 text-sm font-semibold mb-2">Your Name:</label>
-                <input type="text" id="userName" placeholder="Enter your name" class="input" />
-            </div>
-
-            <div id="messages" class="h-64 bg-gray-50 p-4 rounded-lg overflow-y-auto mb-4 border border-gray-200">
-                <!-- Chat messages will appear here -->
-            </div>
-
-            <div class="flex space-x-2">
-                <input type="text" id="messageInput" placeholder="Type your message..." class="input flex-grow" />
-                <button id="sendButton" class="btn-primary">Send</button>
-            </div>
-
-            <p id="status" class="text-sm text-gray-500 mt-4 text-center">Connecting...</p>
-        </div>
-
-        <div id="pong" class="tab-content">
-            <div class="flex space-x-2">
-                <input type="text" id="user-id" placeholder="enter user ID..." class="input w-2/3" />
-                <button id="sendIDButton" class="btn-primary w-1/3">Start Game</button>
-            </div>
-            <canvas id="game" width="800" height="500"></canvas>
-            <script type="module" src="./pong-client.ts"></script>
+<body class="bg-[#f9fafb] font-sans">
+    <div class="relative flex size-full min-h-screen flex-col overflow-x-hidden"
+        style='font-family: Manrope, "Noto Sans", sans-serif;'>
+        <div class="flex-grow">
+            <header
+                class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--border-color)] px-10 py-3">
+                <div class="flex items-center gap-4">
+                    <div class="size-6 text-[var(--primary-color)]">
+                        <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path clip-rule="evenodd"
+                                d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z"
+                                fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-lg font-bold tracking-[-0.015em]">Pong Game</h2>
+                </div>
+                <div class="flex flex-1 justify-end gap-6">
+                    <nav class="flex items-center gap-8">
+                        <a class="text-sm font-medium text-gray-600 hover:text-[var(--primary-color)] transition-colors"
+                            href="/" data-link>Game</a>
+                        <a class="text-sm font-medium text-gray-600 hover:text-[var(--primary-color)] transition-colors"
+                            href="/chat" data-link>Chat</a>
+                        <a class="text-sm font-medium text-gray-600 hover:text-[var(--primary-color)] transition-colors"
+                            href="/profile" data-link>Profile</a>
+                        <button>
+                            <span
+                                class="text-sm font-medium text-gray-600 hover:text-[var(--primary-color)] transition-colors"
+                                id="logout-btn">Logout</span>
+                        </button>
+                    </nav>
+                    <div class="flex items-center gap-4">
+                        <button
+                            class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[var(--secondary-color)] hover:bg-[var(--border-color)] transition-colors">
+                            <div class="text-white" text-gray-600 data-icon="Bell" data-size="20px"
+                                data-weight="regular">
+                                <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDoCgjmHc49bQk6UEOrNp60FOu7_8DbEv6Kbj3v4DCBE3K5YJ_aXEyp-_HJ6ebltLSXZbSPIoecsT89_38jwlvjkagLc-Ne28VLYYt0a7b9ZukcRJrtWdFjz5rMlvFkMTG2O6A9BAPPSdAEPgi3AhnSkBKo6QclPoRFgdV5ro9oFT916fLe9rXt2KG_vXzw0aBZQ69fjOpU1vyKamfapN1Nt4rMijW1bWvAS12Gk2Etw8O29D5estAl5bCimRL8raQ--9_-GQoLQw");'>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div id="app"></div>
+            <script type="module" src="app.js"></script>
         </div>
     </div>
 
-    <script type="module" src="./auth-client.js"></script>
-    <script type="module" src="./chat-client.js"></script>
-    <script type="module" src="./pong-client.js"></script>
-
-    <script>
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-        }
-    </script>
 </body>
 
 </html>
