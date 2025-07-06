@@ -1,4 +1,4 @@
-import { WEBSOCKET_API_URL, ChatMessageType, ChatServerResponse } from "./types.js";
+import { WEBSOCKET_API_URL, ChatMessageType, ChatServerResponse } from "../types.js";
 
 const CHAT_CONNECT_RETRY_INTERVAL = 3000; // 3 seconds
 

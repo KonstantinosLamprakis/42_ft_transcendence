@@ -9,5 +9,5 @@
     "esModuleInterop": true,
     "lib": ["dom", "es2020"],
   },
-  "include": ["*.ts"]
+  "include": ["*.ts", "clients/chat-client.ts", "clients/pong-client.ts", "clients/auth-client.ts"]
 }

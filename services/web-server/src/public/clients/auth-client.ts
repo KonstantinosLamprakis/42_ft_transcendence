@@ -1,5 +1,5 @@
-import { HTTPS_API_URL } from "./types.js";
-import { getToken, setToken, isLogged } from "./token.js"
+import { HTTPS_API_URL } from "../types.js";
+import { getToken, setToken, isLogged } from "../token.js"
 
 function updateLoginUI() {
   	const token = isLogged();

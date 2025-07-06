@@ -29,7 +29,7 @@ lint-fix:
 clean:
 	find $(REPO_ROOT) . -type d -name "node_modules" -exec rm -rf {} +
 	find $(REPO_ROOT) . -type d -name "dist" -exec rm -rf {} +
-	rm -rf $(REPO_ROOT)services/web-server/public/*.js
+	find $(REPO_ROOT)services/web-server/public -type f -name "*.js" -exec rm -f {} +
 	rm -rf $(REPO_ROOT)services/web-server/public/styles.css 
 
 docker-prune:
