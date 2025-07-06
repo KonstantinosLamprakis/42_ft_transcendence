@@ -43,6 +43,7 @@ interface Game {
     player2Y: number;
     ballX: number;
     ballY: number;
+    ballSpeed: number;
     ballVX: number;
     ballVY: number;
     scorePlayer1: number;
@@ -50,7 +51,7 @@ interface Game {
 };
 
 
-const games = new Map<string, Game>();
+const games = new Map<number, Game>();
 
 const FPS = 30;
 
@@ -59,8 +60,15 @@ const HEIGHT = 500;
 
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 100;
+const PADDLE_SPEED = 15;
 const BALL_SIZE = 10;
+const MAX_BALL_SPEED = 25.0;
 
+const SPEED_INCREASE = 1.25
+
+let modifier = 1.0;
+
+const START_BALLVX: number = calculateStartVX();
 
 const game: Game = {
     GameId: 0,
@@ -70,18 +78,30 @@ const game: Game = {
     player2Y: HEIGHT / 2 - PADDLE_HEIGHT / 2,
     ballX: WIDTH / 2,
     ballY: HEIGHT / 2,
-    ballVX: 5,
-    ballVY: 3,
+    ballSpeed: 7.0,
+    ballVX: START_BALLVX,
+    ballVY: calculateStartVY(10, START_BALLVX),
     scorePlayer1: 0,
     scorePlayer2: 0,
 };
+
+function calculateStartVX() {
+    const startVX = Math.random() * (7 - 4) + 4;
+    return Math.random() > 0.5 ? startVX : -startVX;
+};
+
+function calculateStartVY(ballV: number, ballVX: number) {
+    const ballVY = Math.sqrt((ballV * ballV) - (ballVX * ballVX));
+    return Math.random() > 0.5 ? ballVY : -ballVY;
+}
 
 
 function resetBall(game: Game) {
     game.ballX = WIDTH / 2;
     game.ballY = HEIGHT / 2;
-    game.ballVX *= -1;
-    game.ballVY = Math.random() > 0.5 ? 3 : -3;
+    game.ballSpeed = 7.0;
+    game.ballVX = calculateStartVX();
+    game.ballVY = calculateStartVY(game.ballSpeed, game.ballVX);
 };
 
 function update(game: Game) {
@@ -93,22 +113,82 @@ function update(game: Game) {
     // Wall collision
     if (game.ballY < 0 || game.ballY > HEIGHT - BALL_SIZE) game.ballVY *= -1;
 
-    // Paddle collision
+    // Paddle collision (player 1)
     if (
         game.ballX < PADDLE_WIDTH &&
         game.ballY > game.player1Y &&
         game.ballY < game.player1Y + PADDLE_HEIGHT
     ) {
-        game.ballVX *= -1.0;
-        game.ballX = PADDLE_WIDTH; // avoid sticky
+        if (game.ballSpeed < MAX_BALL_SPEED) {
+            game.ballSpeed *= SPEED_INCREASE;
+        }
+        const relativeY = (game.ballY - game.player1Y) / PADDLE_HEIGHT;
+        // let modifier = 1.0;
+
+        if (relativeY < 0.15) {
+            modifier = game.ballVY < 0 ? 1.5 : 0.4;
+        } else if (relativeY < 0.35) {
+            modifier = game.ballVY < 0 ? 1.3 : 0.7;
+        } else if (relativeY < 0.65) {
+            modifier = 1.0;
+        } else if (relativeY < 0.85) {
+            modifier = game.ballVY > 0 ? 1.3 : 0.7;
+        } else {
+            modifier = game.ballVY > 0 ? 1.5 : 0.4;
+        }
+
+        game.ballVY *= modifier;
+
+        // Clamp VY if needed to keep under total speed
+        const maxVY = game.ballSpeed * 0.95;
+        if (Math.abs(game.ballVY) > maxVY) {
+            game.ballVY = Math.sign(game.ballVY) * maxVY;
+        }
+
+        // Recalculate VX to preserve ballSpeed
+        const oldVXSign = Math.sign(game.ballVX);
+        game.ballVX = -oldVXSign * Math.sqrt(
+            game.ballSpeed * game.ballSpeed - game.ballVY * game.ballVY);
+        game.ballX = PADDLE_WIDTH + BALL_SIZE;
     }
 
+    // Paddle collision (player 2)
     if (
         game.ballX > WIDTH - PADDLE_WIDTH - BALL_SIZE &&
         game.ballY > game.player2Y &&
         game.ballY < game.player2Y + PADDLE_HEIGHT
     ) {
-        game.ballVX *= -1.0;
+        if (game.ballSpeed < MAX_BALL_SPEED) {
+            game.ballSpeed *= SPEED_INCREASE;
+        }
+
+        const relativeY = (game.ballY - game.player2Y) / PADDLE_HEIGHT;
+        let modifier;
+
+        if (relativeY < 0.15) {
+            modifier = game.ballVY < 0 ? 1.5 : 0.4;
+        } else if (relativeY < 0.35) {
+            modifier = game.ballVY < 0 ? 1.3 : 0.7;
+        } else if (relativeY < 0.65) {
+            modifier = 1.0;
+        } else if (relativeY < 0.85) {
+            modifier = game.ballVY > 0 ? 1.3 : 0.7;
+        } else {
+            modifier = game.ballVY > 0 ? 1.5 : 0.4;
+        }
+
+        game.ballVY *= modifier;
+
+        // Clamp VY if needed to keep under total speed
+        const maxVY = game.ballSpeed * 0.95;
+        if (Math.abs(game.ballVY) > maxVY) {
+            game.ballVY = Math.sign(game.ballVY) * maxVY;
+        }
+
+        // Recalculate VX to preserve ballSpeed
+        const oldVXSign = Math.sign(game.ballVX);
+        game.ballVX = -oldVXSign * Math.sqrt(
+            game.ballSpeed * game.ballSpeed - game.ballVY * game.ballVY);
         game.ballX = WIDTH - PADDLE_WIDTH - BALL_SIZE; // avoid sticky
     }
 
@@ -189,17 +269,17 @@ fastify.register(async function (fastify) {
             if (socket === game.connectionPlayer1.socket && parsed.type === PongMessageType.MOVE) {
                 // fastify.log.info(`Player 1 move: ${parsed.move}`);
                 if (parsed.move === PongClientMove.UP && game.player1Y > 0) {
-                    game.player1Y -= 5;
+                    game.player1Y -= PADDLE_SPEED;
                 } else if (parsed.move === PongClientMove.DOWN && game.player1Y < HEIGHT - PADDLE_HEIGHT) {
-                    game.player1Y += 5;
+                    game.player1Y += PADDLE_SPEED;
                 }
             }
             if (socket === game.connectionPlayer2.socket && parsed.type === PongMessageType.MOVE) {
                 // fastify.log.info(`Player 2 move: ${parsed.move}`);
                 if (parsed.move === PongClientMove.UP && game.player2Y > 0) {
-                    game.player2Y -= 5;
+                    game.player2Y -= PADDLE_SPEED;
                 } else if (parsed.move === PongClientMove.DOWN && game.player2Y < HEIGHT - PADDLE_HEIGHT) {
-                    game.player2Y += 5;
+                    game.player2Y += PADDLE_SPEED;
                 }
             }
         });
