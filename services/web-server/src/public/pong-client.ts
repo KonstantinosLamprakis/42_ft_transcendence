@@ -5,7 +5,6 @@ import {
     PongMessageType,
 } from "./types.js";
 
-
 let socket: WebSocket | null = null;
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;

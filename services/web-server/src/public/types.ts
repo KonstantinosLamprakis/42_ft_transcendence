@@ -30,13 +30,11 @@ export enum PongClientMove {
 	DOWN = "s",
 };
 
-
 export type PongClientRequest = {
 	type: PongMessageType;
 	move?: PongClientMove;
 	userId?: string;
 };
-
 
 export type PongServerResponse = {
 	ballX: number;
