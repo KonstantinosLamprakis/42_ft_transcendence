@@ -81,25 +81,39 @@ function connectWebSocket(userId: string): void {
         }
     };
 
-    socket.onmessage = (event: MessageEvent) => {
+        socket.onmessage = (event: MessageEvent) => {
+        let data: any;
+
         try {
-            const data: PongServerResponse = JSON.parse(event.data);
-            ballX = data.ballX;
-            ballY = data.ballY;
-            playerY = data.player1Y;
-            opponentY = data.player2Y;
-            playerScore = data.scorePlayer1;
-            opponentScore = data.scorePlayer2;
-            draw();
+            data = JSON.parse(event.data);
         } catch (err) {
-            console.error("Failed to parse game state:", err);
+            console.error("Failed to parse message from server:", err);
+            return;
         }
+
+        if (data.type === "game_end") {
+            alert(`Game Over! Winner: ${data.winner}\nScore: ${data.scorePlayer1} : ${data.scorePlayer2}`);
+            socket?.close();
+            return;
+        }
+
+        // Normal game update
+        ballX = data.ballX;
+        ballY = data.ballY;
+        playerY = data.player1Y;
+        opponentY = data.player2Y;
+        playerScore = data.scorePlayer1;
+        opponentScore = data.scorePlayer2;
+
+        draw();
+
         if (keys["w"] && !keys["s"]) {
             socket?.send(JSON.stringify({ type: PongMessageType.MOVE, move: PongClientMove.UP }));
         } else if (keys["s"] && !keys["w"]) {
             socket?.send(JSON.stringify({ type: PongMessageType.MOVE, move: PongClientMove.DOWN }));
         }
     };
+
 };
 
 // Initial connection
