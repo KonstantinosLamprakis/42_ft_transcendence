@@ -1,5 +1,7 @@
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
+import { v4 as uuidv4 } from "uuid";
+
 
 export enum PongMessageType {
 	INIT = "init",
@@ -39,7 +41,7 @@ interface Connection {
 }
 
 interface Game {
-	gameId: number;
+	gameId: string;
 	connectionPlayer1: Connection | null;
     connectionPlayer2: Connection | null;
     player1Y: number;
@@ -90,7 +92,7 @@ function resetBall(game: Game) {
 
 function createNewGame(): Game {
 	return {
-        gameId: Date.now(),
+        gameId: null,
         connectionPlayer1: null,
         connectionPlayer2: null,
         player1Y: HEIGHT / 2 - PADDLE_HEIGHT / 2,
@@ -107,7 +109,7 @@ function createNewGame(): Game {
 	};
 }
 
-let game = createNewGame();
+// let game = createNewGame();
 let gameLoop: NodeJS.Timeout | null = null;
 
 function update(game: Game) {
@@ -271,6 +273,23 @@ fastify.register(async function (fastify) {
 			}
 
 			if (parsed.type === PongMessageType.INIT && parsed.userId) {
+
+				// Try to find a game with only 1 player
+					let targetRoom: string | null = null;
+				
+					for (const [gameId, game] of games) {
+						if (!game.connectionPlayer2) {
+							targetRoom = gameId;
+							break;
+						}
+					}
+				
+					// create new game
+					if (!targetRoom) {
+						targetRoom = uuidv4();
+						games.set(targetRoom, { sockets: [] });
+					}
+
 				if (!game.connectionPlayer1) {
 					game.connectionPlayer1 = { userId: parsed.userId, socket };
 				} else if (!game.connectionPlayer2) {
