@@ -3,6 +3,7 @@ import { gamePage } from "./pages/game.js";
 import { chatPage } from "./pages/chat.js";
 import { profilePage } from "./pages/profile.js";
 import { setToken, isLogged } from "./token.js";
+import { showToast, ToastType } from "./utils/toast.js";
 
 type RouteHandler = () => void;
 
@@ -56,7 +57,7 @@ window.addEventListener("popstate", router);
 document.getElementById("logout-btn")!.addEventListener("click", async (e) => {
 		localStorage.removeItem("token"); // Clear token
 		setToken(""); // Clear token in storage
-		alert("Logged out!");
+		showToast("Logged out!", ToastType.SUCCESS);
 		// Optionally clear profile and 2FA UI
 		const profileDiv = document.getElementById("profile");
 		if (profileDiv) profileDiv.innerHTML = "";
@@ -64,6 +65,8 @@ document.getElementById("logout-btn")!.addEventListener("click", async (e) => {
 		if (qrDiv) qrDiv.remove();
 		const twofaForm = document.getElementById("twofa-form");
 		if (twofaForm) twofaForm.remove();
+
+		navigateTo("/");
 	});
 
 function cleanup() {

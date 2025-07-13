@@ -46,6 +46,17 @@ type AddUserRequest = {
 	isGoogleAccount: boolean | undefined;
 }
 
+type meResponse = {
+	username: string;
+	name: string;
+	nickname: string;
+	email: string;
+	avatar: string | undefined;
+	wins: number;
+	loses: number;
+	isGoogleAccount: boolean | undefined;
+}
+
 enum Runtime {
 	LOCAL = "local",
 	DOCKER = "docker",
@@ -90,6 +101,10 @@ fastify.post("/signup", async (req, reply) => {
 
 	for await (const part of parts) {
 		if (part.type === "file") {
+			if (!part.filename || part.filename.trim() === "") {
+				continue;
+			}
+			
 			if (part.mimetype !== "image/jpeg" && part.mimetype !== "image/png") {
 				return reply.status(400).send({ error: "Only JPEG and PNG files are allowed." });
 			}
@@ -108,22 +123,35 @@ fastify.post("/signup", async (req, reply) => {
 		}
 	}
 
-	if (!data.username || !data.password || !data.name || !avatarFile) {
+	if (!data.username || !data.password || !data.name) {
 		return reply.status(400).send({ error: "Missing required fields" });
 	}
 
+	const res = await axios.get(
+		`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(data.username)}`,
+	);
+
+	if (!res.data.error) {
+		console.log(res.data)
+		return reply.status(400).send({ error: "User already exists" });
+	}
+
 	try {
-		const hash = await bcrypt.hash(data.password, 10);
-		const ext = path.extname(avatarFile.filename);
-		const avatarName = `${data.username}${ext}`;
 
-		const avatarPath =
+		let avatarName = "default.jpg";
+		if (avatarFile){
+			const ext = path.extname(avatarFile.filename);
+			avatarName = `${data.username}${ext}`;
+			
+			const avatarPath =
 			process.env.RUNTIME === Runtime.LOCAL
-				? `uploads/${avatarName}`
-				: `/data/uploads/${avatarName}`;
-		const buffer = await avatarFile.toBuffer();
-		await writeFile(avatarPath, buffer);
+			? `uploads/${avatarName}`
+			: `/data/uploads/${avatarName}`;
+			const buffer = await avatarFile.toBuffer();
+			await writeFile(avatarPath, buffer);
+		}
 
+		const hash = await bcrypt.hash(data.password, 10);
 		const addUserReq: AddUserRequest = {
 			username: data.username,
 			password: hash,
@@ -168,6 +196,10 @@ fastify.get("/me", async (req, reply) => {
 			return reply.status(404).send({ error: "User not found" });
 		}
 
+		if (user.error) {
+			return reply.status(404).send({ error: user.error });
+		}
+
 		if (user.avatar && !user.isGoogleAccount) {
 			const avatarPath = path.join(uploadsDir, user.avatar);
 			try {
@@ -177,7 +209,18 @@ fastify.get("/me", async (req, reply) => {
 			}
 		}
 
-		reply.send(user);
+		const response: meResponse = {
+			username: user.username,
+			name: user.name,
+			nickname: user.nickname,
+			email: user.email,
+			avatar: user.avatar || undefined,
+			wins: user.wins,
+			loses: user.loses,
+			isGoogleAccount: user.isGoogleAccount ?? false,
+		};
+		
+		reply.send(response);
 	} catch (error: any) {
 		console.error("Authentication error:", error);
 		reply.status(401).send({ error: "Unauthorized" });

@@ -1,6 +1,6 @@
 import { HTTPS_API_URL } from "../types.js";
 import { setToken } from "../token.js";
-import { showToast } from "../utils/toast.js";
+import { showToast, ToastType } from "../utils/toast.js";
 
 export const loginPage = (pageContainer: HTMLElement) => {
 	pageContainer.innerHTML = `
@@ -59,7 +59,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                 </button>
                             </div>
                         </form>
-                        <form class="mt-8 space-y-6 form-container opacity-0 max-h-0 overflow-hidden" id="signup-form">
+                        <form class="mt-8 space-y-6 form-container opacity-0 max-h-0 overflow-hidden p-1" id="signup-form">
                             <div>
                                 <label class="block text-sm font-medium leading-6 text-foreground-color"
                                     for="signup-username">Username</label>
@@ -298,14 +298,14 @@ export const loginPage = (pageContainer: HTMLElement) => {
                 const data = await res.json();
                 if (data.token) {
                     setToken(data.token);
-                    showToast("2FA verified! Logged in.", "success");
+                    showToast("2FA verified! Logged in.", ToastType.SUCCESS);
                     // Animate out and remove
                     twofaForm!.style.transition = "all 0.3s ease-in";
                     twofaForm!.style.opacity = "0";
                     twofaForm!.style.transform = "translateY(-10px)";
                     setTimeout(() => form.remove(), 300);
                 } else {
-                    showToast(data.error || "Invalid 2FA code. Please try again.", "error")
+                    showToast(data.error || "Invalid 2FA code. Please try again.", ToastType.ERROR)
                     // Reset button state
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
@@ -313,7 +313,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                     tokenInput.focus();
                 }
             } catch (error) {
-                showToast("2FA verification failed", "error")
+                showToast("2FA verification failed", ToastType.ERROR)
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
                 tokenInput.value = "";
@@ -338,13 +338,15 @@ export const loginPage = (pageContainer: HTMLElement) => {
 
 		const data = await res.json();
 		if (data.require2fa && data.sessionId) {
-			showToast("2FA required. Please enter your code.", "info");
+			showToast("2FA required. Please enter your code.", ToastType.INFO);
+            form.reset();
 			show2FAForm(body.username, data.sessionId);
 		} else if (data.token) {
 			setToken(data.token);
-			showToast("Logged in!", "success");
+            form.reset();
+			showToast("Logged in!", ToastType.SUCCESS);
 		} else {
-			showToast(data.error || "Login failed", "error");
+			showToast(data.error || "Login failed", ToastType.ERROR);
 		}
 	};
 
@@ -418,9 +420,10 @@ export const loginPage = (pageContainer: HTMLElement) => {
             const data = await res.json();
             
             if (data.error) {
-                showToast(`Signup failed: ${data.error}`, "error");
+                showToast(`Signup failed: ${data.error}`, ToastType.ERROR);
             } else {
-                showToast("Signup successful!", "success");
+                showToast("Signup successful!", ToastType.SUCCESS);
+                form.reset();
                 const username = formData.get("username");
                 if (if2FAEnabled && username !== null) {
                     setup2FA(username.toString());
@@ -428,7 +431,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
             }
         } catch (error) {
             console.error("Signup error:", error);
-            showToast("Signup failed. Please try again.", "error");
+            showToast("Signup failed. Please try again.", ToastType.ERROR);
         }
     };
 
@@ -464,15 +467,15 @@ export const loginPage = (pageContainer: HTMLElement) => {
         .then(data => {
             if (data.token) {
                 setToken(data.token);
-                showToast("Logged in with Google!", "success");
+                showToast("Logged in with Google!", ToastType.SUCCESS);
                 // Handle navigation to dashboard/profile
             } else {
-                showToast(data.error || "Google login failed", "error");
+                showToast(data.error || "Google login failed", ToastType.ERROR);
             }
         })
         .catch(error => {
             console.error("Google login error:", error);
-            showToast("Google login failed", "error");
+            showToast("Google login failed", ToastType.ERROR);
         });
     }
 
@@ -491,11 +494,11 @@ export const loginPage = (pageContainer: HTMLElement) => {
             if (data.qr && data.requiresActivation) {
                 showQRCodeWithActivation(data.qr, data.secret, username);
             } else {
-                showToast(data.error || "Failed to setup 2FA", "error");
+                showToast(data.error || "Failed to setup 2FA", ToastType.ERROR);
             }
         } catch (error) {
             console.error("Error setting up 2FA:", error);
-            showToast("Failed to setup 2FA", "error");
+            showToast("Failed to setup 2FA", ToastType.ERROR);
         }
     };
 
@@ -544,6 +547,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                     <div class="flex gap-3">
                         <button
                             type="button"
+                            id="cancel-2fa-activation"
                             onclick="this.closest('#2fa-activation').remove()"
                             class="flex-1 py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                             Cancel
@@ -565,6 +569,10 @@ export const loginPage = (pageContainer: HTMLElement) => {
             </div>
         `;
         
+        const cancelBtn = qrDiv.querySelector('#cancel-2fa-activation') as HTMLButtonElement;
+        cancelBtn.addEventListener('click', () => {
+            qrDiv?.remove();
+        });
         // Insert the activation form
         const mainContainer = document.querySelector('#auth .mx-auto');
         if (mainContainer) {
@@ -593,10 +601,10 @@ export const loginPage = (pageContainer: HTMLElement) => {
                 const data = await res.json();
                 
                 if (data.success) {
-                    showToast("2FA activated successfully! You can now use it to secure your account.", "success");
+                    showToast("2FA activated successfully! You can now use it to secure your account.", ToastType.SUCCESS);
                     qrDiv.remove();
                 } else {
-                    showToast(data.error || "Failed to activate 2FA", "error");
+                    showToast(data.error || "Failed to activate 2FA", ToastType.ERROR);
                     submitBtn.textContent = "Activate 2FA";
                     submitBtn.disabled = false;
                     const tokenInput = qrDiv.querySelector('#activation-token') as HTMLInputElement;
@@ -605,7 +613,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                 }
             } catch (error) {
                 console.error("Error activating 2FA:", error);
-                showToast("Failed to activate 2FA", "error");
+                showToast("Failed to activate 2FA", ToastType.ERROR);
                 submitBtn.textContent = "Activate 2FA";
                 submitBtn.disabled = false;
             }
