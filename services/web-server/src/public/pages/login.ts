@@ -1,5 +1,6 @@
 import { HTTPS_API_URL } from "../types.js";
 import { setToken } from "../token.js";
+import { showToast } from "../utils/toast.js";
 
 export const loginPage = (pageContainer: HTMLElement) => {
 	pageContainer.innerHTML = `
@@ -109,6 +110,16 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                 </div>
                             </div>
                             <div>
+                                <label class="block text-sm font-medium leading-6 text-foreground-color"
+                                    for="name">Nickname (displayed to other players)</label>
+                                <div class="mt-2">
+                                    <input
+                                        class="block w-full rounded-md border-0 py-2.5 px-3 text-foreground-color shadow-sm ring-1 ring-inset ring-subtle-border placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-color sm:text-sm sm:leading-6"
+                                        id="nickname" name="nickname" placeholder="Enter your nickname" required=""
+                                        type="text" />
+                                </div>
+                            </div>
+                            <div>
                                 <label class="block text-sm font-medium leading-6 text-foreground-color" for="avatar">Avatar
                                     Image</label>
                                 <div class="mt-2 flex items-center gap-x-3">
@@ -186,7 +197,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
     const handleSignInClick = () => showForm(signInForm, showSignInBtn);
     const handleSignUpClick = () => showForm(signUpForm, showSignUpBtn);
 
-    const show2FAForm = (username: string) => {
+    const show2FAForm = (username: string, sessionId: string) => {
         const authDiv = document.getElementById("auth")!;
         let twofaForm = document.getElementById("twofa-form");
         if (!twofaForm) {
@@ -281,21 +292,20 @@ export const loginPage = (pageContainer: HTMLElement) => {
                 const res = await fetch(`${HTTPS_API_URL}/2fa/verify`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, token: tokenVal }),
+                    body: JSON.stringify({ sessionId, token: tokenVal }), // Use sessionId instead of username
                 });
                 
                 const data = await res.json();
                 if (data.token) {
                     setToken(data.token);
-                    alert("2FA verified! Logged in.");
-                    
+                    showToast("2FA verified! Logged in.", "success");
                     // Animate out and remove
                     twofaForm!.style.transition = "all 0.3s ease-in";
                     twofaForm!.style.opacity = "0";
                     twofaForm!.style.transform = "translateY(-10px)";
                     setTimeout(() => form.remove(), 300);
                 } else {
-                    alert(data.error || "2FA verification failed");
+                    showToast(data.error || "Invalid 2FA code. Please try again.", "error")
                     // Reset button state
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
@@ -303,7 +313,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                     tokenInput.focus();
                 }
             } catch (error) {
-                alert("2FA verification failed");
+                showToast("2FA verification failed", "error")
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
                 tokenInput.value = "";
@@ -311,41 +321,6 @@ export const loginPage = (pageContainer: HTMLElement) => {
             }
         };
     }
-
-    const handleSignUpSubmit = async (e: SubmitEvent) => {
-		e.preventDefault();
-		const form = e.target as HTMLFormElement;
-		const formData = new FormData(form);
-
-		formData.forEach((value, key) => {
-			console.log(`FormData: ${key} = ${value}`);
-		});
-
-		const unusedFields = ["confirm-password", "enable-2fa", "email"];
-        const if2FAEnabled = formData.get("enable-2fa") === "on";
-        console.log(formData);
-		unusedFields.forEach((field) => {
-			if (formData.has(field)) {
-				formData.delete(field);
-				console.log(`Removed unused field: ${field}`);
-			}else {
-                console.log(`Keep field: ${field}`);
-            }
-		});
-
-		const res = await fetch(`${HTTPS_API_URL}/signup`, {
-			method: "POST",
-			body: formData,
-		});
-
-		const data = await res.json();
-		alert(JSON.stringify(data));
-
-        const username = formData.get("username");
-        if (if2FAEnabled && username !== null) {
-            setup2FA(username.toString());
-        }
-	};
 
     const handleSignInSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
@@ -362,16 +337,100 @@ export const loginPage = (pageContainer: HTMLElement) => {
 		});
 
 		const data = await res.json();
-		if (data.require2fa) {
-			alert("2FA required. Please enter your code.");
-			show2FAForm(body.username);
+		if (data.require2fa && data.sessionId) {
+			showToast("2FA required. Please enter your code.", "info");
+			show2FAForm(body.username, data.sessionId);
 		} else if (data.token) {
 			setToken(data.token);
-			alert("Logged in!");
+			showToast("Logged in!", "success");
 		} else {
-			alert(data.error || "Login failed");
+			showToast(data.error || "Login failed", "error");
 		}
 	};
+
+    const handleSignUpSubmit = async (e: SubmitEvent) => {
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const formData = new FormData(form);
+
+        // Get password values for validation
+        const password = formData.get("password") as string;
+        const confirmPassword = formData.get("confirm-password") as string;
+
+        // Validate password confirmation
+        if (password !== confirmPassword) {
+            // Add error styling to confirm password field
+            const confirmPasswordInput = document.getElementById("confirm-password") as HTMLInputElement;
+            const confirmPasswordContainer = confirmPasswordInput.parentElement;
+            
+            // Remove existing error if any
+            const existingError = confirmPasswordContainer?.querySelector('.password-error');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Add error styling
+            confirmPasswordInput.classList.add("ring-red-500", "focus:ring-red-500");
+            confirmPasswordInput.classList.remove("ring-subtle-border", "focus:ring-primary-color");
+            
+            // Add error message
+            const errorMessage = document.createElement("p");
+            errorMessage.className = "mt-1 text-sm text-red-600 password-error";
+            errorMessage.textContent = "Passwords do not match";
+            confirmPasswordContainer?.appendChild(errorMessage);
+            
+            // Focus the confirm password field
+            confirmPasswordInput.focus();
+            return;
+        }
+
+        // Clear any existing password error styling
+        const confirmPasswordInput = document.getElementById("confirm-password") as HTMLInputElement;
+        const confirmPasswordContainer = confirmPasswordInput.parentElement;
+        const existingError = confirmPasswordContainer?.querySelector('.password-error');
+        if (existingError) {
+            existingError.remove();
+        }
+        confirmPasswordInput.classList.remove("ring-red-500", "focus:ring-red-500");
+        confirmPasswordInput.classList.add("ring-subtle-border", "focus:ring-primary-color");
+
+        formData.forEach((value, key) => {
+            console.log(`FormData: ${key} = ${value}`);
+        });
+
+        const unusedFields = ["confirm-password", "enable-2fa"];
+        const if2FAEnabled = formData.get("enable-2fa") === "on";
+        unusedFields.forEach((field) => {
+            if (formData.has(field)) {
+                formData.delete(field);
+                console.log(`Removed unused field: ${field}`);
+            } else {
+                console.log(`Keep field: ${field}`);
+            }
+        });
+
+        try {
+            const res = await fetch(`${HTTPS_API_URL}/signup`, {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.json();
+            
+            if (data.error) {
+                showToast(`Signup failed: ${data.error}`, "error");
+            } else {
+                showToast("Signup successful!", "success");
+                const username = formData.get("username");
+                if (if2FAEnabled && username !== null) {
+                    setup2FA(username.toString());
+                }
+            }
+        } catch (error) {
+            console.error("Signup error:", error);
+            showToast("Signup failed. Please try again.", "error");
+        }
+    };
 
     // Handle Google Sign-In callback
     const initializeGoogleSignIn = () => {
@@ -405,92 +464,158 @@ export const loginPage = (pageContainer: HTMLElement) => {
         .then(data => {
             if (data.token) {
                 setToken(data.token);
-                alert("Logged in with Google!");
+                showToast("Logged in with Google!", "success");
                 // Handle navigation to dashboard/profile
             } else {
-                alert(data.error || "Google login failed");
+                showToast(data.error || "Google login failed", "error");
             }
         })
         .catch(error => {
             console.error("Google login error:", error);
-            alert("Google login failed");
+            showToast("Google login failed", "error");
         });
     }
-    
+
     const setup2FA = async (username: string) => {
         if (!username) return;
-        const res = await fetch(`${HTTPS_API_URL}/2fa/setup`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username }),
-        });
-        const data = await res.json();
-        if (data.qr) {
-            const qrDiv = document.getElementById("2fa-qr") || document.createElement("div");
-            qrDiv.id = "2fa-qr";
-            qrDiv.className = "mt-8 bg-white rounded-lg shadow-sm border border-subtle-border p-6 max-w-md mx-auto";
-            qrDiv.innerHTML = `
-                <div class="text-center space-y-4">
-                    <div class="flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    
-                    <div>
-                        <h3 class="text-lg font-semibold text-foreground-color mb-2">Two-Factor Authentication Setup</h3>
-                        <p class="text-sm text-gray-600 mb-6">Secure your account by setting up 2FA with your authenticator app</p>
-                    </div>
-                    
-                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                        <p class="text-sm font-medium text-foreground-color mb-3">Scan this QR code with your authenticator app:</p>
-                        <div class="flex justify-center mb-4">
-                            <div class="p-3 bg-white rounded-lg shadow-sm border">
-                                <img src="${data.qr}" alt="2FA QR Code" class="w-48 h-48 object-contain" />
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                        <p class="text-xs font-medium text-blue-800 mb-2">Or enter this secret manually:</p>
-                        <div class="bg-white rounded border p-2 break-all font-mono text-xs text-gray-800 select-all cursor-pointer hover:bg-gray-50 transition-colors">
-                            ${data.secret}
-                        </div>
-                        <p class="text-xs text-blue-600 mt-1">Click to select and copy</p>
-                    </div>
-                    
-                    <div class="text-xs text-gray-500 space-y-1">
-                        <p>Recommended apps: Google Authenticator, Authy, or Microsoft Authenticator</p>
-                    </div>
-                    
-                    <button
-                        onclick="this.parentElement.parentElement.remove()"
-                        class="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
-                        Close
-                    </button>
-                </div>
-            `;
+        
+        try {
+            const res = await fetch(`${HTTPS_API_URL}/2fa/setup`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username }),
+            });
             
-            // Insert the QR div after the main forms container
-            const mainContainer = document.querySelector('#auth .mx-auto');
-            if (mainContainer) {
-                mainContainer.appendChild(qrDiv);
+            const data = await res.json();
+            
+            if (data.qr && data.requiresActivation) {
+                showQRCodeWithActivation(data.qr, data.secret, username);
             } else {
-                document.getElementById("auth")!.appendChild(qrDiv);
+                showToast(data.error || "Failed to setup 2FA", "error");
             }
-            
-            // Add smooth slide-in animation
-            qrDiv.style.opacity = "0";
-            qrDiv.style.transform = "translateY(-20px)";
-            setTimeout(() => {
-                qrDiv.style.transition = "all 0.4s ease-out";
-                qrDiv.style.opacity = "1";
-                qrDiv.style.transform = "translateY(0)";
-            }, 10);
-            
-        } else {
-            alert(data.error || "Failed to setup 2FA");
+        } catch (error) {
+            console.error("Error setting up 2FA:", error);
+            showToast("Failed to setup 2FA", "error");
         }
+    };
+
+    const showQRCodeWithActivation = (qrCode: string, secret: string, username: string) => {
+        const qrDiv = document.createElement("div");
+        qrDiv.id = "2fa-activation";
+        qrDiv.className = "mt-8 bg-white rounded-lg shadow-sm border border-subtle-border p-6 max-w-md mx-auto";
+        qrDiv.innerHTML = `
+            <div class="text-center space-y-4">
+                <div class="flex items-center justify-center w-12 h-12 mx-auto bg-blue-100 rounded-full">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-foreground-color mb-2">Activate Two-Factor Authentication</h3>
+                    <p class="text-sm text-gray-600 mb-6">Scan the QR code and enter a verification code to activate 2FA</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <p class="text-sm font-medium text-foreground-color mb-3">1. Scan this QR code with your authenticator app:</p>
+                    <div class="flex justify-center mb-4">
+                        <div class="p-3 bg-white rounded-lg shadow-sm border">
+                            <img src="${qrCode}" alt="2FA QR Code" class="w-48 h-48 object-contain" />
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="activate-2fa-form" class="space-y-4">
+                    <div>
+                        <p class="text-sm font-medium text-foreground-color mb-2">2. Enter the 6-digit code from your app:</p>
+                        <input
+                            name="token"
+                            id="activation-token"
+                            type="text"
+                            placeholder="000000"
+                            required
+                            maxlength="6"
+                            pattern="[0-9]{6}"
+                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-center text-lg tracking-widest focus:ring-2 focus:ring-primary-color focus:border-primary-color"
+                            autocomplete="one-time-code"
+                        />
+                    </div>
+                    
+                    <div class="flex gap-3">
+                        <button
+                            type="button"
+                            onclick="this.closest('#2fa-activation').remove()"
+                            class="flex-1 py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            class="flex-1 py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-[var(--primary-color)] hover:bg-opacity-90 transition-colors">
+                            Activate 2FA
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                    <p class="text-xs font-medium text-blue-800 mb-1">Manual setup key:</p>
+                    <div class="bg-white rounded border p-2 break-all font-mono text-xs text-gray-800 select-all cursor-pointer">
+                        ${secret}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insert the activation form
+        const mainContainer = document.querySelector('#auth .mx-auto');
+        if (mainContainer) {
+            mainContainer.appendChild(qrDiv);
+        }
+        
+        // Handle activation form submission
+        const activationForm = qrDiv.querySelector('#activate-2fa-form') as HTMLFormElement;
+        activationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(activationForm);
+            const token = formData.get('token') as string;
+            const submitBtn = activationForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+            
+            submitBtn.textContent = "Activating...";
+            submitBtn.disabled = true;
+            
+            try {
+                const res = await fetch(`${HTTPS_API_URL}/2fa/activate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, token }),
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast("2FA activated successfully! You can now use it to secure your account.", "success");
+                    qrDiv.remove();
+                } else {
+                    showToast(data.error || "Failed to activate 2FA", "error");
+                    submitBtn.textContent = "Activate 2FA";
+                    submitBtn.disabled = false;
+                    const tokenInput = qrDiv.querySelector('#activation-token') as HTMLInputElement;
+                    tokenInput.value = "";
+                    tokenInput.focus();
+                }
+            } catch (error) {
+                console.error("Error activating 2FA:", error);
+                showToast("Failed to activate 2FA", "error");
+                submitBtn.textContent = "Activate 2FA";
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Focus the token input
+        setTimeout(() => {
+            const tokenInput = qrDiv.querySelector('#activation-token') as HTMLInputElement;
+            tokenInput?.focus();
+        }, 100);
     };
 
     // Add event listeners

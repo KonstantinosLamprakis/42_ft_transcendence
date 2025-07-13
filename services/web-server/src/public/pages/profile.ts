@@ -22,8 +22,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
                             </svg>
                         </button>
                     </div>
-                    <h2 id="user-name" class="text-2xl font-bold text-[var(--text-primary)]">Loading...</h2>
-                    <p id="user-username" class="text-[var(--text-secondary)]">@loading</p>
                     <div class="mt-4 flex gap-4">
                         <div class="text-center">
                             <p id="wins-count" class="text-xl font-bold text-[var(--text-primary)]">-</p>
@@ -47,7 +45,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                     for="username">Username</label>
                                 <input
                                     class="w-full bg-gray-100 border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-700 placeholder-gray-500 pr-10"
-                                    disabled="" id="username" type="text" value="alexryder" />
+                                    disabled="" id="user-username" type="text" value="alexryder" />
                                 <div
                                     class="absolute inset-y-0 right-0 top-6 flex items-center pr-3 pointer-events-none text-[var(--text-secondary)]">
                                     <svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20"
@@ -60,7 +58,8 @@ export const profilePage = (pageContainer: HTMLElement) => {
                             <div class="relative">
                                 <label class="text-sm font-medium text-[var(--text-secondary)]"
                                     for="fullname">Full Name</label>
-                                <input
+                                <input 
+                                    id="user-name"
                                     class="w-full bg-gray-100 border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-700 placeholder-gray-500 pr-10"
                                     disabled="" id="fullname" type="text" value="Alex Ryder" />
                                 <div
@@ -77,7 +76,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                     for="email">Email</label>
                                 <input
                                     class="w-full bg-gray-100 border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-700 placeholder-gray-500 pr-10"
-                                    disabled="" id="email" type="email" value="alex.ryder@example.com" />
+                                    disabled="" id="user-email" type="email" value="alex.ryder@example.com" />
                                 <div
                                     class="absolute inset-y-0 right-0 top-6 flex items-center pr-3 pointer-events-none text-[var(--text-secondary)]">
                                     <svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20"
@@ -97,7 +96,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                     for="nickname">Nickname</label>
                                 <input
                                     class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
-                                    id="nickname" type="text" value="RyderX" />
+                                    id="user-nickname" type="text" value="RyderX" />
                             </div>
                             <div>
                                 <button
@@ -211,16 +210,21 @@ export const profilePage = (pageContainer: HTMLElement) => {
 		const data = await res.json();
 
 		// Update the UI with actual data
+		const avatarElement = document.getElementById("avatar")!;
 		const winsElement = document.getElementById("wins-count")!;
 		const lossesElement = document.getElementById("losses-count")!;
-		const userNameElement = document.getElementById("user-name")!;
-		const userUsernameElement = document.getElementById("user-username")!;
-		const avatarElement = document.getElementById("avatar")!;
+		const userNameElement = document.getElementById("user-name")! as HTMLInputElement;;
+		const userEmailElement = document.getElementById("user-email")! as HTMLInputElement;;
+		const userNicknameElement = document.getElementById("user-nickname")! as HTMLInputElement;;
+		const userUsernameElement = document.getElementById("user-username")! as HTMLInputElement;;
 
+        console.log(data);
 		winsElement.textContent = data.wins.toString();
 		lossesElement.textContent = data.loses.toString();
-		userNameElement.textContent = data.name;
-		userUsernameElement.textContent = `@${data.username}`;
+		userNameElement.value = data.name;
+		userEmailElement.value = data.email;
+		userNicknameElement.value = data.nickname;
+		userUsernameElement.value = data.username;
 
 		if (data.avatar) {
 			const imgPath = !data.isGoogleAccount
