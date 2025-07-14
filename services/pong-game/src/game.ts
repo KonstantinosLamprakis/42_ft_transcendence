@@ -1,4 +1,5 @@
 // pongGame.ts
+// import { v4 as uuidv4 } from "uuid";
 
 export const WIDTH = 800;
 export const HEIGHT = 500;
@@ -11,6 +12,7 @@ export interface Connection {
 	socket: any;
 }
 
+
 export class PongGame {
 	public player1Y = HEIGHT / 2 - PADDLE_HEIGHT / 2;
 	public player2Y = HEIGHT / 2 - PADDLE_HEIGHT / 2;
@@ -21,8 +23,9 @@ export class PongGame {
 	public scorePlayer1 = 0;
 	public scorePlayer2 = 0;
 
-	public connectionPlayer1: Connection | null = null;
-	public connectionPlayer2: Connection | null = null;
+	id: string;
+	connectionPlayer1: { userId: string; socket: WebSocket } | null = null;
+	connectionPlayer2: { userId: string; socket: WebSocket } | null = null;
 
 	constructor() {}
 
