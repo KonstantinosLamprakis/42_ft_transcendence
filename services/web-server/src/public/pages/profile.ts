@@ -1,5 +1,5 @@
 import { HTTPS_API_URL } from "../types.js";
-import { getToken, isLogged } from "../token.js";
+import { getToken } from "../token.js";
 
 export const profilePage = (pageContainer: HTMLElement) => {
 	pageContainer.innerHTML = `
@@ -197,12 +197,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
     `;
 
 	const getInfo = async () => {
-		if (!isLogged()) {
-			pageContainer.innerHTML =
-				"<p class='text-red-500'>You must be logged in to view your profile.</p>";
-			return;
-		}
-
 		const res = await fetch(`${HTTPS_API_URL}/me`, {
 			headers: { Authorization: `Bearer ${getToken()}` },
 		});

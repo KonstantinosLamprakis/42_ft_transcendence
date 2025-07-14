@@ -11,18 +11,25 @@ const appDiv = document.getElementById("app") as HTMLElement;
 
 const routes: Record<string, RouteHandler> = {
     "/": () => {
-        cleanup();
-        loginPage(appDiv);
+		cleanup();
+		if (!isLogged()){
+			loginPage(appDiv);
+		} else {
+			gamePage(appDiv);
+		}
     },
     "/game": () => {
+		if (!isLogged()) return 
         cleanup();
         gamePage(appDiv);
     },
     "/chat": () => {
+		if (!isLogged()) return 
         cleanup();
         chatPage(appDiv);
     },
     "/profile": () => {
+		if (!isLogged()) return 
         cleanup();
         profilePage(appDiv);
     },
