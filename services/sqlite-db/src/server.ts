@@ -5,6 +5,7 @@ import { existsSync, mkdirSync, readFileSync } from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import usersRoutes from "./routes/users.js";
+import matchesRoutes from "./routes/matches.js";
 
 dotenv.config();
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -31,6 +32,7 @@ const schema = readFileSync(path.join(dirname, "..", "schema.sql"), "utf-8");
 db.exec(schema);
 
 fastify.register(usersRoutes, { db });
+fastify.register(matchesRoutes, { db });
 
 fastify.listen({ port: 4000, host: "0.0.0.0" }, (err) => {
 	if (err) {
