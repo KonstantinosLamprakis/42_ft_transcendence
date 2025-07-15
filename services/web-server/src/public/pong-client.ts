@@ -16,7 +16,7 @@ const HEIGHT = canvas.height;
 
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 100;
-const BALL_SIZE = 10;
+const BALL_SIZE = 5;
 
 let playerY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
 let opponentY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
@@ -82,18 +82,32 @@ function connectWebSocket(userId: string): void {
     };
 
     socket.onmessage = (event: MessageEvent) => {
+        let data: any;
+
         try {
-            const data: PongServerResponse = JSON.parse(event.data);
-            ballX = data.ballX;
-            ballY = data.ballY;
-            playerY = data.player1Y;
-            opponentY = data.player2Y;
-            playerScore = data.scorePlayer1;
-            opponentScore = data.scorePlayer2;
-            draw();
+            data = JSON.parse(event.data);
+            if (data.type === PongMessageType.END) {
+                playerScore = data.scorePlayer1;
+                opponentScore = data.scorePlayer2;
+                draw();
+                alert(`Game Over! Winner: ${data.winner}\nScore: ${data.scorePlayer1} : ${data.scorePlayer2}`);
+                socket?.close();
+                return;
+            }
+            if (data.type === PongMessageType.DRAW) {
+                ballX = data.ballX;
+                ballY = data.ballY;
+                playerY = data.player1Y;
+                opponentY = data.player2Y;
+                playerScore = data.scorePlayer1;
+                opponentScore = data.scorePlayer2;
+                draw();
+            }
         } catch (err) {
-            console.error("Failed to parse game state:", err);
+            console.error("Failed to parse message from server:", err);
+            return;
         }
+
         if (keys["w"] && !keys["s"]) {
             socket?.send(JSON.stringify({ type: PongMessageType.MOVE, move: PongClientMove.UP }));
         } else if (keys["s"] && !keys["w"]) {

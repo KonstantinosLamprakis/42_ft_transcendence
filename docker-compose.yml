@@ -23,7 +23,9 @@ services:
     build:
       context: ./services/pong-game
     expose:
-      - "5003"  
+      - "5003"
+    environment:
+      - RUNTIME=docker
     restart: unless-stopped
 
   auth:
