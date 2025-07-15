@@ -130,4 +130,39 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 			return { error: err.message };
 		}
 	});
+
+
+	fastify.put("/add-win/:id", async (request, reply) => {
+	const { id } = request.params as { id: string };
+	const { win } = request.body as { win: number };
+
+	const user = db.prepare("SELECT 1 FROM users WHERE id = ?").get(id);
+	if (!user) {
+		return reply.status(404).send({ error: "User not found" });
+	}
+
+	const stmt = db.prepare(
+		"UPDATE users SET wins = wins + ? WHERE id = ?"
+	);
+	stmt.run(win, id);
+
+	return { success: true };
+	});
+
+	fastify.put("/add-loss/:id", async (request, reply) => {
+	const { id } = request.params as { id: string };
+	const { loss } = request.body as { loss: number };
+
+	const user = db.prepare("SELECT 1 FROM users WHERE id = ?").get(id);
+	if (!user) {
+		return reply.status(404).send({ error: "User not found" });
+	}
+
+	const stmt = db.prepare(
+		"UPDATE users SET loses = loses + ? WHERE id = ?"
+	);
+	stmt.run(loss, id);
+
+	return { success: true };
+	});
 }

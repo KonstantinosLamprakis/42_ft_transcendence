@@ -13,3 +13,17 @@ CREATE TABLE
         is2FaEnabled BOOLEAN DEFAULT 0,
         isGoogleAccount BOOLEAN DEFAULT 0
     );
+
+CREATE TABLE
+    IF NOT EXISTS matches (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user1_id INTEGER NOT NULL,
+        user2_id INTEGER NOT NULL,
+        user1_score INTEGER DEFAULT 0,
+        user2_score INTEGER DEFAULT 0,
+        winner_id INTEGER,
+        match_date TEXT,
+        FOREIGN KEY(user1_id) REFERENCES users(id),
+        FOREIGN KEY(user2_id) REFERENCES users(id),
+        FOREIGN KEY(winner_id) REFERENCES users(id)
+    );
