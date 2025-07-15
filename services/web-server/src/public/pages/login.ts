@@ -218,7 +218,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                     </label>
                     <div class="mt-2">
                         <input
-                            name="token"
+                            name="pong-token"
                             id="twofa-token"
                             type="text"
                             placeholder="000000"
@@ -345,6 +345,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 			setToken(data.token);
             form.reset();
 			showToast("Logged in!", ToastType.SUCCESS);
+            window.location.reload();
 		} else {
 			showToast(data.error || "Login failed", ToastType.ERROR);
 		}
@@ -532,7 +533,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                     <div>
                         <p class="text-sm font-medium text-foreground-color mb-2">2. Enter the 6-digit code from your app:</p>
                         <input
-                            name="token"
+                            name="pong-token"
                             id="activation-token"
                             type="text"
                             placeholder="000000"

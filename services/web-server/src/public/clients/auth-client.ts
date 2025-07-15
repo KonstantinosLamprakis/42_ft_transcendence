@@ -21,7 +21,7 @@ function show2FAForm(username: string) {
 		twofaForm.className = "space-y-3 mt-4";
 		twofaForm.innerHTML = `
             <input name="username" type="hidden" value="${username}" />
-            <input name="token" placeholder="2FA Code" required class="input" />
+            <input name="pong-token" placeholder="2FA Code" required class="input" />
             <button type="submit" class="btn-primary">Verify 2FA</button>
         `;
 		authDiv.appendChild(twofaForm);

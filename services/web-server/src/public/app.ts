@@ -18,20 +18,21 @@ const routes: Record<string, RouteHandler> = {
 			gamePage(appDiv);
 		}
     },
-    "/game": () => {
-		if (!isLogged()) return 
-        cleanup();
-        gamePage(appDiv);
-    },
     "/chat": () => {
-		if (!isLogged()) return 
-        cleanup();
-        chatPage(appDiv);
+		cleanup();
+		if (!isLogged()){
+			loginPage(appDiv);
+		} else {
+			chatPage(appDiv);
+		}
     },
     "/profile": () => {
-		if (!isLogged()) return 
-        cleanup();
-        profilePage(appDiv);
+		cleanup();
+		if (!isLogged()){
+			loginPage(appDiv);
+		} else {
+			profilePage(appDiv);
+		}
     },
 };
 
@@ -62,7 +63,7 @@ document.body.addEventListener("click", (e) => {
 window.addEventListener("popstate", router);
 
 document.getElementById("logout-btn")!.addEventListener("click", async (e) => {
-		localStorage.removeItem("token"); // Clear token
+		localStorage.removeItem("pong-token"); // Clear token
 		setToken(""); // Clear token in storage
 		showToast("Logged out!", ToastType.SUCCESS);
 		// Optionally clear profile and 2FA UI
