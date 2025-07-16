@@ -2,7 +2,7 @@ import { loginPage } from "./pages/login.js";
 import { gamePage } from "./pages/game.js";
 import { chatPage } from "./pages/chat.js";
 import { profilePage } from "./pages/profile.js";
-import { setToken, isLogged } from "./token.js";
+import { isLogged, clearToken, fetchUser } from "./token.js";
 import { showToast, ToastType } from "./utils/toast.js";
 
 type RouteHandler = () => void;
@@ -63,8 +63,7 @@ document.body.addEventListener("click", (e) => {
 window.addEventListener("popstate", router);
 
 document.getElementById("logout-btn")!.addEventListener("click", async (e) => {
-		localStorage.removeItem("pong-token"); // Clear token
-		setToken(""); // Clear token in storage
+		clearToken();
 		showToast("Logged out!", ToastType.SUCCESS);
 		// Optionally clear profile and 2FA UI
 		const profileDiv = document.getElementById("profile");
@@ -84,7 +83,9 @@ function cleanup() {
     }
 }
 
-function updateLoginUI() {
+const updateLoginUI = async () => {
+	const user = await fetchUser();
+	console.log("username " + user?.username)
 	const token = isLogged();
 	if (token) {
 		console.log("User is logged in with token:", token);

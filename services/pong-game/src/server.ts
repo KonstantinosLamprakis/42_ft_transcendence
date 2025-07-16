@@ -12,7 +12,7 @@ import {
 
 const SQLITE_DB_URL = process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:4000" : "http://sqlite-db:4000";
 
-const fastify = Fastify({ logger: true });
+const fastify = Fastify();
 fastify.register(websocket);
 
 interface Connection {
@@ -36,7 +36,6 @@ interface Game {
     isGameOver: boolean;
     winner: string | null;
 };
-
 
 const games = new Map<number, Game>();
 
@@ -262,6 +261,17 @@ fastify.addHook("onRequest", (request, reply, done) => {
 
 fastify.register(async function (fastify) {
 	fastify.get("/pong", { websocket: true }, (socket, req) => {
+
+		let userId;
+		if (req.query && typeof req.query === 'object' && 'userId' in req.query) {
+			userId = req.query.userId as string;
+		}
+        if (!userId) {
+            fastify.log.warn('WebSocket connection rejected - missing user userId URL query ');
+            socket.close(1008, 'Authentication required');
+            return;
+        }
+        
 		socket.on("message", async (message: Buffer) => {
 			let parsed: PongClientRequest;
 			try {
@@ -271,11 +281,12 @@ fastify.register(async function (fastify) {
 				return;
 			}
 
-			if (parsed.type === PongMessageType.INIT && parsed.userId) {
+			console.log("Received message:", parsed);
+			if (parsed.type === PongMessageType.INIT) {
 				if (!game.connectionPlayer1) {
-					game.connectionPlayer1 = { userId: parsed.userId, socket };
+					game.connectionPlayer1 = { userId, socket };
 				} else if (!game.connectionPlayer2) {
-					game.connectionPlayer2 = { userId: parsed.userId, socket };
+					game.connectionPlayer2 = { userId, socket };
 				} else {
 					fastify.log.warn("Game already has two players.");
 					return;

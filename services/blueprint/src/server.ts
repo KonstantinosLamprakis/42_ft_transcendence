@@ -1,8 +1,6 @@
 import Fastify from "fastify";
 
-const fastify = Fastify({
-	logger: true,
-});
+const fastify = Fastify();
 
 fastify.get("/", function (request, reply) {
 	reply.send({ hello: "world" });

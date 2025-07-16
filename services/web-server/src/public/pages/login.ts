@@ -297,7 +297,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                 
                 const data = await res.json();
                 if (data.token) {
-                    setToken(data.token);
+                    await setToken(data.token);
                     showToast("2FA verified! Logged in.", ToastType.SUCCESS);
                     // Animate out and remove
                     twofaForm!.style.transition = "all 0.3s ease-in";
@@ -342,7 +342,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
             form.reset();
 			show2FAForm(body.username, data.sessionId);
 		} else if (data.token) {
-			setToken(data.token);
+			await setToken(data.token);
             form.reset();
 			showToast("Logged in!", ToastType.SUCCESS);
             window.location.reload();
@@ -465,11 +465,11 @@ export const loginPage = (pageContainer: HTMLElement) => {
             body: JSON.stringify({ idToken }),
         })
         .then(res => res.json())
-        .then(data => {
+        .then(async (data) => {
             if (data.token) {
-                setToken(data.token);
+                await setToken(data.token);
                 showToast("Logged in with Google!", ToastType.SUCCESS);
-                // Handle navigation to dashboard/profile
+                window.location.reload();
             } else {
                 showToast(data.error || "Google login failed", ToastType.ERROR);
             }

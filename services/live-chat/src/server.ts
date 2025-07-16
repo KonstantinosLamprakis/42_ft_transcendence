@@ -16,7 +16,7 @@ type ChatServerResponse = {
 	senderId: string;
 };
 
-const fastify = Fastify({ logger: true });
+const fastify = Fastify();
 fastify.register(websocket);
 
 interface Connection {

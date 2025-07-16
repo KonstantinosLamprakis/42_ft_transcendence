@@ -47,6 +47,7 @@ type AddUserRequest = {
 }
 
 type meResponse = {
+	id: string;
 	username: string;
 	name: string;
 	nickname: string;
@@ -132,7 +133,6 @@ fastify.post("/signup", async (req, reply) => {
 	);
 
 	if (!res.data.error) {
-		console.log(res.data)
 		return reply.status(400).send({ error: "User already exists" });
 	}
 
@@ -180,15 +180,14 @@ fastify.post("/signup", async (req, reply) => {
 
 fastify.get("/me", async (req, reply) => {
 	try {
-		// extract value from header: Authorization: Bearer <JWT_TOKEN>
-		const auth = req.headers.authorization?.split(" ")[1];
-		if (!auth) {
-			return reply.status(999).send({ error: "Auth header not found" });
+        const username = req.headers['x-username'] as string;
+		if (!username) {
+			return reply.status(404).send({ error: "Username not found" });
 		}
-		const payload = await fastify.jwt.verify<TokenPayload>(auth);
 
+		console.log("USERNAME " + username);
 		const res = await axios.get(
-			`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(payload.username)}`,
+			`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
 		);
 		const user = res.data;
 
@@ -210,6 +209,7 @@ fastify.get("/me", async (req, reply) => {
 		}
 
 		const response: meResponse = {
+			id: user.id,
 			username: user.username,
 			name: user.name,
 			nickname: user.nickname,
@@ -321,6 +321,45 @@ fastify.post("/2fa/setup", async (req, reply) => {
             return reply.status(400).send(error.response.data);
         }
         reply.status(500).send({ error: "Internal server error" });
+    }
+});
+
+fastify.get("/validate-token", async (req, reply) => {
+    try {
+        const auth = req.headers.authorization?.split(" ")[1];
+        if (!auth) {
+            return reply.status(401).send({ error: "Auth header not found" });
+        }
+
+        const payload = await fastify.jwt.verify<TokenPayload>(auth);
+
+        const res = await axios.get(
+            `${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(payload.username)}`,
+        );
+        const user = res.data;
+
+        if (!user) {
+            return reply.status(404).send({ error: "User not found" });
+        }
+
+        if (user.error) {
+            return reply.status(404).send({ error: user.error });
+        }
+
+        // Return validated user info
+        reply.send({
+            valid: true,
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                nickname: user.nickname,
+                name: user.name
+            }
+        });
+    } catch (error: any) {
+        fastify.log.error('Token validation error:', error);
+        reply.status(401).send({ error: "Invalid or expired token" });
     }
 });
 

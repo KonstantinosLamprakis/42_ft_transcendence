@@ -48,3 +48,16 @@ export type PongServerResponse = {
 	scorePlayer2: number;
 	winner?: string;
 };
+
+// auth
+export type meResponse = {
+	id: string;
+	username: string;
+	name: string;
+	nickname: string;
+	email: string;
+	avatar: string | undefined;
+	wins: number;
+	loses: number;
+	isGoogleAccount: boolean | undefined;
+}

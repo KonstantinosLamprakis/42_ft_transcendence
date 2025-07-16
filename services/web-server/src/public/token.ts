@@ -1,13 +1,43 @@
-let token: string = localStorage.getItem("pong-token") || "";
+import { HTTPS_API_URL, meResponse } from "./types.js";
 
-export function setToken(newToken: string) {
+let token: string = localStorage.getItem("pong-token") || "";
+let user: meResponse | undefined;
+
+export const setToken = async (newToken: string) => {
+	if (!newToken) {
+		clearToken();
+		return;
+	}
+	if (!user){
+		await fetchUser();
+	}
 	token = newToken;
 	localStorage.setItem("pong-token", newToken);
+}
+
+export function clearToken() {
+	token = "";
+	user = undefined;
+	localStorage.removeItem("pong-token");
 }
 
 export function getToken(): string {
 	return token;
 }
 export function isLogged(): boolean {
-	return !!token;
+	console.log("Token:", token);
+	console.log("User:", user);
+	return !!token && user !== undefined;
+}
+
+export const fetchUser = async () => {
+	if (!token) return undefined;
+	else if (user) return user;
+
+	const res = await fetch(`${HTTPS_API_URL}/me`, {
+		headers: { Authorization: `Bearer ${getToken()}` },
+	});
+
+	user = await res.json();
+	return user;
 }

@@ -16,7 +16,6 @@ enum Runtime {
 }
 
 const fastify = Fastify({
-	logger: true,
 	https: {
 		key: fs.readFileSync(path.join(dirname, "../certs/key.pem")),
 		cert: fs.readFileSync(path.join(dirname, "../certs/cert.pem")),
@@ -24,7 +23,7 @@ const fastify = Fastify({
 });
 
 // HTTP Fastify instance (redirects to HTTPS)
-const redirectApp = Fastify({ logger: false });
+const redirectApp = Fastify();
 redirectApp.all("*", (request, reply) => {
 	const host = request.headers.host?.replace(/:\d+$/, ":443") || "";
 	return reply.status(308).redirect(`https://${host}${request.raw.url}`);

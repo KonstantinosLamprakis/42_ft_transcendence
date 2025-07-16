@@ -1,9 +1,10 @@
 import {
     WEBSOCKET_API_URL,
     PongClientMove,
-    PongServerResponse,
+    meResponse,
     PongMessageType,
 } from "../types.js";
+import { getToken, fetchUser } from "../token.js";
 
 export const gamePage = (pageContainer: HTMLElement) => {
     pageContainer.innerHTML = `
@@ -22,21 +23,9 @@ export const gamePage = (pageContainer: HTMLElement) => {
                 <!-- Game Controls -->
                 <div class="bg-white rounded-xl shadow-lg border border-subtle-border p-4 sm:p-6 mb-6">
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto">
-                        <div class="flex-1">
-                            <label for="user-id" class="block text-sm font-medium text-gray-700 mb-2">
-                                Player ID
-                            </label>
-                            <input 
-                                type="text" 
-                                id="user-id" 
-                                placeholder="Enter your player ID..." 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-color focus:border-primary-color transition-colors text-sm sm:text-base"
-                                autocomplete="off"
-                            />
-                        </div>
                         <div class="flex items-end">
                             <button 
-                                id="sendIDButton" 
+                                id="start-game" 
                                 class="w-full sm:w-auto px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2 transition-all font-medium text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed">
                                 <span class="flex items-center justify-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,11 +106,7 @@ export const gamePage = (pageContainer: HTMLElement) => {
                 <!-- Game Instructions -->
                 <div class="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6">
                     <h3 class="text-lg font-semibold text-blue-900 mb-3">How to Play</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-blue-800">
-                        <div class="flex items-start gap-3">
-                            <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</div>
-                            <p>Enter your unique Player ID and click "Start Game"</p>
-                        </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 text-sm text-blue-800">
                         <div class="flex items-start gap-3">
                             <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</div>
                             <p>Wait for another player to join the match</p>
@@ -258,20 +243,26 @@ export const gamePage = (pageContainer: HTMLElement) => {
         connectionText.textContent = text;
     }
 
-    function connectWebSocket(userId: string): void {
+    function connectWebSocket(user: meResponse | undefined): void {
+        const token = getToken();
+        if (!token) {
+            console.error("No authentication token found");
+            return;
+        }
+        
         updateConnectionStatus('connecting');
         loadingDiv.style.display = 'flex';
         
-        socket = new WebSocket(WEBSOCKET_API_URL + "/pong");
+        socket = new WebSocket(`${WEBSOCKET_API_URL}/pong?userId=${encodeURIComponent(user?.id ?? "")}&token=${encodeURIComponent(token)}`);
 
         socket.onopen = (event: Event) => {
             console.log("WebSocket connected:", event);
             updateConnectionStatus('connected');
             disconnectBtn.disabled = false;
 
-            if (userId) {
-                socket?.send(JSON.stringify({ type: PongMessageType.INIT, userId: userId }));
-                console.log("Sent userId to server: ", userId);
+            if (token) {
+                socket?.send(JSON.stringify({ type: PongMessageType.INIT}));
+                console.log("Sent userId to server: ", token);
             } else {
                 console.warn("No userId set before WebSocket connection.");
             }
@@ -289,8 +280,9 @@ export const gamePage = (pageContainer: HTMLElement) => {
                     draw();
                     
                     // Enhanced game over modal
-                    const winner = data.winner === userId ? 'You Won!' : 'You Lost!';
-                    const winnerClass = data.winner === userId ? 'text-green-600' : 'text-red-600';
+                    console.log("User: ", user?.id);
+                    const winner = data.winner === user?.id ? 'You Won!' : 'You Lost!';
+                    const winnerClass = data.winner === user?.id ? 'text-green-600' : 'text-red-600';
                     
                     pageContainer.insertAdjacentHTML('beforeend', `
                         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="game-over-modal">
@@ -344,33 +336,20 @@ export const gamePage = (pageContainer: HTMLElement) => {
     }
 
     // Event listeners
-    const sendIDButton = document.getElementById("sendIDButton") as HTMLButtonElement;
-    const userIdInput = document.getElementById("user-id") as HTMLInputElement;
+    const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
 
-    sendIDButton.addEventListener("click", async (e) => {
+    startGameButton.addEventListener("click", async (e) => {
         e.preventDefault();
-        const userId = userIdInput.value.trim();
-
-        if (!userId) {
-            userIdInput.focus();
-            userIdInput.classList.add('ring-red-500', 'border-red-500');
-            setTimeout(() => {
-                userIdInput.classList.remove('ring-red-500', 'border-red-500');
-            }, 3000);
-            return;
-        }
-
-        sendIDButton.disabled = true;
-        userIdInput.disabled = true;
-        connectWebSocket(userId);
+        const user = await fetchUser();
+        startGameButton.disabled = true;
+        connectWebSocket(user);
     });
 
     disconnectBtn.addEventListener("click", () => {
         if (socket) {
             socket.close();
             socket = null;
-            sendIDButton.disabled = false;
-            userIdInput.disabled = false;
+            startGameButton.disabled = false;
             updateConnectionStatus('disconnected');
             loadingDiv.style.display = 'flex';
         }
