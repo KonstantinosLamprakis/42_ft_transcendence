@@ -19,7 +19,7 @@ CREATE TABLE
         user1_score INTEGER DEFAULT 0,
         user2_score INTEGER DEFAULT 0,
         winner_id INTEGER,
-        match_date TEXT,
+        match_date TEXT, -- store date as (YYYY-MM-DD) to be human readable 
         FOREIGN KEY(user1_id) REFERENCES users(id),
         FOREIGN KEY(user2_id) REFERENCES users(id),
         FOREIGN KEY(winner_id) REFERENCES users(id)
