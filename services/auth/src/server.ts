@@ -56,6 +56,19 @@ type meResponse = {
 	wins: number;
 	loses: number;
 	isGoogleAccount: boolean | undefined;
+	matches: Match[];
+}
+
+type Match = {
+	user1_score: string;
+	user2_score: string;
+	match_date: string;
+	opponent_username: string;
+	winner_username: string;
+}
+
+type MatchResponse = {
+	matches: Match[];
 }
 
 enum Runtime {
@@ -185,7 +198,6 @@ fastify.get("/me", async (req, reply) => {
 			return reply.status(404).send({ error: "Username not found" });
 		}
 
-		console.log("USERNAME " + username);
 		const res = await axios.get(
 			`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
 		);
@@ -207,6 +219,10 @@ fastify.get("/me", async (req, reply) => {
 				user.avatar = undefined;
 			}
 		}
+		
+		const matchedRes = await axios.get(
+			`${SQLITE_DB_URL}/get-user-matches/${encodeURIComponent(user.id)}`,
+		);
 
 		const response: meResponse = {
 			id: user.id.toString(),
@@ -218,8 +234,9 @@ fastify.get("/me", async (req, reply) => {
 			wins: user.wins,
 			loses: user.loses,
 			isGoogleAccount: user.isGoogleAccount ?? false,
+			matches: matchedRes.data,
 		};
-		
+
 		reply.send(response);
 	} catch (error: any) {
 		console.error("Authentication error:", error);

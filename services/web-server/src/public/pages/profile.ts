@@ -1,4 +1,4 @@
-import { HTTPS_API_URL } from "../types.js";
+import { HTTPS_API_URL, meResponse, Match } from "../types.js";
 import { getToken } from "../token.js";
 
 export const profilePage = (pageContainer: HTMLElement) => {
@@ -103,18 +103,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                     class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 text-[var(--text-primary)] font-semibold hover:bg-gray-100 transition-colors">Change
                                     Password</button>
                             </div>
-                            <div
-                                class="md:col-span-2 flex items-center justify-between bg-[var(--secondary-color)] rounded-lg p-4 border border-[var(--border-color)]">
-                                <p class="text-base font-medium text-[var(--text-primary)]">Two-Factor
-                                    Authentication</p>
-                                <label
-                                    class="relative flex h-[26px] w-[46px] cursor-pointer items-center rounded-full border-none bg-gray-200 p-0.5 has-[:checked]:bg-[var(--primary-color)] transition-colors">
-                                    <div class="h-full aspect-square rounded-full bg-white transition-transform duration-300 ease-in-out transform has-[:checked]:translate-x-[20px]"
-                                        style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;">
-                                    </div>
-                                    <input checked="" class="invisible absolute" type="checkbox" />
-                                </label>
-                            </div>
                         </div>
                     </div>
                     <div>
@@ -139,46 +127,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-[var(--border-color)]">
-                                    <tr>
-                                        <td class="p-4 whitespace-nowrap"><span
-                                                class="font-bold text-green-500">RyderX</span></td>
-                                        <td class="p-4 whitespace-nowrap text-gray-900">ShadowBlade</td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">2-1</td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">
-                                            2024-01-15</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-4 whitespace-nowrap"><span
-                                                class="font-bold text-green-500">RyderX</span></td>
-                                        <td class="p-4 whitespace-nowrap text-gray-900">NightHawk</td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">3-0</td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">
-                                            2024-01-10</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-4 whitespace-nowrap text-gray-900">ThunderStrike</td>
-                                        <td class="p-4 whitespace-nowrap"><span
-                                                class="font-bold text-red-500">RyderX</span></td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">2-1</td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">
-                                            2024-01-05</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-4 whitespace-nowrap"><span
-                                                class="font-bold text-green-500">RyderX</span></td>
-                                        <td class="p-4 whitespace-nowrap text-gray-900">FrostFang</td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">2-1</td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">
-                                            2023-12-20</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-4 whitespace-nowrap"><span
-                                                class="font-bold text-green-500">RyderX</span></td>
-                                        <td class="p-4 whitespace-nowrap text-gray-900">CrimsonTide</td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">3-0</td>
-                                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">
-                                            2023-12-15</td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -196,36 +144,68 @@ export const profilePage = (pageContainer: HTMLElement) => {
     </main>
     `;
 
-	const getInfo = async () => {
-		const res = await fetch(`${HTTPS_API_URL}/me`, {
-			headers: { Authorization: `Bearer ${getToken()}` },
-		});
+    const getInfo = async () => {
+        const res = await fetch(`${HTTPS_API_URL}/me`, {
+            headers: { Authorization: `Bearer ${getToken()}` },
+        });
 
-		const data = await res.json();
+        const data: meResponse = await res.json();
+        const matches: Match[] = data.matches;
 
-		// Update the UI with actual data
-		const avatarElement = document.getElementById("avatar")!;
-		const winsElement = document.getElementById("wins-count")!;
-		const lossesElement = document.getElementById("losses-count")!;
-		const userNameElement = document.getElementById("user-name")! as HTMLInputElement;;
-		const userEmailElement = document.getElementById("user-email")! as HTMLInputElement;;
-		const userNicknameElement = document.getElementById("user-nickname")! as HTMLInputElement;;
-		const userUsernameElement = document.getElementById("user-username")! as HTMLInputElement;;
+        // Update the UI with actual data
+        const avatarElement = document.getElementById("avatar")!;
+        const winsElement = document.getElementById("wins-count")!;
+        const lossesElement = document.getElementById("losses-count")!;
+        const userNameElement = document.getElementById("user-name")! as HTMLInputElement;
+        const userEmailElement = document.getElementById("user-email")! as HTMLInputElement;
+        const userNicknameElement = document.getElementById("user-nickname")! as HTMLInputElement;
+        const userUsernameElement = document.getElementById("user-username")! as HTMLInputElement;
 
         console.log(data);
-		winsElement.textContent = data.wins.toString();
-		lossesElement.textContent = data.loses.toString();
-		userNameElement.value = data.name;
-		userEmailElement.value = data.email;
-		userNicknameElement.value = data.nickname;
-		userUsernameElement.value = data.username;
+        winsElement.textContent = data.wins.toString();
+        lossesElement.textContent = data.loses.toString();
+        userNameElement.value = data.name;
+        userEmailElement.value = data.email;
+        userNicknameElement.value = data.nickname;
+        userUsernameElement.value = data.username;
 
-		if (data.avatar) {
-			const imgPath = !data.isGoogleAccount
-				? `${HTTPS_API_URL}/uploads/${data.avatar}`
-				: data.avatar;
-			avatarElement.style.backgroundImage = `url("${imgPath}")`;
-		}
-	};
+        if (data.avatar) {
+            const imgPath = !data.isGoogleAccount
+                ? `${HTTPS_API_URL}/uploads/${data.avatar}`
+                : data.avatar;
+            avatarElement.style.backgroundImage = `url("${imgPath}")`;
+        }
+
+        // Update match history table
+        const tableBody = document.querySelector('tbody');
+        if (tableBody && matches && matches.length > 0) {
+            tableBody.innerHTML = '';
+            
+            matches.forEach(match => {
+                const isWinner = match.winner_username === data.username;
+                const winnerClass = isWinner ? 'font-bold text-green-500' : '';
+                const loserClass = !isWinner ? 'font-bold text-red-500' : '';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="p-4 whitespace-nowrap">
+                        <span class="${isWinner ? winnerClass : ''}">${match.winner_username}</span>
+                    </td>
+                    <td class="p-4 whitespace-nowrap">
+                        <span class="${!isWinner ? loserClass : 'text-gray-900'}">${isWinner ? match.opponent_username : data.username}</span>
+                    </td>
+                    <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.user1_score}-${match.user2_score}</td>
+                    <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.match_date}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } else if (tableBody) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="p-4 text-center text-[var(--text-secondary)]">No matches found</td>
+                </tr>
+            `;
+        }
+    };
 	getInfo();
 };

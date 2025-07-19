@@ -60,4 +60,13 @@ export type meResponse = {
 	wins: number;
 	loses: number;
 	isGoogleAccount: boolean | undefined;
+	matches: Match[];
+}
+
+export type Match = {
+	user1_score: string;
+	user2_score: string;
+	match_date: string;
+	opponent_username: string;
+	winner_username: string;
 }
