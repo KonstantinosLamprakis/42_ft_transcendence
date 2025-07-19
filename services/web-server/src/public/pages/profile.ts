@@ -12,15 +12,16 @@ export const profilePage = (pageContainer: HTMLElement) => {
                         <div id="avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32"
                             style='background-image: url("");'>
                         </div>
-                        <button
-                            class="absolute bottom-1 right-1 bg-[var(--primary-color)] h-8 w-8 rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-colors">
+                        <label for="avatar-upload"
+                            class="absolute bottom-1 right-1 bg-[var(--primary-color)] h-8 w-8 rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-colors cursor-pointer">
                             <svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z">
                                 </path>
                             </svg>
-                        </button>
+                        </label>
+                        <input type="file" id="avatar-upload" accept="image/*" class="hidden" />
                     </div>
                     <div class="mt-4 flex gap-4">
                         <div class="text-center">
@@ -99,9 +100,30 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                     id="user-nickname" type="text" value="RyderX" />
                             </div>
                             <div>
-                                <button
-                                    class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 text-[var(--text-primary)] font-semibold hover:bg-gray-100 transition-colors">Change
-                                    Password</button>
+                                <button id="change-password-btn"
+                                    class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 text-[var(--text-primary)] font-semibold hover:bg-gray-100 transition-colors">
+                                    Change Password
+                                </button>
+                                <div id="password-fields" class="hidden mt-4 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-sm font-medium text-[var(--text-secondary)]" for="new-password">New Password</label>
+                                            <input id="new-password" type="password" 
+                                                class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
+                                                placeholder="Enter new password" />
+                                        </div>
+                                        <div>
+                                            <label class="text-sm font-medium text-[var(--text-secondary)]" for="confirm-password">Confirm Password</label>
+                                            <input id="confirm-password" type="password" 
+                                                class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
+                                                placeholder="Confirm new password" />
+                                        </div>
+                                    </div>
+                                    <button id="cancel-password-btn" type="button"
+                                        class="w-full bg-gray-100 border border-[var(--border-color)] rounded-lg p-3 text-[var(--text-primary)] font-semibold hover:bg-gray-200 transition-colors">
+                                        Cancel
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -132,11 +154,10 @@ export const profilePage = (pageContainer: HTMLElement) => {
                         </div>
                     </div>
                     <div class="flex justify-end gap-4">
-                        <button
-                            class="bg-transparent border border-[var(--border-color)] rounded-lg px-6 py-2 text-[var(--text-primary)] font-semibold hover:bg-gray-100 transition-colors">Cancel</button>
-                        <button
-                            class="bg-[var(--primary-color)] rounded-lg px-6 py-2 text-white font-semibold hover:bg-blue-600 transition-colors">Save
-                            Changes</button>
+                        <button id="save-changes-btn"
+                            class="bg-[var(--primary-color)] rounded-lg px-6 py-2 text-white font-semibold hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            Save Changes
+                        </button>
                     </div>
                 </div>
             </div>
@@ -207,5 +228,207 @@ export const profilePage = (pageContainer: HTMLElement) => {
             `;
         }
     };
+
+    const showNotification = (message: string, type: 'success' | 'error') => {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg text-white transition-all duration-300 ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        }`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    };
+
+    const updateProfile = async (formData: FormData) => {
+        try {
+            const token = getToken();
+            if (!token) {
+                showNotification('Authentication required', 'error');
+                return;
+            }
+
+            const saveBtn = document.getElementById('save-changes-btn') as HTMLButtonElement;
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            const response = await fetch(`${HTTPS_API_URL}/update-user/placeholder`, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+            });
+
+            if (response.ok) {
+                showNotification('Profile updated successfully!', 'success');
+                await getInfo(); // Refresh profile data
+                
+                // Reset password fields if they were visible
+                const passwordFields = document.getElementById('password-fields');
+                const changePasswordBtn = document.getElementById('change-password-btn');
+                if (passwordFields && !passwordFields.classList.contains('hidden')) {
+                    passwordFields.classList.add('hidden');
+                    changePasswordBtn!.textContent = 'Change Password';
+                    (document.getElementById('new-password') as HTMLInputElement).value = '';
+                    (document.getElementById('confirm-password') as HTMLInputElement).value = '';
+                }
+            } else {
+                const error = await response.json();
+                showNotification(error.error || 'Failed to update profile', 'error');
+            }
+        } catch (error) {
+            console.error('Update profile error:', error);
+            showNotification('An error occurred while updating profile', 'error');
+        } finally {
+            const saveBtn = document.getElementById('save-changes-btn') as HTMLButtonElement;
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Changes';
+        }
+    };
+
+    const validatePasswords = (): { newPassword: string; isValid: boolean } => {
+        const newPassword = (document.getElementById('new-password') as HTMLInputElement).value;
+        const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement).value;
+        
+        if (!newPassword || !confirmPassword) {
+            showNotification('Please fill in both password fields', 'error');
+            return { newPassword: '', isValid: false };
+        }
+        
+        if (newPassword !== confirmPassword) {
+            showNotification('Passwords do not match', 'error');
+            return { newPassword: '', isValid: false };
+        }
+        
+        if (newPassword.length < 6) {
+            showNotification('Password must be at least 6 characters long', 'error');
+            return { newPassword: '', isValid: false };
+        }
+        
+        return { newPassword, isValid: true };
+    };
+
+    const handleSaveChanges = async () => {
+        const formData = new FormData();
+        let hasChanges = false;
+        
+        // Check for nickname changes
+        const nicknameInput = document.getElementById('user-nickname') as HTMLInputElement;
+        const currentNickname = nicknameInput.dataset.original || '';
+        if (nicknameInput.value.trim() && nicknameInput.value.trim() !== currentNickname) {
+            formData.append('nickname', nicknameInput.value.trim());
+            hasChanges = true;
+        }
+        
+        // Check for password changes (only if password fields are visible)
+        const passwordFields = document.getElementById('password-fields');
+        if (passwordFields && !passwordFields.classList.contains('hidden')) {
+            const { newPassword, isValid } = validatePasswords();
+            if (!isValid) return;
+            
+            if (newPassword) {
+                formData.append('password', newPassword);
+                hasChanges = true;
+            }
+        }
+        
+        // Check for avatar changes (stored in element data attribute)
+        const avatarUpload = document.getElementById('avatar-upload') as HTMLInputElement;
+        if (avatarUpload.files && avatarUpload.files[0]) {
+            formData.append('avatar', avatarUpload.files[0]);
+            hasChanges = true;
+        }
+        
+        if (!hasChanges) {
+            showNotification('No changes to save', 'error');
+            return;
+        }
+        
+        await updateProfile(formData);
+    };
+
+    const handleAvatarUpload = (event: Event) => {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+        
+        if (file) {
+            // Validate file type and size
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select an image file', 'error');
+                input.value = '';
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                showNotification('Image size must be less than 5MB', 'error');
+                input.value = '';
+                return;
+            }
+            
+            // Preview the image
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const avatarElement = document.getElementById('avatar')!;
+                avatarElement.style.backgroundImage = `url("${e.target?.result}")`;
+            };
+            reader.readAsDataURL(file);
+            
+            showNotification('Image selected. Click "Save Changes" to update.', 'success');
+        }
+    };
+
+    const togglePasswordFields = () => {
+        const passwordFields = document.getElementById('password-fields');
+        const changePasswordBtn = document.getElementById('change-password-btn');
+        
+        if (passwordFields!.classList.contains('hidden')) {
+            passwordFields!.classList.remove('hidden');
+            changePasswordBtn!.textContent = 'Hide Password Fields';
+        } else {
+            passwordFields!.classList.add('hidden');
+            changePasswordBtn!.textContent = 'Change Password';
+            // Clear password fields
+            (document.getElementById('new-password') as HTMLInputElement).value = '';
+            (document.getElementById('confirm-password') as HTMLInputElement).value = '';
+        }
+    };
+
+    const cancelPasswordChange = () => {
+        const passwordFields = document.getElementById('password-fields');
+        const changePasswordBtn = document.getElementById('change-password-btn');
+        
+        passwordFields!.classList.add('hidden');
+        changePasswordBtn!.textContent = 'Change Password';
+        
+        // Clear password fields
+        (document.getElementById('new-password') as HTMLInputElement).value = '';
+        (document.getElementById('confirm-password') as HTMLInputElement).value = '';
+    };
+
 	getInfo();
+
+    const nicknameInput = document.getElementById('user-nickname') as HTMLInputElement;
+    nicknameInput.dataset.original = nicknameInput.value;
+
+    // Set up event listeners
+    const avatarUpload = document.getElementById('avatar-upload') as HTMLInputElement;
+    const changePasswordBtn = document.getElementById('change-password-btn') as HTMLButtonElement;
+    const cancelPasswordBtn = document.getElementById('cancel-password-btn') as HTMLButtonElement;
+    const saveChangesBtn = document.getElementById('save-changes-btn') as HTMLButtonElement;
+
+    avatarUpload?.addEventListener('change', handleAvatarUpload);
+    changePasswordBtn?.addEventListener('click', togglePasswordFields);
+    cancelPasswordBtn?.addEventListener('click', cancelPasswordChange);
+    saveChangesBtn?.addEventListener('click', handleSaveChanges);
+
+    (pageContainer as any)._cleanupListeners = () => {
+        avatarUpload?.removeEventListener("change", handleAvatarUpload);
+        changePasswordBtn?.removeEventListener("click", togglePasswordFields);
+        cancelPasswordBtn?.removeEventListener("click", cancelPasswordChange);
+        saveChangesBtn?.removeEventListener("click", handleSaveChanges);
+    };
 };
