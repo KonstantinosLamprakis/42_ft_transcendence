@@ -1,5 +1,6 @@
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
+import type { WebSocket } from "ws";
 import axios from "axios";
 
 import {
@@ -15,15 +16,10 @@ const SQLITE_DB_URL = process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:
 const fastify = Fastify({ logger: true });
 fastify.register(websocket);
 
-interface Connection {
-	userId: string;
-	socket: any;
-}
-
 interface Game {
 	gameId: number;
-	connectionPlayer1: Connection | null;
-    connectionPlayer2: Connection | null;
+	connectionPlayer1: WebSocket | null;
+    connectionPlayer2: WebSocket | null;
     player1Y: number;
     player2Y: number;
     ballX: number;
@@ -34,6 +30,8 @@ interface Game {
     scorePlayer1: number;
     scorePlayer2: number;
     isGameOver: boolean;
+    player1UserId: string | null;
+    player2UserId: string | null;
     winner: string | null;
 };
 
@@ -85,6 +83,8 @@ function createNewGame(): Game {
         scorePlayer1: 0,
         scorePlayer2: 0,
 		isGameOver: false,
+	    player1UserId: null,
+	    player2UserId: null,
 		winner: null,
 	};
 }
@@ -195,14 +195,15 @@ function checkGameEnd(game: Game): boolean {
 	if ((p1 >= 11 || p2 >= 11) && Math.abs(p1 - p2) >= 2) {
 		game.isGameOver = true;
 		game.winner = p1 > p2
-			? game.connectionPlayer1?.userId || "Player 1"
-			: game.connectionPlayer2?.userId || "Player 2";
+			? game.player1UserId
+			: game.player2UserId;
 		return true;
 	}
 	return false;
 }
 
 async function endGame() {
+
 	const result: PongServerResponse = {
 		type: PongMessageType.END,
 		ballX: game.ballX,
@@ -214,39 +215,42 @@ async function endGame() {
 		winner: game.winner,
 	};
 
-	if (game.connectionPlayer1?.socket) {
-		game.connectionPlayer1.socket.send(JSON.stringify(result));
+	if (game.connectionPlayer1) {
+		game.connectionPlayer1.send(JSON.stringify(result));
 	}
-	if (game.connectionPlayer2?.socket) {
-		game.connectionPlayer2.socket.send(JSON.stringify(result));		
+	if (game.connectionPlayer2) {
+		game.connectionPlayer2.send(JSON.stringify(result));		
 	}
 
-	const res = await axios.put(`${SQLITE_DB_URL}/update-match`, {
-		id: game.gameId,
-		user1_score: game.scorePlayer1,
-		user2_score: game.scorePlayer2,
-		winner_id: game.winner,
-	});
-
-	const win = await axios.put(`${SQLITE_DB_URL}/add-win/${game.winner}`, {
-		win: 1
-	});
-
-	let loser = game.connectionPlayer1.userId;
-	if (game.winner === game.connectionPlayer1.userId) {
-		loser = game.connectionPlayer2.userId;
+	// fastify.log.info(`Game INFO: id: ${game.gameId}  user1_score: ${game.scorePlayer1}  user2_score: ${game.scorePlayer2}  winner: ${game.winner}`);
+	if (game.gameId) {
+		const res = await axios.put(`${SQLITE_DB_URL}/update-match`, {
+			id: game.gameId,
+			user1_score: game.scorePlayer1,
+			user2_score: game.scorePlayer2,
+			winner_id: game.winner,
+		});
 	}
-	const loss = await axios.put(`${SQLITE_DB_URL}/add-loss/${loser}`, {
-		loss: 1
-	});
+
+	if (game.winner) {
+		const win = await axios.put(`${SQLITE_DB_URL}/add-win/${game.winner}`, {});
+
+		let loser = game.player1UserId;
+		if (game.winner === game.player1UserId) {
+			loser = game.player2UserId;
+		}
+		const loss = await axios.put(`${SQLITE_DB_URL}/add-loss/${loser}`, {});
+	}
 
 	if (gameLoop) {
 		clearInterval(gameLoop);
 		gameLoop = null;
 	}
 
-	fastify.log.info(`Game ended. Winner: ${game.winner}`);
-
+	if (game.winner) {
+		fastify.log.info(`Game ended. Winner: ${game.winner}`);
+	}
+	
 	// Reset the game after a short delay to allow rematches
 	setTimeout(() => {
 		game = createNewGame();
@@ -261,7 +265,7 @@ fastify.addHook("onRequest", (request, reply, done) => {
 });
 
 fastify.register(async function (fastify) {
-	fastify.get("/pong", { websocket: true }, (socket, req) => {
+	fastify.get("/pong", { websocket: true }, (socket: WebSocket, req) => {
 		socket.on("message", async (message: Buffer) => {
 			let parsed: PongClientRequest;
 			try {
@@ -273,9 +277,11 @@ fastify.register(async function (fastify) {
 
 			if (parsed.type === PongMessageType.INIT && parsed.userId) {
 				if (!game.connectionPlayer1) {
-					game.connectionPlayer1 = { userId: parsed.userId, socket };
+					game.connectionPlayer1 = socket;
+					game.player1UserId = parsed.userId;
 				} else if (!game.connectionPlayer2) {
-					game.connectionPlayer2 = { userId: parsed.userId, socket };
+					game.connectionPlayer2 = socket;
+					game.player2UserId = parsed.userId;
 				} else {
 					fastify.log.warn("Game already has two players.");
 					return;
@@ -287,8 +293,8 @@ fastify.register(async function (fastify) {
 			if (!gameLoop && !game.isGameOver) {
 				const dateNow = new Date(Date.now());
 				const res = await axios.post(`${SQLITE_DB_URL}/add-match`, {
-					user1_id: game.connectionPlayer1.userId,
-					user2_id: game.connectionPlayer2.userId,
+					user1_id: game.player1UserId,
+					user2_id: game.player2UserId,
 					user1_score: 0,
 					user2_score: 0,
 					winner_id: null,
@@ -315,21 +321,21 @@ fastify.register(async function (fastify) {
 						scorePlayer2: game.scorePlayer2,
 					};
 
-					if (game.connectionPlayer1?.socket)
-						game.connectionPlayer1.socket.send(JSON.stringify(payload));
-					if (game.connectionPlayer2?.socket)
-						game.connectionPlayer2.socket.send(JSON.stringify(payload));
+					if (game.connectionPlayer1)
+						game.connectionPlayer1.send(JSON.stringify(payload));
+					if (game.connectionPlayer2)
+						game.connectionPlayer2.send(JSON.stringify(payload));
 				}, 1000 / FPS);
 			}
 
 			if (parsed.type === PongMessageType.MOVE && !game.isGameOver) {
-				if (socket === game.connectionPlayer1?.socket) {
+				if (socket === game.connectionPlayer1) {
 					if (parsed.move === PongClientMove.UP && game.player1Y > 0)
 						game.player1Y -= PADDLE_SPEED;
 					else if (parsed.move === PongClientMove.DOWN && game.player1Y < HEIGHT - PADDLE_HEIGHT)
 						game.player1Y += PADDLE_SPEED;
 				}
-				if (socket === game.connectionPlayer2?.socket) {
+				if (socket === game.connectionPlayer2) {
 					if (parsed.move === PongClientMove.UP && game.player2Y > 0)
 						game.player2Y -= PADDLE_SPEED;
 					else if (parsed.move === PongClientMove.DOWN && game.player2Y < HEIGHT - PADDLE_HEIGHT)
@@ -340,14 +346,14 @@ fastify.register(async function (fastify) {
 
 		socket.on("close", () => {
 			if (!game.isGameOver) {
-				if (socket === game.connectionPlayer1?.socket) {
+				if (socket === game.connectionPlayer1) {
 					game.scorePlayer2 = 11;
 					game.scorePlayer1 = 0;
-					game.winner = game.connectionPlayer2?.userId || "Player 2";
-				} else if (socket === game.connectionPlayer2?.socket) {
+					game.winner = game.player2UserId;
+				} else if (socket === game.connectionPlayer2) {
 					game.scorePlayer1 = 11;
 					game.scorePlayer2 = 0;
-					game.winner = game.connectionPlayer1?.userId || "Player 1";
+					game.winner = game.player1UserId;
 				}
 				game.isGameOver = true;
 				endGame();

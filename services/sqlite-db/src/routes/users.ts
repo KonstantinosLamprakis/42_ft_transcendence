@@ -95,7 +95,6 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 
 	fastify.put("/add-win/:id", async (request, reply) => {
 	const { id } = request.params as { id: string };
-	const { win } = request.body as { win: number };
 
 	const user = db.prepare("SELECT 1 FROM users WHERE id = ?").get(id);
 	if (!user) {
@@ -103,16 +102,15 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 	}
 
 	const stmt = db.prepare(
-		"UPDATE users SET wins = wins + ? WHERE id = ?"
+		"UPDATE users SET wins = wins + 1 WHERE id = ?"
 	);
-	stmt.run(win, id);
+	stmt.run(id);
 
 	return { success: true };
 	});
 
 	fastify.put("/add-loss/:id", async (request, reply) => {
 	const { id } = request.params as { id: string };
-	const { loss } = request.body as { loss: number };
 
 	const user = db.prepare("SELECT 1 FROM users WHERE id = ?").get(id);
 	if (!user) {
@@ -120,9 +118,9 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 	}
 
 	const stmt = db.prepare(
-		"UPDATE users SET loses = loses + ? WHERE id = ?"
+		"UPDATE users SET loses = loses + 1 WHERE id = ?"
 	);
-	stmt.run(loss, id);
+	stmt.run(id);
 
 	return { success: true };
 	});
