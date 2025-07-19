@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import fastifyMultipart from "@fastify/multipart";
 import * as bcrypt from "bcryptjs";
-import { writeFile } from "fs/promises";
+import { writeFile, unlink } from "fs/promises";
 import * as path from "path";
 import fastifyStatic from "@fastify/static";
 import { fileURLToPath } from "url";
@@ -13,6 +13,12 @@ import QRCode from "qrcode";
 import { generateSecret, verifyTOTP } from "./totp.js";
 import { OAuth2Client } from "google-auth-library";
 import * as crypto from "crypto";
+
+type UpdateUserRequest = {
+	nickname: string | undefined;
+	avatar: string | undefined;
+	password: string | undefined;
+}
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -89,7 +95,7 @@ if (!process.env.JWT_SECRET) {
 	process.exit(1);
 }
 
-const fastify = Fastify();
+const fastify = Fastify({logger: true });
 
 fastify.register(fastifyJwt, {
 	secret: process.env.JWT_SECRET,
@@ -191,7 +197,112 @@ fastify.post("/signup", async (req, reply) => {
 	}
 });
 
-fastify.get("/me", async (req, reply) => {
+fastify.put("/update-user/:id", async (req, reply) => {
+	const id = req.headers['x-user-id'] as string;
+	const username = req.headers['x-username'] as string;
+	if (!id || !username) {
+		return reply.status(404).send({ error: "User id / username not found" });
+	}
+
+	const parts = req.parts();
+	const data: Record<string, string> = {};
+	let avatarFile: any = null;
+
+	for await (const part of parts) {
+		if (part.type === "file") {
+			if (!part.filename || part.filename.trim() === "") {
+				continue;
+			}
+			
+			if (part.mimetype !== "image/jpeg" && part.mimetype !== "image/png") {
+				return reply.status(400).send({ error: "Only JPEG and PNG files are allowed." });
+			}
+			const validExtensions = [".jpg", ".jpeg", ".png"];
+			if (!validExtensions.some((v) => part.filename?.toLowerCase().endsWith(v))) {
+				return reply.status(400).send({ error: "Invalid file extension." });
+			}
+			try {
+				await part.toBuffer();
+			} catch (err) {
+				return reply.status(400).send({ error: "File is corrupted or unreadable." });
+			}
+			avatarFile = part;
+		} else {
+			data[part.fieldname] = part.value?.toString() ?? "";
+		}
+	}
+
+	if (!data.nickname && !data.password && !avatarFile) {
+		return reply.status(400).send({ error: "An empty update request was sent" });
+	}
+
+	const res = await axios.get(
+		`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
+	);
+	const user = res.data;
+
+	if (!user) {
+		return reply.status(404).send({ error: "User not found" });
+	}
+
+	if (user.error) {
+		return reply.status(404).send({ error: user.error });
+	}
+
+	const updateUserReq: UpdateUserRequest = {
+		avatar: undefined,
+		nickname: data.nickname,
+		password: data.password ? await bcrypt.hash(data.password, 10) : undefined,
+	}
+	
+	try {
+		if (avatarFile){
+			if (user.avatar && user.avatar !== 'default.jpg') {
+				const oldAvatarPath = process.env.RUNTIME === Runtime.LOCAL
+					? `uploads/${user.avatar}`
+					: `/data/uploads/${user.avatar}`;
+				try {
+					await unlink(oldAvatarPath);
+					fastify.log.info(`Deleted old avatar: ${user.avatar}`);
+				} catch (error) {
+					fastify.log.warn(`Failed to delete old avatar ${user.avatar}:`, error);
+				}
+			}
+
+			const ext = path.extname(avatarFile.filename);
+			const avatarName = `${username}${ext}`;
+			updateUserReq.avatar = avatarName;
+
+			const avatarPath =
+			process.env.RUNTIME === Runtime.LOCAL
+			? `uploads/${avatarName}`
+			: `/data/uploads/${avatarName}`;
+			const buffer = await avatarFile.toBuffer();
+			await writeFile(avatarPath, buffer);
+		}
+
+		if (data.nickname) {
+			updateUserReq.nickname = data.nickname;
+		}
+
+		console.log(updateUserReq)
+
+		const res = await axios.put(
+			`${SQLITE_DB_URL}/update-user/${encodeURIComponent(id)}`,
+			updateUserReq,
+		);
+
+		return res.data;
+	} catch (error: any) {
+		if (error.response && error.response.data) {
+			return reply.status(400).send(error.response.data);
+		}
+		console.error("Error during signup:", error);
+		reply.status(500).send({ error: "Internal server error" });
+	}
+});
+
+fastify.get("/me", async (req, reply) => {	
 	try {
         const username = req.headers['x-username'] as string;
 		if (!username) {

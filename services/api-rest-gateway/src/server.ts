@@ -86,6 +86,12 @@ const proxyConfigs = [
 	{
 		upstream:
 			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
+		prefix: "/update-user",
+		rewritePrefix: "/update-user",
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/login",
 		rewritePrefix: "/login",
 	},

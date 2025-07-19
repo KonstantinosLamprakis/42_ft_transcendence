@@ -14,6 +14,7 @@ type AddUserRequest = {
 type UpdateUserRequest = {
 	nickname: string | undefined;
 	avatar: string | undefined;
+	password: string | undefined;
 }
 
 export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
@@ -60,10 +61,11 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 			`UPDATE users SET
                 nickname = COALESCE(?, name),
                 avatar = COALESCE(?, avatar),
+                password = COALESCE(?, password)
             WHERE id = ?`,
 		);
 
-		stmt.run(updateUserReq.nickname, updateUserReq.avatar);
+		stmt.run(updateUserReq.nickname, updateUserReq.avatar, updateUserReq.password, id);
 
 		return { success: true };
 	});
