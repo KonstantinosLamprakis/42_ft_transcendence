@@ -182,8 +182,8 @@ export class Game {
 
 
 	public async endGame() {
-		console.log(`P1_ID: ${this.player1UserId}`);
-		console.log(`P2_ID: ${this.player2UserId}`);
+		// console.log(`P1_ID: ${this.player1UserId}`);
+		// console.log(`P2_ID: ${this.player2UserId}`);
 		const result: PongServerResponse = {
 			type: PongMessageType.END,
 			ballX: this.ballX,

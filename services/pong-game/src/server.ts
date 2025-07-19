@@ -94,15 +94,15 @@ fastify.register(async function (fastify) {
 				if (!game || game.isGameOver)
 					return ;
 				if (socket === game.connectionPlayer1) {
-					if (parsed.move === PongClientMove.UP && game.player1Y > 0)
+					if (parsed.move === PongClientMove.DOWN && game.player1Y > 0)
 						game.player1Y -= PADDLE_SPEED;
-					else if (parsed.move === PongClientMove.DOWN && game.player1Y < HEIGHT - PADDLE_HEIGHT)
+					else if (parsed.move === PongClientMove.UP && game.player1Y < HEIGHT - PADDLE_HEIGHT)
 						game.player1Y += PADDLE_SPEED;
 				}
 				if (socket === game.connectionPlayer2) {
-					if (parsed.move === PongClientMove.UP && game.player2Y > 0)
+					if (parsed.move === PongClientMove.DOWN && game.player2Y > 0)
 						game.player2Y -= PADDLE_SPEED;
-					else if (parsed.move === PongClientMove.DOWN && game.player2Y < HEIGHT - PADDLE_HEIGHT)
+					else if (parsed.move === PongClientMove.UP && game.player2Y < HEIGHT - PADDLE_HEIGHT)
 						game.player2Y += PADDLE_SPEED;
 				}
 			}
