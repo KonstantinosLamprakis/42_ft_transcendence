@@ -280,7 +280,6 @@ export const gamePage = (pageContainer: HTMLElement) => {
                     draw();
                     
                     // Enhanced game over modal
-                    console.log("User: ", user?.id);
                     const winner = data.winner === user?.id ? 'You Won!' : 'You Lost!';
                     const winnerClass = data.winner === user?.id ? 'text-green-600' : 'text-red-600';
                     

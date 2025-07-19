@@ -24,9 +24,11 @@ export function clearToken() {
 export function getToken(): string {
 	return token;
 }
-export function isLogged(): boolean {
-	console.log("Token:", token);
-	console.log("User:", user);
+
+export async function isLogged(): Promise<boolean> {
+	if (!!token && !user){
+		await fetchUser();
+	}
 	return !!token && user !== undefined;
 }
 

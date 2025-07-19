@@ -2,7 +2,7 @@ import { loginPage } from "./pages/login.js";
 import { gamePage } from "./pages/game.js";
 import { chatPage } from "./pages/chat.js";
 import { profilePage } from "./pages/profile.js";
-import { isLogged, clearToken, fetchUser } from "./token.js";
+import { isLogged, clearToken } from "./token.js";
 import { showToast, ToastType } from "./utils/toast.js";
 
 type RouteHandler = () => void;
@@ -10,25 +10,28 @@ type RouteHandler = () => void;
 const appDiv = document.getElementById("app") as HTMLElement;
 
 const routes: Record<string, RouteHandler> = {
-    "/": () => {
+    "/": async () => {
 		cleanup();
-		if (!isLogged()){
+		const isLoggedIn = await isLogged();
+		if (!isLoggedIn){
 			loginPage(appDiv);
 		} else {
 			gamePage(appDiv);
 		}
     },
-    "/chat": () => {
+    "/chat": async () => {
 		cleanup();
-		if (!isLogged()){
+		const isLoggedIn = await isLogged();
+		if (!isLoggedIn){
 			loginPage(appDiv);
 		} else {
 			chatPage(appDiv);
 		}
     },
-    "/profile": () => {
+    "/profile": async () => {
 		cleanup();
-		if (!isLogged()){
+		const isLoggedIn = await isLogged();
+		if (!isLoggedIn){
 			loginPage(appDiv);
 		} else {
 			profilePage(appDiv);
@@ -82,18 +85,5 @@ function cleanup() {
         delete (appDiv as any)._cleanupListeners;
     }
 }
-
-const updateLoginUI = async () => {
-	const user = await fetchUser();
-	console.log("username " + user?.username)
-	const token = isLogged();
-	if (token) {
-		console.log("User is logged in with token:", token);
-	} else {
-		console.log("User is not logged in.");
-	}
-}
-
-window.addEventListener("DOMContentLoaded", updateLoginUI);
 
 router();
