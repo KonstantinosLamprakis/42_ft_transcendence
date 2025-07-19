@@ -165,20 +165,15 @@ export const gamePage = (pageContainer: HTMLElement) => {
 
     let keys: Record<string, boolean> = {};
 
-    document.addEventListener("keydown", (e) => {
+    const handleKeyUp = (e: KeyboardEvent) => {
         if (e.key === 'w' || e.key === 's') {
             e.preventDefault(); // Prevent page scrolling
         }
         keys[e.key] = true;
-    });
-
-    document.addEventListener("keyup", (e) => {
+    }
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
         keys[e.key] = false;
-    });
-
-    function drawRect(x: number, y: number, w: number, h: number, color = "white") {
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, w, h);
     }
 
     function drawCircle(x: number, y: number, r: number, color = "white") {
@@ -186,13 +181,6 @@ export const gamePage = (pageContainer: HTMLElement) => {
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
-    }
-
-    function drawText(text: string, x: number, y: number, size = "30px") {
-        ctx.fillStyle = "white";
-        ctx.font = `${size} sans-serif`;
-        ctx.textAlign = "center";
-        ctx.fillText(text, x, y);
     }
 
     function draw() {
@@ -337,14 +325,14 @@ export const gamePage = (pageContainer: HTMLElement) => {
     // Event listeners
     const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
 
-    startGameButton.addEventListener("click", async (e) => {
+    const handleStartGameClick = async (e) => {
         e.preventDefault();
         const user = await fetchUser();
         startGameButton.disabled = true;
         connectWebSocket(user);
-    });
-
-    disconnectBtn.addEventListener("click", () => {
+    }
+    
+    const handleDisconnectClick = () => {
         if (socket) {
             socket.close();
             socket = null;
@@ -352,7 +340,20 @@ export const gamePage = (pageContainer: HTMLElement) => {
             updateConnectionStatus('disconnected');
             loadingDiv.style.display = 'flex';
         }
-    });
+    }
+
+    startGameButton.addEventListener("click", handleStartGameClick);
+    disconnectBtn.addEventListener("click", handleDisconnectClick);
+    document.addEventListener("keyup", handleKeyUp);
+    document.addEventListener("keydown", handleKeyDown);
+
+    (pageContainer as any)._cleanupListeners = () => {
+        startGameButton.removeEventListener("click", handleStartGameClick);
+        disconnectBtn.removeEventListener("click", handleDisconnectClick);
+        window.removeEventListener("resize", resizeCanvas);
+        document.removeEventListener("keyup", handleKeyUp);
+        document.removeEventListener("keydown", handleKeyDown);
+    };
 
     draw();
 };
