@@ -30,7 +30,7 @@ export type PongServerResponse = {
 	player2Y: number;
 	scorePlayer1: number;
 	scorePlayer2: number;
-	winner?: string;
+	winner?: number;
 };
 
 export enum Runtime {

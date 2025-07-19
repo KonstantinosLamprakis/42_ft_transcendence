@@ -62,28 +62,28 @@ export default async function matchesRoutes(fastify: FastifyInstance, opts: any)
 		}
 	});
 
-	fastify.put("/update-match", async (request, reply) => {
-		const { id, user1_score, user2_score, winner_id } = request.body as {
-			id: number;
-			user1_score: number;
-			user2_score: number;
-			winner_id?: number;
-		};
-		const match = db.prepare("SELECT 1 FROM matches WHERE id = ?");
-		const existingMatch = match.get(id);
-		if (!existingMatch) {
-			reply.status(404);
-			return { error: "Match not found" };
-		}
-		try {
-			const stmt = db.prepare(
-				"UPDATE matches SET	user1_score = ?, user2_score = ?, winner_id = COALESCE(?, winner_id) WHERE id = ?");
+	// fastify.put("/update-match", async (request, reply) => {
+	// 	const { id, user1_score, user2_score, winner_id } = request.body as {
+	// 		id: number;
+	// 		user1_score: number;
+	// 		user2_score: number;
+	// 		winner_id?: number;
+	// 	};
+	// 	const match = db.prepare("SELECT 1 FROM matches WHERE id = ?");
+	// 	const existingMatch = match.get(id);
+	// 	if (!existingMatch) {
+	// 		reply.status(404);
+	// 		return { error: "Match not found" };
+	// 	}
+	// 	try {
+	// 		const stmt = db.prepare(
+	// 			"UPDATE matches SET	user1_score = ?, user2_score = ?, winner_id = COALESCE(?, winner_id) WHERE id = ?");
 
-			stmt.run(user1_score, user2_score, winner_id, id);
-		} catch (err: any) {
-			reply.status(400);
-			return { error: err.message };
-		}
-		return { success: true };
-	});
+	// 		stmt.run(user1_score, user2_score, winner_id, id);
+	// 	} catch (err: any) {
+	// 		reply.status(400);
+	// 		return { error: err.message };
+	// 	}
+	// 	return { success: true };
+	// });
 }
