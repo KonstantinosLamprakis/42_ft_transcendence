@@ -19,7 +19,7 @@ export const WIDTH = 800;
 export const HEIGHT = 500;
 export const PADDLE_HEIGHT = 100;
 export const PADDLE_WIDTH = 10;
-export const BALL_SIZE = 10;
+export const BALL_SIZE = 5;
 export const MAX_BALL_SPEED = 25.0;
 export const SPEED_INCREASE = 1.4
 export const FPS = 1000/30;
@@ -267,10 +267,30 @@ export class Game {
 	// 	// fastify.log.info(`Game ended. Winner: ${this.winner}`);
 	// }
 
-	public Start()
+	public async Start()
 	{
 		this.ballVX = this.calculateStartVX();
 		this.ballVY = this.calculateStartVY(this.ballSpeed, this.ballVX);
+
+		const usernamePlayer1 = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player1UserId}`, {});
+		const usernamePlayer2 = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player2UserId}`, {});
+
+		const payload: PongServerResponse = {
+			type: PongMessageType.START,
+			ballX: this.ballX,
+			ballY: this.ballY,
+			player1Y: this.player1Y,
+			player2Y: this.player2Y,
+			scorePlayer1: this.scorePlayer1,
+			scorePlayer2: this.scorePlayer2,
+			usernamePlayer1: usernamePlayer1.data.username,
+			usernamePlayer2: usernamePlayer2.data.username,
+		};
+		if (this.connectionPlayer1)
+			this.connectionPlayer1.send(JSON.stringify(payload));
+		if (this.connectionPlayer2)
+			this.connectionPlayer2.send(JSON.stringify(payload));
+
 		this.interval = setInterval(() => {
       		if (!this.isGameOver) {
 				this.update();
