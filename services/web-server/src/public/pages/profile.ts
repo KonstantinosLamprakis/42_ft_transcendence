@@ -1,5 +1,6 @@
 import { HTTPS_API_URL, meResponse, Match } from "../types.js";
 import { getToken } from "../token.js";
+import { showToast, ToastType } from "../utils/toast.js";
 
 export const profilePage = (pageContainer: HTMLElement) => {
 	pageContainer.innerHTML = `
@@ -237,25 +238,11 @@ export const profilePage = (pageContainer: HTMLElement) => {
         }
     };
 
-    const showNotification = (message: string, type: 'success' | 'error') => {
-        const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg text-white transition-all duration-300 ${
-            type === 'success' ? 'bg-green-500' : 'bg-red-500'
-        }`;
-        notification.textContent = message;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    };
-
     const updateProfile = async (formData: FormData) => {
         try {
             const token = getToken();
             if (!token) {
-                showNotification('Authentication required', 'error');
+                showToast("Authentication required", ToastType.ERROR);
                 return;
             }
 
@@ -272,7 +259,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
             });
 
             if (response.ok) {
-                showNotification('Profile updated successfully!', 'success');
+                showToast("Profile updated successfully", ToastType.SUCCESS);
                 await getInfo(); // Refresh profile data
                 
                 // Reset password fields if they were visible
@@ -286,11 +273,11 @@ export const profilePage = (pageContainer: HTMLElement) => {
                 }
             } else {
                 const error = await response.json();
-                showNotification(error.error || 'Failed to update profile', 'error');
+                showToast(error.error || 'Failed to update profile', ToastType.ERROR);
             }
         } catch (error) {
             console.error('Update profile error:', error);
-            showNotification('An error occurred while updating profile', 'error');
+            showToast('An error occurred while updating profile', ToastType.ERROR);
         } finally {
             const saveBtn = document.getElementById('save-changes-btn') as HTMLButtonElement;
             saveBtn.disabled = false;
@@ -303,17 +290,19 @@ export const profilePage = (pageContainer: HTMLElement) => {
         const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement).value;
         
         if (!newPassword || !confirmPassword) {
-            showNotification('Please fill in both password fields', 'error');
+            showToast('Please fill in both password fields', ToastType.ERROR);
             return { newPassword: '', isValid: false };
         }
         
         if (newPassword !== confirmPassword) {
-            showNotification('Passwords do not match', 'error');
+            showToast('Passwords do not match', ToastType.ERROR);
             return { newPassword: '', isValid: false };
         }
         
-        if (newPassword.length < 6) {
-            showNotification('Password must be at least 6 characters long', 'error');
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
+    
+        if (!passwordRegex.test(newPassword)) {
+            showToast('Password must be at least 8 characters long and contain at least one letter and one number', ToastType.ERROR);
             return { newPassword: '', isValid: false };
         }
         
@@ -352,7 +341,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
         }
         
         if (!hasChanges) {
-            showNotification('No changes to save', 'error');
+            showToast('No changes to save', ToastType.ERROR);
             return;
         }
         
@@ -366,13 +355,13 @@ export const profilePage = (pageContainer: HTMLElement) => {
         if (file) {
             // Validate file type and size
             if (!file.type.startsWith('image/')) {
-                showNotification('Please select an image file', 'error');
+                showToast('Please select an image file', ToastType.ERROR);
                 input.value = '';
                 return;
             }
             
             if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                showNotification('Image size must be less than 5MB', 'error');
+                showToast('Image size must be less than 5MB', ToastType.ERROR);
                 input.value = '';
                 return;
             }
@@ -384,8 +373,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                 avatarElement.style.backgroundImage = `url("${e.target?.result}")`;
             };
             reader.readAsDataURL(file);
-            
-            showNotification('Image selected. Click "Save Changes" to update.', 'success');
+            showToast('Image selected. Click "Save Changes" to update.', ToastType.SUCCESS);
         }
     };
 
