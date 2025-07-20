@@ -40,6 +40,12 @@ export const fetchUser = async () => {
 		headers: { Authorization: `Bearer ${getToken()}` },
 	});
 
-	user = await res.json();
+	const data = await res.json();
+	if (data.error){
+		user = undefined;
+		return undefined;
+	}
+
+	user = data;
 	return user;
 }
