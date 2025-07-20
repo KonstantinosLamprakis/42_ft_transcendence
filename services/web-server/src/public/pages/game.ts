@@ -108,11 +108,11 @@ export const gamePage = (pageContainer: HTMLElement) => {
                     <h3 class="text-lg font-semibold text-blue-900 mb-3">How to Play</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 text-sm text-blue-800">
                         <div class="flex items-start gap-3">
-                            <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                            <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</div>
                             <p>Wait for another player to join the match</p>
                         </div>
                         <div class="flex items-start gap-3">
-                            <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                            <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</div>
                             <p>Use W/S keys to control your paddle and score goals!</p>
                         </div>
                     </div>

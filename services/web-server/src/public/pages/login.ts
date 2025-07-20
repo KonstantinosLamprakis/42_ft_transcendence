@@ -285,8 +285,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
             submitBtn.textContent = "Verifying...";
             submitBtn.disabled = true;
             
-            const username = (form.username as HTMLInputElement).value;
-            const tokenVal = (form.token as HTMLInputElement).value;
+            const tokenVal = (form.querySelector('input[name="pong-token"]') as HTMLInputElement).value;
             
             try {
                 const res = await fetch(`${HTTPS_API_URL}/2fa/verify`, {
@@ -304,6 +303,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                     twofaForm!.style.opacity = "0";
                     twofaForm!.style.transform = "translateY(-10px)";
                     setTimeout(() => form.remove(), 300);
+                    window.location.reload();
                 } else {
                     showToast(data.error || "Invalid 2FA code. Please try again.", ToastType.ERROR)
                     // Reset button state
@@ -586,7 +586,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
             e.preventDefault();
             
             const formData = new FormData(activationForm);
-            const token = formData.get('token') as string;
+            const token = formData.get('pong-token') as string;
             const submitBtn = activationForm.querySelector('button[type="submit"]') as HTMLButtonElement;
             
             submitBtn.textContent = "Activating...";
