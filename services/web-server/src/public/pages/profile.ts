@@ -182,7 +182,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
         const userNicknameElement = document.getElementById("user-nickname")! as HTMLInputElement;
         const userUsernameElement = document.getElementById("user-username")! as HTMLInputElement;
 
-        console.log(data);
         winsElement.textContent = data.wins.toString();
         lossesElement.textContent = data.loses.toString();
         userNameElement.value = data.name;
@@ -195,6 +194,15 @@ export const profilePage = (pageContainer: HTMLElement) => {
                 ? `${HTTPS_API_URL}/uploads/${data.avatar}`
                 : data.avatar;
             avatarElement.style.backgroundImage = `url("${imgPath}")`;
+        }
+
+        const avatarUpload = document.getElementById('avatar-upload') as HTMLInputElement;
+        const avatarLabel = document.querySelector('label[for="avatar-upload"]') as HTMLElement;
+        
+        if (data.isGoogleAccount) {
+            avatarUpload.disabled = true;
+            avatarLabel.classList.add('opacity-50', 'cursor-not-allowed');
+            avatarLabel.classList.remove('cursor-pointer', 'hover:bg-blue-600');
         }
 
         // Update match history table
