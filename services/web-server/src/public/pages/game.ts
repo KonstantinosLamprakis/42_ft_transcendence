@@ -15,24 +15,6 @@ export const gamePage = (pageContainer: HTMLElement) => {
                     </p>
                 </div>
 
-                <!-- Game Controls -->
-                <div class="bg-white rounded-xl shadow-lg border border-subtle-border p-4 sm:p-6 mb-6">
-                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto">
-                        <div class="flex items-end">
-                            <button 
-                                id="start-game" 
-                                class="w-full sm:w-auto px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2 transition-all font-medium text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed">
-                                <span class="flex items-center justify-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1"></path>
-                                    </svg>
-                                    Start Game
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Game Area -->
                 <div class="bg-gray-900 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
                     <!-- Game Stats -->
@@ -88,12 +70,24 @@ export const gamePage = (pageContainer: HTMLElement) => {
                                     <span>Move Down</span>
                                 </div>
                             </div>
-                            <button 
-                                id="disconnect-btn" 
-                                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled>
-                                Disconnect
-                            </button>
+							<div>
+								<button 
+									id="disconnect-btn" 
+									class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+									disabled>
+									Disconnect
+								</button>
+								<button 
+									id="start-game" 
+									class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+									<span class="flex items-center justify-center gap-2">
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1"></path>
+										</svg>
+										Start Game
+									</span>
+								</button>
+							</div>
                         </div>
                     </div>
                 </div>
