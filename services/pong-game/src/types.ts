@@ -9,6 +9,7 @@ export enum PongMessageType {
 	MOVE = "move",
 	END = "end",
 	DRAW = "draw",
+	START = "start",
 };
 
 export enum PongClientMove {
@@ -31,6 +32,8 @@ export type PongServerResponse = {
 	scorePlayer1: number;
 	scorePlayer2: number;
 	winner?: number;
+	usernamePlayer1?: string;
+	usernamePlayer2?: string;
 };
 
 export enum Runtime {

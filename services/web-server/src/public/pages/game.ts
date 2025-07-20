@@ -23,12 +23,12 @@ export const gamePage = (pageContainer: HTMLElement) => {
                             <div class="flex items-center gap-4">
                                 <div class="text-center">
                                     <div class="text-lg sm:text-xl font-bold text-white" id="player-score">0</div>
-                                    <div class="text-xs sm:text-sm text-gray-400">You</div>
+                                    <div id="player1" class="text-xs sm:text-sm text-gray-400">Player 1</div>
                                 </div>
                                 <div class="text-gray-500 text-lg sm:text-xl font-bold">VS</div>
                                 <div class="text-center">
                                     <div class="text-lg sm:text-xl font-bold text-white" id="opponent-score">0</div>
-                                    <div class="text-xs sm:text-sm text-gray-400">Opponent</div>
+                                    <div id="player2" class="text-xs sm:text-sm text-gray-400">Player 2</div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-400">
@@ -154,14 +154,14 @@ export const gamePage = (pageContainer: HTMLElement) => {
 
 	let keys: Record<string, boolean> = {};
 
-	const handleKeyUp = (e: KeyboardEvent) => {
+	const handleKeyDown = (e: KeyboardEvent) => {
 		if (e.key === "w" || e.key === "s") {
 			e.preventDefault(); // Prevent page scrolling
 		}
 		keys[e.key] = true;
 	};
 
-	const handleKeyDown = (e: KeyboardEvent) => {
+	const handleKeyUp = (e: KeyboardEvent) => {
 		keys[e.key] = false;
 	};
 
@@ -285,6 +285,19 @@ export const gamePage = (pageContainer: HTMLElement) => {
 
 					socket?.close();
 					return;
+				}
+
+				if (data.type === PongMessageType.START) {
+					loadingDiv.style.display = "none";
+					ballX = data.ballX;
+					ballY = data.ballY;
+					playerY = data.player1Y;
+					opponentY = data.player2Y;
+					playerScore = data.scorePlayer1;
+					opponentScore = data.scorePlayer2;
+					document.getElementById("player1")!.innerHTML = data.usernamePlayer1;
+					document.getElementById("player2")!.innerHTML = data.usernamePlayer2;
+					draw();
 				}
 
 				if (data.type === PongMessageType.DRAW) {

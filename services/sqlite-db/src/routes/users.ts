@@ -77,6 +77,13 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 		return { deleted: result.changes > 0 };
 	});
 
+	fastify.get("/get-user-by-id/:id", async (request) => {
+		const { id } = request.params as { id: string };
+		const stmt = db.prepare("SELECT username FROM users WHERE id = ?");
+		const username = stmt.get(id);
+		return username || { error: "User not found" };
+	});
+
 	fastify.get("/get-user-by-username/:username", async (request) => {
 		const { username } = request.params as { username: string };
 		const stmt = db.prepare("SELECT * FROM users WHERE username = ?");
