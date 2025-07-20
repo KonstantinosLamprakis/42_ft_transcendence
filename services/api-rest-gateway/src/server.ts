@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import fastifyHttpProxy from "@fastify/http-proxy";
 import * as dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config();
 
@@ -9,9 +10,70 @@ enum Runtime {
 	DOCKER = "docker",
 }
 
-const fastify = Fastify({
-	logger: true,
-});
+const fastify = Fastify();
+
+const AUTH_SERVICE_URL = 
+    process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000";
+
+// Public routes that don't require authentication
+const PUBLIC_ROUTES = [
+    "/login",
+    "/signup", 
+    "/google-login",
+	"/2fa",
+	"/uploads"
+];
+
+const authenticateToken = async (request: any, reply: any) => {
+    try {
+        // Skip authentication for public routes
+        const isPublicRoute = PUBLIC_ROUTES.some(route => request.url.startsWith(route));
+        if (isPublicRoute) {
+            return;
+        }
+
+		let token;
+		if (request.raw.headers.upgrade !== 'websocket') {
+			token = request.headers.authorization?.split(' ')[1];
+    	} else {
+			if (request.query && typeof request.query === 'object' && 'token' in request.query) {
+				token = request.query.token as string;
+			}
+		}
+
+        if (!token) {
+            return reply.status(401).send({ error: 'Access token required' });
+        }
+
+        // Validate token with auth service
+        const authResponse = await axios.get(`${AUTH_SERVICE_URL}/validate-token`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+		let userId;
+		if (request.query && typeof request.query === 'object' && 'userId' in request.query) {
+			userId = request.query.userId as string;
+		}
+
+		if (userId && userId !== authResponse.data.user.id.toString()) {
+			fastify.log.warn(`User ID mismatch: ${userId} does not match authenticated user ID ${authResponse.data.user.id}`);
+			return reply.status(403).send({ error: 'Forbidden: User ID mismatch' });
+		}
+
+        // Forward user context to internal services
+        request.headers['x-user-id'] = authResponse.data.user.id.toString();
+        request.headers['x-username'] = authResponse.data.user.username;
+        request.user = authResponse.data.user;
+        
+        fastify.log.info(`Authenticated user: ${authResponse.data.user.username}-${authResponse.data.user.id.toString()} for ${request.url}`);
+        
+    } catch (error: any) {
+        fastify.log.error('Token validation failed:', error.message);
+        return reply.status(401).send({ error: 'Invalid or expired token' });
+    }
+};
+
+fastify.addHook('preHandler', authenticateToken);
 
 const proxyConfigs = [
 	// auth
@@ -44,6 +106,12 @@ const proxyConfigs = [
 			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
 		prefix: "/2fa/setup",
 		rewritePrefix: "/2fa/setup",
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
+		prefix: "/2fa/activate",
+		rewritePrefix: "/2fa/activate",
 	},
 	{
 		upstream:
@@ -83,16 +151,13 @@ for (const cfg of proxyConfigs) {
 		prefix: cfg.prefix,
 		rewritePrefix: cfg.rewritePrefix,
 		websocket: cfg.websocket ?? false,
+		replyOptions: {
+            rewriteRequestHeaders: (originalReq, headers) => {
+                return headers;
+            }
+        }
 	});
 }
-
-// For websockets:
-fastify.addHook("onRequest", (request, reply, done) => {
-	if (request.raw.url?.startsWith("/chat") && request.raw.headers.upgrade === "websocket") {
-		fastify.log.info(`WebSocket request for /chat from ${request.ip}`);
-	}
-	done();
-});
 
 fastify.listen({ port: 3000, host: "0.0.0.0" }, function (err, address) {
 	if (err) {

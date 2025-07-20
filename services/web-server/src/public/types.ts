@@ -30,8 +30,7 @@ export enum PongMessageType {
 export enum PongClientMove {
 	UP = "w",
 	DOWN = "s",
-};
-
+}
 
 export type PongClientRequest = {
 	type: PongMessageType;
@@ -47,5 +46,27 @@ export type PongServerResponse = {
 	player2Y: number;
 	scorePlayer1: number;
 	scorePlayer2: number;
-	winner?: string;
+	winner?: number;
 };
+
+// auth
+export type meResponse = {
+	id: string;
+	username: string;
+	name: string;
+	nickname: string;
+	email: string;
+	avatar: string | undefined;
+	wins: number;
+	loses: number;
+	isGoogleAccount: boolean | undefined;
+	matches: Match[];
+}
+
+export type Match = {
+	user1_score: string;
+	user2_score: string;
+	match_date: string;
+	opponent_username: string;
+	winner_username: string;
+}

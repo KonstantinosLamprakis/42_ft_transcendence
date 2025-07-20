@@ -16,7 +16,6 @@ export enum PongClientMove {
 	DOWN = "s",
 };
 
-
 export type PongClientRequest = {
 	type: PongMessageType;
 	move?: PongClientMove;
@@ -31,7 +30,7 @@ export type PongServerResponse = {
 	player2Y: number;
 	scorePlayer1: number;
 	scorePlayer2: number;
-	winner?: string;
+	winner?: number;
 };
 
 export enum Runtime {

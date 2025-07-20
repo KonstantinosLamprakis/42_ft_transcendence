@@ -15,7 +15,7 @@ enum Runtime {
 	DOCKER = "docker",
 }
 
-const fastify = Fastify({ logger: true });
+const fastify = Fastify();
 
 if (process.env.RUNTIME === Runtime.LOCAL) {
 	const uploadsDir = "./data";
