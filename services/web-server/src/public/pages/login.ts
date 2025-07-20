@@ -402,6 +402,14 @@ export const loginPage = (pageContainer: HTMLElement) => {
 			return;
 		}
 
+		const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
+    
+        if (!passwordRegex.test(password)) {
+			showToast(`Password must be at least 8 characters long and contain at least one letter and one number`, ToastType.ERROR);
+            return;
+        }
+        
+
 		// Clear any existing password error styling
 		const confirmPasswordInput = document.getElementById(
 			"confirm-password",
