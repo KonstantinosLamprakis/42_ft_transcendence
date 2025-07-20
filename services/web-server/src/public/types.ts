@@ -4,21 +4,6 @@ export const SERVER_HOST = typeof window !== "undefined" ? window.location.hostn
 export const WEBSOCKET_API_URL = `wss://${SERVER_HOST}/api`;
 export const HTTPS_API_URL = `https://${SERVER_HOST}/api`;
 
-// live-chat
-export enum ChatMessageType {
-	STATUS = "status",
-	CHAT_MESSAGE = "chatMessage",
-	NAME_UPDATE = "nameUpdate",
-}
-
-export type ChatServerResponse = {
-	type: ChatMessageType;
-	content: string;
-	timestamp: number;
-	name: string;
-	senderId: string;
-};
-
 // pong
 export enum PongMessageType {
 	INIT = "init",

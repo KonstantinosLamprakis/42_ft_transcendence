@@ -22,7 +22,6 @@ clean:
 	rm -rf *.d.ts 
 	rm -rf *.tsbuildinfo
 	find ./public -name "*.js" -type f -delete
-	rm -rf ./public/styles.css
 
 start:
 	npm run start
