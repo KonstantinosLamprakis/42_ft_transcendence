@@ -1,13 +1,8 @@
-import {
-    WEBSOCKET_API_URL,
-    PongClientMove,
-    meResponse,
-    PongMessageType,
-} from "../types.js";
+import { WEBSOCKET_API_URL, PongClientMove, meResponse, PongMessageType } from "../types.js";
 import { getToken, fetchUser } from "../token.js";
 
 export const gamePage = (pageContainer: HTMLElement) => {
-    pageContainer.innerHTML = `
+	pageContainer.innerHTML = `
         <div class="min-h-screen bg-background-color text-foreground-color p-4 sm:p-6 lg:p-8">
             <!-- Header Section -->
             <div class="max-w-6xl mx-auto">
@@ -121,157 +116,166 @@ export const gamePage = (pageContainer: HTMLElement) => {
         </div>
     `;
 
-    let socket: WebSocket | null = null;
+	let socket: WebSocket | null = null;
 
-    const canvas = document.getElementById("game") as HTMLCanvasElement;
-    const ctx = canvas.getContext("2d")!;
-    const loadingDiv = document.getElementById("game-loading") as HTMLElement;
-    const connectionStatus = document.getElementById("connection-status") as HTMLElement;
-    const connectionText = document.getElementById("connection-text") as HTMLElement;
-    const playerScoreEl = document.getElementById("player-score") as HTMLElement;
-    const opponentScoreEl = document.getElementById("opponent-score") as HTMLElement;
-    const disconnectBtn = document.getElementById("disconnect-btn") as HTMLButtonElement;
+	const canvas = document.getElementById("game") as HTMLCanvasElement;
+	const ctx = canvas.getContext("2d")!;
+	const loadingDiv = document.getElementById("game-loading") as HTMLElement;
+	const connectionStatus = document.getElementById("connection-status") as HTMLElement;
+	const connectionText = document.getElementById("connection-text") as HTMLElement;
+	const playerScoreEl = document.getElementById("player-score") as HTMLElement;
+	const opponentScoreEl = document.getElementById("opponent-score") as HTMLElement;
+	const disconnectBtn = document.getElementById("disconnect-btn") as HTMLButtonElement;
 
-    // Responsive canvas sizing
-    function resizeCanvas() {
-        const container = canvas.parentElement!;
-        const containerWidth = container.clientWidth;
-        const maxWidth = Math.min(800, containerWidth - 32); // 32px for padding
-        const aspectRatio = 800 / 500;
-        const newHeight = maxWidth / aspectRatio;
-        
-        canvas.style.width = `${maxWidth}px`;
-        canvas.style.height = `${newHeight}px`;
-    }
+	// Responsive canvas sizing
+	function resizeCanvas() {
+		const container = canvas.parentElement!;
+		const containerWidth = container.clientWidth;
+		const maxWidth = Math.min(800, containerWidth - 32); // 32px for padding
+		const aspectRatio = 800 / 500;
+		const newHeight = maxWidth / aspectRatio;
 
-    // Initial resize and add listener
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+		canvas.style.width = `${maxWidth}px`;
+		canvas.style.height = `${newHeight}px`;
+	}
 
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
+	// Initial resize and add listener
+	resizeCanvas();
+	window.addEventListener("resize", resizeCanvas);
 
-    const PADDLE_WIDTH = 10;
-    const PADDLE_HEIGHT = 100;
-    const BALL_SIZE = 5;
+	const WIDTH = canvas.width;
+	const HEIGHT = canvas.height;
 
-    let playerY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
-    let opponentY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
-    let ballX = WIDTH / 2;
-    let ballY = HEIGHT / 2;
+	const PADDLE_WIDTH = 10;
+	const PADDLE_HEIGHT = 100;
+	const BALL_SIZE = 5;
 
-    let playerScore = 0;
-    let opponentScore = 0;
+	let playerY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
+	let opponentY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
+	let ballX = WIDTH / 2;
+	let ballY = HEIGHT / 2;
 
-    let keys: Record<string, boolean> = {};
+	let playerScore = 0;
+	let opponentScore = 0;
 
-    const handleKeyUp = (e: KeyboardEvent) => {
-        if (e.key === 'w' || e.key === 's') {
-            e.preventDefault(); // Prevent page scrolling
-        }
-        keys[e.key] = true;
-    }
-    
-    const handleKeyDown = (e: KeyboardEvent) => {
-        keys[e.key] = false;
-    }
+	let keys: Record<string, boolean> = {};
 
-    function drawCircle(x: number, y: number, r: number, color = "white") {
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
-    }
+	const handleKeyUp = (e: KeyboardEvent) => {
+		if (e.key === "w" || e.key === "s") {
+			e.preventDefault(); // Prevent page scrolling
+		}
+		keys[e.key] = true;
+	};
 
-    function draw() {
-        // Clear canvas with gradient background
-        const gradient = ctx.createLinearGradient(0, 0, 0, HEIGHT);
-        gradient.addColorStop(0, "#1a1a2e");
-        gradient.addColorStop(1, "#16213e");
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+	const handleKeyDown = (e: KeyboardEvent) => {
+		keys[e.key] = false;
+	};
 
-        // Draw center line
-        ctx.setLineDash([10, 10]);
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(WIDTH / 2, 0);
-        ctx.lineTo(WIDTH / 2, HEIGHT);
-        ctx.stroke();
-        ctx.setLineDash([]);
+	function drawCircle(x: number, y: number, r: number, color = "white") {
+		ctx.fillStyle = color;
+		ctx.beginPath();
+		ctx.arc(x, y, r, 0, Math.PI * 2);
+		ctx.fill();
+	}
 
-        // Draw paddles with rounded corners
-        ctx.fillStyle = "#4ade80"; // Green for player
-        ctx.fillRect(5, playerY, PADDLE_WIDTH, PADDLE_HEIGHT);
-        
-        ctx.fillStyle = "#f87171"; // Red for opponent
-        ctx.fillRect(WIDTH - PADDLE_WIDTH - 5, opponentY, PADDLE_WIDTH, PADDLE_HEIGHT);
+	function draw() {
+		// Clear canvas with gradient background
+		const gradient = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+		gradient.addColorStop(0, "#1a1a2e");
+		gradient.addColorStop(1, "#16213e");
+		ctx.fillStyle = gradient;
+		ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-        // Draw ball with glow effect
-        ctx.shadowColor = "white";
-        ctx.shadowBlur = 10;
-        drawCircle(ballX, ballY, BALL_SIZE, "white");
-        ctx.shadowBlur = 0;
+		// Draw center line
+		ctx.setLineDash([10, 10]);
+		ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+		ctx.lineWidth = 2;
+		ctx.beginPath();
+		ctx.moveTo(WIDTH / 2, 0);
+		ctx.lineTo(WIDTH / 2, HEIGHT);
+		ctx.stroke();
+		ctx.setLineDash([]);
 
-        // Update UI scores
-        playerScoreEl.textContent = playerScore.toString();
-        opponentScoreEl.textContent = opponentScore.toString();
-    }
+		// Draw paddles with rounded corners
+		ctx.fillStyle = "#4ade80"; // Green for player
+		ctx.fillRect(5, playerY, PADDLE_WIDTH, PADDLE_HEIGHT);
 
-    function updateConnectionStatus(status: 'connecting' | 'connected' | 'disconnected') {
-        const statusMap = {
-            connecting: { color: 'bg-yellow-500', text: 'Connecting...', animation: 'animate-pulse' },
-            connected: { color: 'bg-green-500', text: 'Connected', animation: '' },
-            disconnected: { color: 'bg-red-500', text: 'Disconnected', animation: 'animate-pulse' }
-        };
+		ctx.fillStyle = "#f87171"; // Red for opponent
+		ctx.fillRect(WIDTH - PADDLE_WIDTH - 5, opponentY, PADDLE_WIDTH, PADDLE_HEIGHT);
 
-        const { color, text, animation } = statusMap[status];
-        connectionStatus.className = `w-2 h-2 ${color} rounded-full ${animation}`;
-        connectionText.textContent = text;
-    }
+		// Draw ball with glow effect
+		ctx.shadowColor = "white";
+		ctx.shadowBlur = 10;
+		drawCircle(ballX, ballY, BALL_SIZE, "white");
+		ctx.shadowBlur = 0;
 
-    function connectWebSocket(user: meResponse | undefined): void {
-        const token = getToken();
-        if (!token) {
-            console.error("No authentication token found");
-            return;
-        }
-        
-        updateConnectionStatus('connecting');
-        loadingDiv.style.display = 'flex';
-        
-        socket = new WebSocket(`${WEBSOCKET_API_URL}/pong?userId=${encodeURIComponent(user?.id ?? "")}&token=${encodeURIComponent(token)}`);
+		// Update UI scores
+		playerScoreEl.textContent = playerScore.toString();
+		opponentScoreEl.textContent = opponentScore.toString();
+	}
 
-        socket.onopen = (event: Event) => {
-            console.log("WebSocket connected:", event);
-            updateConnectionStatus('connected');
-            disconnectBtn.disabled = false;
+	function updateConnectionStatus(status: "connecting" | "connected" | "disconnected") {
+		const statusMap = {
+			connecting: {
+				color: "bg-yellow-500",
+				text: "Connecting...",
+				animation: "animate-pulse",
+			},
+			connected: { color: "bg-green-500", text: "Connected", animation: "" },
+			disconnected: { color: "bg-red-500", text: "Disconnected", animation: "animate-pulse" },
+		};
 
-            if (token) {
-                socket?.send(JSON.stringify({ type: PongMessageType.INIT}));
-                console.log("Sent userId to server: ", token);
-            } else {
-                console.warn("No userId set before WebSocket connection.");
-            }
-        };
+		const { color, text, animation } = statusMap[status];
+		connectionStatus.className = `w-2 h-2 ${color} rounded-full ${animation}`;
+		connectionText.textContent = text;
+	}
 
-        socket.onmessage = (event: MessageEvent) => {
-            let data: any;
+	function connectWebSocket(user: meResponse | undefined): void {
+		const token = getToken();
+		if (!token) {
+			console.error("No authentication token found");
+			return;
+		}
 
-            try {
-                data = JSON.parse(event.data);
-                
-                if (data.type === PongMessageType.END) {
-                    playerScore = data.scorePlayer1;
-                    opponentScore = data.scorePlayer2;
-                    draw();
-                    
-                    // Enhanced game over modal
-                    const winner = data.winner === user?.id ? 'You Won!' : 'You Lost!';
-                    const winnerClass = data.winner === user?.id ? 'text-green-600' : 'text-red-600';
-                    
-                    pageContainer.insertAdjacentHTML('beforeend', `
+		updateConnectionStatus("connecting");
+		loadingDiv.style.display = "flex";
+
+		socket = new WebSocket(
+			`${WEBSOCKET_API_URL}/pong?userId=${encodeURIComponent(user?.id ?? "")}&token=${encodeURIComponent(token)}`,
+		);
+
+		socket.onopen = (event: Event) => {
+			console.log("WebSocket connected:", event);
+			updateConnectionStatus("connected");
+			disconnectBtn.disabled = false;
+
+			if (token) {
+				socket?.send(JSON.stringify({ type: PongMessageType.INIT }));
+				console.log("Sent userId to server: ", token);
+			} else {
+				console.warn("No userId set before WebSocket connection.");
+			}
+		};
+
+		socket.onmessage = (event: MessageEvent) => {
+			let data: any;
+
+			try {
+				data = JSON.parse(event.data);
+
+				if (data.type === PongMessageType.END) {
+					playerScore = data.scorePlayer1;
+					opponentScore = data.scorePlayer2;
+					draw();
+
+					// Enhanced game over modal
+					const winner = data.winner === user?.id ? "You Won!" : "You Lost!";
+					const winnerClass =
+						data.winner === user?.id ? "text-green-600" : "text-red-600";
+
+					pageContainer.insertAdjacentHTML(
+						"beforeend",
+						`
                         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="game-over-modal">
                             <div class="bg-white rounded-xl p-8 max-w-md mx-4 text-center">
                                 <h2 class="text-2xl font-bold ${winnerClass} mb-4">${winner}</h2>
@@ -282,78 +286,83 @@ export const gamePage = (pageContainer: HTMLElement) => {
                                 </button>
                             </div>
                         </div>
-                    `);
-                    
-                    socket?.close();
-                    return;
-                }
-                
-                if (data.type === PongMessageType.DRAW) {
-                    loadingDiv.style.display = 'none';
-                    ballX = data.ballX;
-                    ballY = data.ballY;
-                    playerY = data.player1Y;
-                    opponentY = data.player2Y;
-                    playerScore = data.scorePlayer1;
-                    opponentScore = data.scorePlayer2;
-                    draw();
-                }
-            } catch (err) {
-                console.error("Failed to parse message from server:", err);
-                return;
-            }
+                    `,
+					);
 
-            if (keys["w"] && !keys["s"]) {
-                socket?.send(JSON.stringify({ type: PongMessageType.MOVE, move: PongClientMove.UP }));
-            } else if (keys["s"] && !keys["w"]) {
-                socket?.send(JSON.stringify({ type: PongMessageType.MOVE, move: PongClientMove.DOWN }));
-            }
-        };
+					socket?.close();
+					return;
+				}
 
-        socket.onclose = () => {
-            updateConnectionStatus('disconnected');
-            disconnectBtn.disabled = true;
-            loadingDiv.style.display = 'flex';
-        };
+				if (data.type === PongMessageType.DRAW) {
+					loadingDiv.style.display = "none";
+					ballX = data.ballX;
+					ballY = data.ballY;
+					playerY = data.player1Y;
+					opponentY = data.player2Y;
+					playerScore = data.scorePlayer1;
+					opponentScore = data.scorePlayer2;
+					draw();
+				}
+			} catch (err) {
+				console.error("Failed to parse message from server:", err);
+				return;
+			}
 
-        socket.onerror = (error) => {
-            console.error("WebSocket error:", error);
-            updateConnectionStatus('disconnected');
-        };
-    }
+			if (keys["w"] && !keys["s"]) {
+				socket?.send(
+					JSON.stringify({ type: PongMessageType.MOVE, move: PongClientMove.UP }),
+				);
+			} else if (keys["s"] && !keys["w"]) {
+				socket?.send(
+					JSON.stringify({ type: PongMessageType.MOVE, move: PongClientMove.DOWN }),
+				);
+			}
+		};
 
-    // Event listeners
-    const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
+		socket.onclose = () => {
+			updateConnectionStatus("disconnected");
+			disconnectBtn.disabled = true;
+			loadingDiv.style.display = "flex";
+		};
 
-    const handleStartGameClick = async (e) => {
-        e.preventDefault();
-        const user = await fetchUser();
-        startGameButton.disabled = true;
-        connectWebSocket(user);
-    }
-    
-    const handleDisconnectClick = () => {
-        if (socket) {
-            socket.close();
-            socket = null;
-            startGameButton.disabled = false;
-            updateConnectionStatus('disconnected');
-            loadingDiv.style.display = 'flex';
-        }
-    }
+		socket.onerror = (error) => {
+			console.error("WebSocket error:", error);
+			updateConnectionStatus("disconnected");
+		};
+	}
 
-    startGameButton.addEventListener("click", handleStartGameClick);
-    disconnectBtn.addEventListener("click", handleDisconnectClick);
-    document.addEventListener("keyup", handleKeyUp);
-    document.addEventListener("keydown", handleKeyDown);
+	// Event listeners
+	const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
 
-    (pageContainer as any)._cleanupListeners = () => {
-        startGameButton.removeEventListener("click", handleStartGameClick);
-        disconnectBtn.removeEventListener("click", handleDisconnectClick);
-        window.removeEventListener("resize", resizeCanvas);
-        document.removeEventListener("keyup", handleKeyUp);
-        document.removeEventListener("keydown", handleKeyDown);
-    };
+	const handleStartGameClick = async (e: MouseEvent) => {
+		e.preventDefault();
+		const user = await fetchUser();
+		startGameButton.disabled = true;
+		connectWebSocket(user);
+	};
 
-    draw();
+	const handleDisconnectClick = () => {
+		if (socket) {
+			socket.close();
+			socket = null;
+			startGameButton.disabled = false;
+			updateConnectionStatus("disconnected");
+			loadingDiv.style.display = "flex";
+		}
+	};
+
+	startGameButton.addEventListener("click", handleStartGameClick);
+	disconnectBtn.addEventListener("click", handleDisconnectClick);
+	document.addEventListener("keyup", handleKeyUp);
+	document.addEventListener("keydown", handleKeyDown);
+
+	(pageContainer as any)._cleanupListeners = () => {
+		startGameButton.removeEventListener("click", handleStartGameClick);
+		disconnectBtn.removeEventListener("click", handleDisconnectClick);
+		window.removeEventListener("resize", resizeCanvas);
+		document.removeEventListener("keyup", handleKeyUp);
+		document.removeEventListener("keydown", handleKeyDown);
+	};
+
+	draw();
 };

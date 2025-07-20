@@ -12,13 +12,6 @@ services:
       - sqlite-data:/data
     restart: unless-stopped
 
-  live-chat:
-    build:
-      context: ./services/live-chat
-    expose:
-      - "3003"  
-    restart: unless-stopped
-
   pong-game:
     build:
       context: ./services/pong-game

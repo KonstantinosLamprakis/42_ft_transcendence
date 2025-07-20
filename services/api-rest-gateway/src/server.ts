@@ -132,15 +132,6 @@ const proxyConfigs = [
 		rewritePrefix: "/google-login",
 	},
 
-	// live-chat
-	{
-		upstream:
-			process.env.RUNTIME === Runtime.LOCAL ? "ws://127.0.0.1:3003" : "ws://live-chat:3003",
-		prefix: "/chat",
-		rewritePrefix: "/chat",
-		websocket: true,
-	},
-
 	// pong
 	{
 		upstream:

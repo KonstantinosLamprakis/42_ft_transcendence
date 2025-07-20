@@ -8,6 +8,5 @@ dist
 *.tsbuildinfo
 certs
 uploads
-services/web-server/public/styles.css
 services/sqlite-db/data
 .vscode

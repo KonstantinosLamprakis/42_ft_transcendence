@@ -1,6 +1,5 @@
 import { loginPage } from "./pages/login.js";
 import { gamePage } from "./pages/game.js";
-import { chatPage } from "./pages/chat.js";
 import { profilePage } from "./pages/profile.js";
 import { isLogged, clearToken } from "./token.js";
 import { showToast, ToastType } from "./utils/toast.js";
@@ -17,15 +16,6 @@ const routes: Record<string, RouteHandler> = {
 			loginPage(appDiv);
 		} else {
 			gamePage(appDiv);
-		}
-    },
-    "/chat": async () => {
-		cleanup();
-		const isLoggedIn = await isLogged();
-		if (!isLoggedIn){
-			loginPage(appDiv);
-		} else {
-			chatPage(appDiv);
 		}
     },
     "/profile": async () => {
