@@ -220,6 +220,10 @@ export const profilePage = (pageContainer: HTMLElement) => {
                 ? `${HTTPS_API_URL}/uploads/${data.avatar}`
                 : data.avatar;
             avatarElement.style.backgroundImage = `url("${imgPath}")`;
+        } else {
+            // Google accounts with no images
+            const imgPath = `${HTTPS_API_URL}/uploads/default.jpg`;
+            avatarElement.style.backgroundImage = `url("${imgPath}")`;
         }
 
         const avatarUpload = document.getElementById('avatar-upload') as HTMLInputElement;
