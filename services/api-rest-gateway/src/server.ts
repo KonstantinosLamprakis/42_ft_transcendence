@@ -140,6 +140,20 @@ const proxyConfigs = [
 		rewritePrefix: "/pong",
 		websocket: true,
 	},
+
+	//sql
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:4000" : "http://sqlite-db:4000",
+		prefix: "/add-friend",
+		rewritePrefix: "/add-friend",
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:4000" : "http://sqlite-db:4000",
+		prefix: "/approve-friend",
+		rewritePrefix: "/approve-friend",
+	},
 ];
 
 for (const cfg of proxyConfigs) {

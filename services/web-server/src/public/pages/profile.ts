@@ -1,14 +1,14 @@
-import { HTTPS_API_URL, meResponse, Match } from "../types.js";
+import { HTTPS_API_URL, meResponse, Match, Friend } from "../types.js";
 import { getToken } from "../token.js";
 import { showToast, ToastType } from "../utils/toast.js";
 
 export const profilePage = (pageContainer: HTMLElement) => {
 	pageContainer.innerHTML = `
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div class="lg:col-span-1">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+            <div class="lg:col-span-2">
                 <div
-                    class="bg-[var(--secondary-color)] rounded-lg p-6 flex flex-col items-center text-center shadow-sm">
+                    class="bg-[var(--secondary-color)] rounded-lg p-6 flex flex-col items-center text-center shadow-sm mb-8">
                     <div class="relative mb-4">
                         <div id="avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32"
                             style='background-image: url("");'>
@@ -36,8 +36,32 @@ export const profilePage = (pageContainer: HTMLElement) => {
                         </div>
                     </div>
                 </div>
+
+                <div>
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold mb-4 text-[var(--text-primary)]">Add Friends</h3>
+                        <div class="flex items-end gap-4">
+                            <div class="flex-1">
+                                <label class="text-sm font-medium text-[var(--text-secondary)]" for="friend-username-text">Friend username</label>
+                                <input
+                                    class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
+                                    id="friend-username-text" type="text" value="" />
+                            </div>
+                            <button id="add-friend-btn"
+                                class="w-1/4 bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 text-[var(--text-primary)] font-semibold hover:bg-gray-100 transition-colors mt-6">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold mb-4 text-[var(--text-primary)]">All Friends</h3>
+                        <ul id="friends-list" class="space-y-4"></ul>
+                    </div>
+                </div>
             </div>
-            <div class="lg:col-span-2">
+
+            <div class="lg:col-span-3">
                 <div class="space-y-8">
                     <div>
                         <h3 class="text-xl font-bold mb-4 text-[var(--text-primary)]">Account Information</h3>
@@ -173,6 +197,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
 
         const data: meResponse = await res.json();
         const matches: Match[] = data.matches;
+        const friends: Friend[] = data.friends;
 
         // Update the UI with actual data
         const avatarElement = document.getElementById("avatar")!;
@@ -205,6 +230,34 @@ export const profilePage = (pageContainer: HTMLElement) => {
             avatarLabel.classList.add('opacity-50', 'cursor-not-allowed');
             avatarLabel.classList.remove('cursor-pointer', 'hover:bg-blue-600');
         }
+
+    const friendsList = document.getElementById("friends-list");
+    if (friendsList) {
+        friendsList.innerHTML = friends.map(friend => {
+            if (friend.friend_username) {
+                const isOnline = false; // TODO: Replace with online status once implemented
+                
+                return `
+                    <li class="flex items-center justify-between bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg px-4 py-3 shadow-sm">
+                        <span class="font-medium text-[var(--text-primary)]">${friend.friend_username}</span>
+                        <span class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}"></span>
+                            <span class="text-sm font-medium ${isOnline ? 'text-green-600' : 'text-gray-500'}">
+                                ${isOnline ? 'Online' : 'Offline'}
+                            </span>
+                        </span>
+                    </li>
+                `;
+            }
+            return '';
+        }).filter(Boolean).join("");
+        if (friendsList && friends.length === 0) {
+            friendsList.innerHTML = `
+                <li class="text-left text-[var(--text-secondary)]">Add friends above to see their online status</li>
+            `;
+        }
+    }
+
 
         // Update match history table
         const tableBody = document.querySelector('tbody');
@@ -307,6 +360,47 @@ export const profilePage = (pageContainer: HTMLElement) => {
         }
         
         return { newPassword, isValid: true };
+    };
+
+    const handleAddFriend = async () => {
+        const friendUsernameInput = document.getElementById('friend-username-text') as HTMLInputElement;
+        const friendUsername = friendUsernameInput.value.trim();
+        
+        console.log('Adding friend:', friendUsername);
+
+        if (!friendUsername) {
+            showToast('Please enter a username', ToastType.ERROR);
+            return;
+        }
+
+        console.log('Sending friend request to:', friendUsername);
+        
+        try {
+            console.log('doing await fetch');
+            const response = await fetch(`${HTTPS_API_URL}/add-friend`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getToken()}`,
+                },
+                body: JSON.stringify({ friendUsername: friendUsername }),
+            });
+            
+            console.log('Fetch completed with response:', response);
+
+            if (response.ok) {
+                showToast('Friend request sent successfully', ToastType.SUCCESS);
+                friendUsernameInput.value = '';
+                await getInfo();
+            } else {
+                const error = await response.json();
+                showToast(error.error || 'Failed to send friend request', ToastType.ERROR);
+            }
+        }
+        catch (error: any) {
+            console.error('Add friend error:', error);
+            showToast('An error occurred while sending friend request', ToastType.ERROR);
+        }
     };
 
     const handleSaveChanges = async () => {
@@ -415,16 +509,19 @@ export const profilePage = (pageContainer: HTMLElement) => {
     const changePasswordBtn = document.getElementById('change-password-btn') as HTMLButtonElement;
     const cancelPasswordBtn = document.getElementById('cancel-password-btn') as HTMLButtonElement;
     const saveChangesBtn = document.getElementById('save-changes-btn') as HTMLButtonElement;
+    const addFriendBtn = document.getElementById('add-friend-btn') as HTMLButtonElement;
 
     avatarUpload?.addEventListener('change', handleAvatarUpload);
     changePasswordBtn?.addEventListener('click', togglePasswordFields);
     cancelPasswordBtn?.addEventListener('click', cancelPasswordChange);
     saveChangesBtn?.addEventListener('click', handleSaveChanges);
+    addFriendBtn?.addEventListener('click', handleAddFriend);
 
     (pageContainer as any)._cleanupListeners = () => {
         avatarUpload?.removeEventListener("change", handleAvatarUpload);
         changePasswordBtn?.removeEventListener("click", togglePasswordFields);
         cancelPasswordBtn?.removeEventListener("click", cancelPasswordChange);
         saveChangesBtn?.removeEventListener("click", handleSaveChanges);
+        addFriendBtn?.removeEventListener("click", handleAddFriend);
     };
 };

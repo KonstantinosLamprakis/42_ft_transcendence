@@ -49,6 +49,7 @@ export type meResponse = {
 	loses: number;
 	isGoogleAccount: boolean | undefined;
 	matches: Match[];
+	friends: Friend[];
 }
 
 export type Match = {
@@ -57,4 +58,10 @@ export type Match = {
 	match_date: string;
 	opponent_username: string;
 	winner_username: string;
+}
+
+export type Friend = {
+	friend_username: string;
+	friend_id: string;
+	is_online?: boolean;
 }
