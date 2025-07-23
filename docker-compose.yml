@@ -12,6 +12,15 @@ services:
       - sqlite-data:/data
     restart: unless-stopped
 
+  online-status:
+    build: 
+      context: ./services/online-status
+    environment:
+      - RUNTIME=docker
+    expose:
+      - "6000"
+    restart: unless-stopped
+
   pong-game:
     build:
       context: ./services/pong-game

@@ -69,10 +69,55 @@ export default async function friendsRoutes(fastify: FastifyInstance, opts: any)
 				"INSERT INTO friends (user_id, friend_id) VALUES (?, ?)",
 			);
 			const result = insertFriendshipStmt.run( userId, friendId);
+			return { success: true, friendId };
+		}
+		catch (err) {
+			console.error("Error when adding friend:", err);
+			return reply.status(500).send({ error: "Internal server error" });
+		}
+	});
+
+	fastify.post("/remove-friend", async (request, reply) => {
+		try {
+			const userIdStr = request.headers['x-user-id'] as string;
+			if (!userIdStr || isNaN(Number(userIdStr))) {
+				return reply.status(400).send({ error: "Invalid user ID" });
+			}
+
+			const userId = Number(userIdStr);
+			const user = db.prepare("SELECT * FROM users WHERE id = ?").get(userId);
+			if (!user) {
+				return reply.status(404).send({ error: "User not found" });
+			}
+
+			const { friendUsername } = request.body as { friendUsername: string };
+			const friendRow = db.prepare("SELECT id FROM users WHERE username = ?").get(friendUsername);
+			if (!friendRow) {
+				return reply.status(404).send({ error: "Friend not found" });
+			}
+			const friendId = friendRow.id;
+
+			if (friendId === userId) {
+				return reply.status(400).send({ error: "Cannot add yourself as a friend" });
+			}
+
+			const selectFriendshipStmt = db.prepare(
+				"SELECT * FROM friends WHERE user_id = ? AND friend_id = ?",
+			);
+			const friendship = selectFriendshipStmt.get(userId, friendId);
+			if (!friendship) {
+				return reply.status(400).send({ error: "Friendship does not exist" });
+			}
+
+			console.log(`Removing friendship: ${userId} -> ${friendId}`);
+			const deleteFriendshipStmt = db.prepare(
+				"DELETE FROM friends WHERE user_id = ? AND friend_id = ?",
+			);
+			const result = deleteFriendshipStmt.run(userId, friendId);
 			return { success: true };
 		}
 		catch (err) {
-			console.error("Error in /add-friend:", err);
+			console.error("Error when removing friend:", err);
 			return reply.status(500).send({ error: "Internal server error" });
 		}
 	});
