@@ -4,6 +4,7 @@ import { showToast, ToastType } from "../utils/toast.js";
 
 export const profilePage = (pageContainer: HTMLElement) => {
     let friends: Friend[] = [];
+    let onlineStatusInterval: number | undefined;
 	pageContainer.innerHTML = `
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
@@ -282,7 +283,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
             const friendIds = friends.map(f => f.friend_id).join(",");
             let onlineStatus: Record<string, boolean> = {};
             if (friendIds) {
-                console.log(`Fetching online status for friends: ${friendIds}`);
+                // console.log(`Fetching online status for friends: ${friendIds}`);
                 try {
                     const resp = await fetch(`${HTTPS_API_URL}/check-online-users?userIds=${encodeURIComponent(friendIds)}`, {
                         headers: { Authorization: `Bearer ${getToken()}` },
@@ -302,8 +303,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
         };
 
         await fetchAndRenderOnlineStatus();
-
-        setInterval(fetchAndRenderOnlineStatus, 5000);
+        onlineStatusInterval = window.setInterval(fetchAndRenderOnlineStatus, 5000);
 
 
         // Update match history table
@@ -615,6 +615,11 @@ export const profilePage = (pageContainer: HTMLElement) => {
         cancelPasswordBtn?.removeEventListener("click", cancelPasswordChange);
         saveChangesBtn?.removeEventListener("click", handleSaveChanges);
         addFriendBtn?.removeEventListener("click", handleAddFriend);
-        removeFriendBtn?.addEventListener("click", handleRemoveFriend);
+        removeFriendBtn?.removeEventListener("click", handleRemoveFriend);
+
+        if (onlineStatusInterval) {
+            clearInterval(onlineStatusInterval);
+            onlineStatusInterval = undefined;
+        }
     };
 };

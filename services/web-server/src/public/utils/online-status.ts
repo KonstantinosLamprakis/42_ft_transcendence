@@ -37,10 +37,10 @@ export function connectSocket() {
     };
 
     socket.onclose = () => {
-        // console.log("WebSocket disconnected — retrying in 10s");
+        // console.log("WebSocket disconnected — retrying in 2s");
         if (retryCount < MAX_RETRIES) {
             retryCount++;
-            setTimeout(connectSocket, 5000);
+            setTimeout(connectSocket, 2000);
         }
         socket = null;
     };
