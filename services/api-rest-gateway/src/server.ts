@@ -140,6 +140,35 @@ const proxyConfigs = [
 		rewritePrefix: "/pong",
 		websocket: true,
 	},
+
+	// online-status
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "ws://127.0.0.1:6000" : "ws://online-status:6000",
+		prefix: "/online-status",
+		rewritePrefix: "/online-status",
+		websocket: true,
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:6000" : "http://online-status:6000",
+		prefix: "/check-online-users",
+		rewritePrefix: "/check-online-users",
+	},
+
+	//sql
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:4000" : "http://sqlite-db:4000",
+		prefix: "/add-friend",
+		rewritePrefix: "/add-friend",
+	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:4000" : "http://sqlite-db:4000",
+		prefix: "/remove-friend",
+		rewritePrefix: "/remove-friend",
+	},
 ];
 
 for (const cfg of proxyConfigs) {

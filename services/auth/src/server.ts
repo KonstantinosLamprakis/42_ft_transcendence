@@ -63,6 +63,7 @@ type meResponse = {
 	loses: number;
 	isGoogleAccount: boolean | undefined;
 	matches: Match[];
+	friends: Friend[],
 }
 
 type Match = {
@@ -71,6 +72,12 @@ type Match = {
 	match_date: string;
 	opponent_username: string;
 	winner_username: string;
+}
+
+type Friend = {
+	friend_username: string;
+	friend_id: string;
+	is_online?: boolean;
 }
 
 type MatchResponse = {
@@ -335,6 +342,10 @@ fastify.get("/me", async (req, reply) => {
 			`${SQLITE_DB_URL}/get-user-matches/${encodeURIComponent(user.id)}`,
 		);
 
+		const friends = await axios.get(
+			`${SQLITE_DB_URL}/get-friends/${encodeURIComponent(user.id)}`,
+		);
+
 		const response: meResponse = {
 			id: user.id.toString(),
 			username: user.username,
@@ -346,6 +357,7 @@ fastify.get("/me", async (req, reply) => {
 			loses: user.loses,
 			isGoogleAccount: user.isGoogleAccount ?? false,
 			matches: matchedRes.data,
+			friends: friends.data,
 		};
 
 		reply.send(response);
