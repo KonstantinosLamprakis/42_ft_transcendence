@@ -6,6 +6,9 @@ export const HTTPS_API_URL = `https://${SERVER_HOST}/api`;
 
 export enum PongMessageType {
 	INIT = "init",
+	TOURNAMENT = "tournament",
+	T_CONTINUE = "t_continue",
+	T_END = "t_end",
 	MOVE = "move",
 	END = "end",
 	DRAW = "draw",
@@ -34,6 +37,8 @@ export type PongServerResponse = {
 	winner?: number;
 	usernamePlayer1?: string;
 	usernamePlayer2?: string;
+	usernamePlayer3?: string;
+	usernamePlayer4?: string;
 };
 
 export enum Runtime {

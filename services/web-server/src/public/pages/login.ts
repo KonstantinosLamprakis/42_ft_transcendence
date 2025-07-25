@@ -136,17 +136,17 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                         for="avatar">Upload Avatar</label>
                                 </div>
                             </div>
+							<div class="flex items-center">
+								<button
+									class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+									type="submit">
+									Sign Up
+								</button>
+							</div>
                             <div class="flex items-center">
                                 <input class="h-4 w-4 rounded border-gray-300 text-primary-color focus:ring-primary-color"
                                     id="enable-2fa" name="enable-2fa" type="checkbox" />
                                 <label class="ml-2 block text-sm text-foreground-color" for="enable-2fa">Enable 2FA</label>
-                            </div>
-                            <div>
-                                <button
-                                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[var(--primary-color)] hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-color"
-                                    type="submit">
-                                    Sign Up
-                                </button>
                             </div>
                         </form>
                     </div>

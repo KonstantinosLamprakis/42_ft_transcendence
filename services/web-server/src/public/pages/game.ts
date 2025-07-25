@@ -87,6 +87,16 @@ export const gamePage = (pageContainer: HTMLElement) => {
 										Start Game
 									</span>
 								</button>
+								<button 
+									id="start-tournament" 
+									class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+									<span class="flex items-center justify-center gap-2">
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1"></path>
+										</svg>
+										Tournament
+									</span>
+								</button>
 							</div>
                         </div>
                     </div>
@@ -224,7 +234,7 @@ export const gamePage = (pageContainer: HTMLElement) => {
 		connectionText.textContent = text;
 	}
 
-	function connectWebSocket(user: meResponse | undefined): void {
+	function connectWebSocket(user: meResponse | undefined, tournament : boolean): void {
 		const token = getToken();
 		if (!token) {
 			console.error("No authentication token found");
@@ -244,7 +254,12 @@ export const gamePage = (pageContainer: HTMLElement) => {
 			disconnectBtn.disabled = false;
 
 			if (token) {
-				socket?.send(JSON.stringify({ type: PongMessageType.INIT }));
+				if (!tournament){
+					socket?.send(JSON.stringify({ type: PongMessageType.INIT }));
+				}
+				else{
+					socket?.send(JSON.stringify({ type: PongMessageType.TOURNAMENT }));
+				}
 				console.log("Sent userId to server: ", token);
 			} else {
 				console.warn("No userId set before WebSocket connection.");
@@ -284,6 +299,73 @@ export const gamePage = (pageContainer: HTMLElement) => {
 					);
 
 					socket?.close();
+					return;
+				}
+
+				if (data.type === PongMessageType.T_END) {
+					// playerScore = data.scorePlayer1;
+					// opponentScore = data.scorePlayer2;
+					draw();
+
+					// Enhanced game over modal
+					// const winner = data.winner === user?.id ? "You Won!" : "You Lost!";
+					// const winnerClass =
+						// data.winner === user?.id ? "text-green-600" : "text-red-600";
+
+					document.getElementById("game-over-modal")?.remove(); // prevent duplicate modals
+
+					pageContainer.insertAdjacentHTML(
+					"beforeend",
+					`
+					<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="game-over-modal">
+						<div class="bg-white rounded-xl p-8 max-w-md mx-4 text-center">
+						<p class="text-gray-600 mb-6">Tournament Score:</p>
+						<p class="text-gray-600 mb-6">1st: ${data?.usernamePlayer1 ?? "N/A"}</p>
+						<p class="text-gray-600 mb-6">2nd: ${data?.usernamePlayer2 ?? "N/A"}</p>
+						<p class="text-gray-600 mb-6">3rd: ${data?.usernamePlayer3 ?? "N/A"}</p>
+						<p class="text-gray-600 mb-6">4th: ${data?.usernamePlayer4 ?? "N/A"}</p>
+						<button onclick="document.getElementById('game-over-modal')?.remove()" 
+							class="px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition-colors">
+							Close
+						</button>
+						</div>
+					</div>
+					`
+					);
+
+
+					socket?.close();
+					return;
+				}
+
+				if (data.type === PongMessageType.T_CONTINUE) {
+					playerScore = data.scorePlayer1;
+					opponentScore = data.scorePlayer2;
+					draw();
+
+					// Enhanced game over modal
+					const winner = data.winner === user?.id ? "You Won!" : "You Lost!";
+					const winnerClass =
+						data.winner === user?.id ? "text-green-600" : "text-red-600";
+
+					pageContainer.insertAdjacentHTML(
+						"beforeend",
+						`
+                        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="game-over-modal">
+                            <div class="bg-white rounded-xl p-8 max-w-md mx-4 text-center">
+                                <h2 class="text-2xl font-bold ${winnerClass} mb-4">${winner}</h2>
+                                <p class="text-gray-600 mb-6">Score: ${data.scorePlayer1} - ${data.scorePlayer2}</p>
+                                <p class="text-gray-600 mb-6">Please wait for the next match to continue the Tournament</p>
+                                <button onclick="document.getElementById('game-over-modal').remove()" 
+                                    class="px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition-colors">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    `,
+					);
+
+					// socket?.close();
 					return;
 				}
 
@@ -340,12 +422,21 @@ export const gamePage = (pageContainer: HTMLElement) => {
 
 	// Event listeners
 	const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
+	const startTournamentButton= document.getElementById("start-tournament") as HTMLButtonElement;
 
 	const handleStartGameClick = async (e: MouseEvent) => {
 		e.preventDefault();
 		const user = await fetchUser();
 		startGameButton.disabled = true;
-		connectWebSocket(user);
+		startTournamentButton.disabled = true;
+		connectWebSocket(user, false);
+	};
+	const handleStartTournamentClick = async (e: MouseEvent) => {
+		e.preventDefault();
+		const user = await fetchUser();
+		startGameButton.disabled = true;
+		startTournamentButton.disabled = true;
+		connectWebSocket(user, true);
 	};
 
 	const handleDisconnectClick = () => {
@@ -353,18 +444,21 @@ export const gamePage = (pageContainer: HTMLElement) => {
 			socket.close();
 			socket = null;
 			startGameButton.disabled = false;
+			startTournamentButton.disabled = false;
 			updateConnectionStatus("disconnected");
 			loadingDiv.style.display = "flex";
 		}
 	};
 
 	startGameButton.addEventListener("click", handleStartGameClick);
+	startTournamentButton.addEventListener("click", handleStartTournamentClick);
 	disconnectBtn.addEventListener("click", handleDisconnectClick);
 	document.addEventListener("keyup", handleKeyUp);
 	document.addEventListener("keydown", handleKeyDown);
 
 	(pageContainer as any)._cleanupListeners = () => {
 		startGameButton.removeEventListener("click", handleStartGameClick);
+		startTournamentButton.removeEventListener("click", handleStartTournamentClick);
 		disconnectBtn.removeEventListener("click", handleDisconnectClick);
 		window.removeEventListener("resize", resizeCanvas);
 		document.removeEventListener("keyup", handleKeyUp);

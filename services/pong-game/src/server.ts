@@ -14,17 +14,30 @@ import {
 
 import { Game, HEIGHT, PADDLE_HEIGHT, PADDLE_SPEED, WIDTH } from "./game.js";
 
+import { Tournament } from "./tournament.js";
+
 
 const fastify = Fastify();
 fastify.register(websocket);
 // const games = new Map<number, Game>();
 
 export const games = new Map<string, Game>();
+export const tournaments = new Map<string, Tournament>();
 export const socketToGame = new Map<WebSocket, string>();
+export const socketToTournament = new Map<WebSocket, Tournament>();
 
-function findOpenGame(): Game | null {
+function findOpenGame(userID): Game | null {
 	for (const game of games.values()) {
-		if (!game.connectionPlayer2 && !game.isGameOver) return game;
+		if (!game.connectionPlayer2 && !game.isGameOver && game.player1UserId != userID) return game;
+	}
+	return null;
+}
+
+function findOpenTournament(userID): Tournament | null {
+	for (const room of tournaments.values()){
+		if (room.userCount < 4 && !room.started && room.player1UserId !== userID && room.player2UserId !== userID && room.player3UserId !== userID && room.player4UserId !== userID){
+			return room;
+		}
 	}
 	return null;
 }
@@ -64,7 +77,7 @@ fastify.register(async function (fastify) {
 			// console.log("Received message:", parsed);
 			if (parsed.type === PongMessageType.INIT) {
 				
-				let Room = findOpenGame();
+				let Room = findOpenGame(userId);
 
 				if (!Room)
 				{
@@ -83,6 +96,21 @@ fastify.register(async function (fastify) {
 					socketToGame.set(socket, Room.gameId);
 					Room.Start();
 				}
+			}
+
+			else if (parsed.type === PongMessageType.TOURNAMENT) {
+				let Room = findOpenTournament(userId);
+
+				if (!Room){
+					const num = uuidv4();
+					Room = new Tournament();
+					Room.Id = num;
+					tournaments.set(num, Room);
+				}
+				Room.addPlayer(socket, userId);
+				socketToTournament.set(socket, Room);
+				if (Room.userCount >= 4)
+					Room.start();
 			}
 
 			else if (parsed.type === PongMessageType.MOVE) {
@@ -114,6 +142,18 @@ fastify.register(async function (fastify) {
 			if (!_id)
 				return ;
 			const game = games.get(_id);
+
+			const tour = socketToTournament.get(socket);
+
+			if (tour)
+			{
+				if (!tour.started)
+					tour.removePlayer(socket, userId);
+				else{
+					//Code to remove player after start
+				}
+			}
+
 			if (!game || game.isGameOver)
 				return ;
 
@@ -130,6 +170,7 @@ fastify.register(async function (fastify) {
 				game.isGameOver = true;
 				game.endGame();
 			}
+
 		});
 	});
 });
