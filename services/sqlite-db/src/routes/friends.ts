@@ -17,10 +17,10 @@ export default async function friendsRoutes(fastify: FastifyInstance, opts: any)
 
 			const stmt = db.prepare(`
 			SELECT
-				users2.username AS friend_username,
-				users2.id AS friend_id
+				users.username AS friend_username,
+				users.id AS friend_id
 			FROM friends
-			JOIN users AS users2 ON users2.id = friends.friend_id
+			JOIN users ON users.id = friends.friend_id
 			WHERE friends.user_id = ?
 			`);
 			const friends = stmt.all(userId);
@@ -98,7 +98,7 @@ export default async function friendsRoutes(fastify: FastifyInstance, opts: any)
 			const friendId = friendRow.id;
 
 			if (friendId === userId) {
-				return reply.status(400).send({ error: "Cannot add yourself as a friend" });
+				return reply.status(400).send({ error: "Cannot remove yourself as a friend" });
 			}
 
 			const selectFriendshipStmt = db.prepare(

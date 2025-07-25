@@ -253,7 +253,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
         function renderFriendsList(friends: Friend[]) {
             const friendsList = document.getElementById("friends-list");
             if (friendsList) {
-                // console.log(`rendering friends: ${friends.map(f => f.friend_username).join(", ")}`);
                 friendsList.innerHTML = friends.map(friend => {
                     if (friend.friend_username) {
                         const isOnline = friend.is_online;
@@ -283,7 +282,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
             const friendIds = friends.map(f => f.friend_id).join(",");
             let onlineStatus: Record<string, boolean> = {};
             if (friendIds) {
-                // console.log(`Fetching online status for friends: ${friendIds}`);
                 try {
                     const resp = await fetch(`${HTTPS_API_URL}/check-online-users?userIds=${encodeURIComponent(friendIds)}`, {
                         headers: { Authorization: `Bearer ${getToken()}` },

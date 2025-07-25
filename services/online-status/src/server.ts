@@ -7,11 +7,6 @@ fastify.register(websocket);
 
 const onlineUsers = new Map<string, WebSocket>();
 
-// fastify.addHook("onRequest", (request, reply, done) => {
-//     fastify.log.info(`WebSocket request from ${request.ip}`);
-//     done();
-// });
-
 fastify.register(async (fastify) => {
     fastify.get("/online-status", { websocket: true }, (socket: WebSocket, req) => {
 
@@ -27,11 +22,9 @@ fastify.register(async (fastify) => {
         }
 
         onlineUsers.set(userId, socket);
-        // fastify.log.info(`User ${userId} is online. Total users: ${onlineUsers.size}`);
 
         socket.on("close", () => {
             onlineUsers.delete(userId);
-            // fastify.log.info(`User ${userId} disconnected. Total users: ${onlineUsers.size}`);
         });
 
         socket.on("error", (error) => {
