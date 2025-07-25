@@ -130,10 +130,14 @@ export class Tournament {
 		socketToGame.set(this.connectionPlayer4, this.match2.gameId);
 
 		this.started = true;
-		this.usernamePlayer1 = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player1UserId}`, {});
-		this.usernamePlayer2 = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player2UserId}`, {});
-		this.usernamePlayer3 = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player3UserId}`, {});
-		this.usernamePlayer4 = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player4UserId}`, {});
+		let res = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player1UserId}`, {});
+		this.usernamePlayer1 = res.data.username;
+		res = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player2UserId}`, {});
+		this.usernamePlayer2 = res.data.username;
+		res = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player3UserId}`, {});
+		this.usernamePlayer3 = res.data.username;
+		res = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player4UserId}`, {});
+		this.usernamePlayer4 = res.data.username;
 		this.match1.Start();
 		this.match2.Start();
 	}
