@@ -1,6 +1,7 @@
 import { HTTPS_API_URL } from "../types.js";
 import { setToken } from "../token.js";
 import { showToast, ToastType } from "../utils/toast.js";
+import { escapeHTML } from "../utils/xss-safety.js";
 declare const google: any;
 
 export const loginPage = (pageContainer: HTMLElement) => {
@@ -221,9 +222,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                     <h3 class="text-lg font-semibold text-foreground-color mb-2">Two-Factor Authentication</h3>
                     <p class="text-sm text-gray-600 mb-4">Please enter the 6-digit code from your authenticator app</p>
                 </div>
-                
-                <input name="username" type="hidden" value="${username}" />
-                
+                <input name="username" type="hidden" value="${escapeHTML(username)}" />
                 <div>
                     <label class="block text-sm font-medium leading-6 text-foreground-color" for="twofa-token">
                         Authentication Code
