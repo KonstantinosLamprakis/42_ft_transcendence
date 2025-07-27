@@ -22,13 +22,15 @@ export const gamePage = (pageContainer: HTMLElement) => {
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-4">
                                 <div class="text-center">
-                                    <div class="text-lg sm:text-xl font-bold text-white" id="player-score">0</div>
-                                    <div id="player1" class="text-xs sm:text-sm text-gray-400">Player 1</div>
+									<div id="player1Nickname" class="text-xs sm:text-base text-gray-400 font-bold">Nickname 1</div>
+									<div class="text-lg sm:text-xl font-bold text-white" id="player-score">0</div>
+                                    <div id="player1" class="text-xs sm:text-sm text-gray-400">Username 1</div>
                                 </div>
                                 <div class="text-gray-500 text-lg sm:text-xl font-bold">VS</div>
                                 <div class="text-center">
-                                    <div class="text-lg sm:text-xl font-bold text-white" id="opponent-score">0</div>
-                                    <div id="player2" class="text-xs sm:text-sm text-gray-400">Player 2</div>
+									<div id="player2Nickname" class="text-xs sm:text-base text-gray-400 font-bold">Nickname 2</div>
+									<div class="text-lg sm:text-xl font-bold text-white" id="opponent-score">0</div>
+									<div id="player2" class="text-xs sm:text-sm text-gray-400">Username 2</div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-400">
@@ -295,6 +297,8 @@ export const gamePage = (pageContainer: HTMLElement) => {
 					opponentY = data.player2Y;
 					playerScore = data.scorePlayer1;
 					opponentScore = data.scorePlayer2;
+					document.getElementById("player1Nickname")!.textContent = data.nicknamePlayer1;
+					document.getElementById("player2Nickname")!.textContent = data.nicknamePlayer2;
 					document.getElementById("player1")!.textContent = data.usernamePlayer1;
 					document.getElementById("player2")!.textContent = data.usernamePlayer2;
 					draw();
