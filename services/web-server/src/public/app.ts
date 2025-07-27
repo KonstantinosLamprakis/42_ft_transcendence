@@ -32,6 +32,18 @@ const routes: Record<string, RouteHandler> = {
     },
 };
 
+window.addEventListener("storage", (event) => {
+	if (event.key === "logout") {
+		disconnectSocket();
+		clearToken();
+		showToast("Logged out!", ToastType.SUCCESS);
+		navigateTo("/");
+	}
+    if (event.key === "login") {
+        window.location.reload();
+    }
+});
+
 function notFound(): void {
 	appDiv.innerHTML = `<h1>404 - Page Not Found</h1>`;
 }
@@ -60,6 +72,7 @@ window.addEventListener("popstate", router);
 
 document.getElementById("logout-btn")!.addEventListener("click", async (e) => {
 		disconnectSocket();
+		localStorage.setItem("logout", Date.now().toString());
 		clearToken();
 		showToast("Logged out!", ToastType.SUCCESS);
 		// Optionally clear profile and 2FA UI

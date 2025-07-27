@@ -1,16 +1,16 @@
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
-import type { WebSocket } from "ws";
+import { WebSocket } from "ws";
 
 const fastify = Fastify({ logger: true });
 fastify.register(websocket);
 
-const onlineUsers = new Map<string, WebSocket>();
+const onlineUsers = new Map<string, Set<WebSocket>>();
 
 fastify.register(async (fastify) => {
     fastify.get("/online-status", { websocket: true }, (socket: WebSocket, req) => {
 
-        let userId: string 
+        let userId: string | undefined;
         if (req.query && typeof req.query === 'object' && 'userId' in req.query) {
             userId = req.query.userId as string;
         }
@@ -21,15 +21,30 @@ fastify.register(async (fastify) => {
             return;
         }
 
-        onlineUsers.set(userId, socket);
+        if (!onlineUsers.has(userId)) {
+            onlineUsers.set(userId, new Set<WebSocket>())
+        }
+        onlineUsers.get(userId)?.add(socket);
 
         socket.on("close", () => {
-            onlineUsers.delete(userId);
+            const userSockets = onlineUsers.get(userId);
+            if (userSockets) {
+                userSockets.delete(socket);
+                if (userSockets.size === 0) {
+                    onlineUsers.delete(userId);
+                }
+            }
         });
 
         socket.on("error", (error) => {
             console.error(`WebSocket error for user ${userId}:`, error);
-            onlineUsers.delete(userId);
+            const userSockets = onlineUsers.get(userId);
+            if (userSockets) {
+                userSockets.delete(socket);
+                if (userSockets.size === 0) {
+                    onlineUsers.delete(userId);
+                }
+            }
         });
     });
 });
