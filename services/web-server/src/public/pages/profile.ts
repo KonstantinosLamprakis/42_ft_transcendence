@@ -1,6 +1,7 @@
 import { HTTPS_API_URL, meResponse, Match, Friend } from "../types.js";
 import { getToken } from "../token.js";
 import { showToast, ToastType } from "../utils/toast.js";
+import { escapeHTML } from "../utils/xss-safety.js";
 
 export const profilePage = (pageContainer: HTMLElement) => {
     let friends: Friend[] = [];
@@ -258,7 +259,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                         const isOnline = friend.is_online;
                         return `
                             <li class="flex items-center justify-between bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg px-4 py-3 shadow-sm">
-                                <span class="font-medium text-[var(--text-primary)]">${friend.friend_username}</span>
+                                <span class="font-medium text-[var(--text-primary)]">${escapeHTML(friend.friend_username)}</span>
                                 <span class="flex items-center gap-2">
                                     <span class="w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}"></span>
                                     <span class="text-sm font-medium ${isOnline ? 'text-green-600' : 'text-gray-500'}">
@@ -317,10 +318,10 @@ export const profilePage = (pageContainer: HTMLElement) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="p-4 whitespace-nowrap">
-                        <span class="${isWinner ? winnerClass : ''}">${match.winner_username}</span>
+                        <span class="${isWinner ? winnerClass : ''}">${escapeHTML(match.winner_username)}</span>
                     </td>
                     <td class="p-4 whitespace-nowrap">
-                        <span class="${!isWinner ? loserClass : 'text-gray-900'}">${isWinner ? match.opponent_username : data.username}</span>
+                        <span class="${!isWinner ? loserClass : 'text-gray-900'}">${isWinner ? escapeHTML(match.opponent_username) : escapeHTML(data.username)}</span>
                     </td>
                     <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.user1_score}-${match.user2_score}</td>
                     <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.match_date}</td>

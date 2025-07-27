@@ -295,8 +295,8 @@ export const gamePage = (pageContainer: HTMLElement) => {
 					opponentY = data.player2Y;
 					playerScore = data.scorePlayer1;
 					opponentScore = data.scorePlayer2;
-					document.getElementById("player1")!.innerHTML = data.usernamePlayer1;
-					document.getElementById("player2")!.innerHTML = data.usernamePlayer2;
+					document.getElementById("player1")!.textContent = data.usernamePlayer1;
+					document.getElementById("player2")!.textContent = data.usernamePlayer2;
 					draw();
 				}
 
