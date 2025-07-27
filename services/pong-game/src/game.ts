@@ -272,8 +272,8 @@ export class Game {
 		this.ballVX = this.calculateStartVX();
 		this.ballVY = this.calculateStartVY(this.ballSpeed, this.ballVX);
 
-		const usernamePlayer1 = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player1UserId}`, {});
-		const usernamePlayer2 = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player2UserId}`, {});
+		const usernamePlayer1 = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player1UserId}`, {});
+		const usernamePlayer2 = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player2UserId}`, {});
 
 		const payload: PongServerResponse = {
 			type: PongMessageType.START,
@@ -283,6 +283,8 @@ export class Game {
 			player2Y: this.player2Y,
 			scorePlayer1: this.scorePlayer1,
 			scorePlayer2: this.scorePlayer2,
+			nicknamePlayer1: usernamePlayer1.data.nickname,
+			nicknamePlayer2: usernamePlayer2.data.nickname,
 			usernamePlayer1: usernamePlayer1.data.username,
 			usernamePlayer2: usernamePlayer2.data.username,
 		};
