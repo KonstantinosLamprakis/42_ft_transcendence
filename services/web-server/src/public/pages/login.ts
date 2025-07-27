@@ -356,6 +356,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 		} else if (data.token) {
 			await setToken(data.token);
 			form.reset();
+			localStorage.setItem("login", Date.now().toString());
 			showToast("Logged in!", ToastType.SUCCESS);
 			window.location.reload();
 		} else {
@@ -493,6 +494,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 			.then(async (data) => {
 				if (data.token) {
 					await setToken(data.token);
+					localStorage.setItem("login", Date.now().toString());
 					showToast("Logged in with Google!", ToastType.SUCCESS);
 					window.location.reload();
 				} else {
