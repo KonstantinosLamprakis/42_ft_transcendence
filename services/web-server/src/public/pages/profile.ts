@@ -1,4 +1,4 @@
-import { HTTPS_API_URL, meResponse, Match, Friend } from "../types.js";
+import { HTTPS_API_URL, meResponse, getFriendProfileResponse, Match, Friend } from "../types.js";
 import { getToken } from "../token.js";
 import { showToast, ToastType } from "../utils/toast.js";
 import { escapeHTML } from "../utils/xss-safety.js";
@@ -259,13 +259,21 @@ export const profilePage = (pageContainer: HTMLElement) => {
                         const isOnline = friend.is_online;
                         return `
                             <li class="flex items-center justify-between bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg px-4 py-3 shadow-sm">
-                                <span class="font-medium text-[var(--text-primary)]">${escapeHTML(friend.friend_username)}</span>
-                                <span class="flex items-center gap-2">
-                                    <span class="w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}"></span>
-                                    <span class="text-sm font-medium ${isOnline ? 'text-green-600' : 'text-gray-500'}">
-                                        ${isOnline ? 'Online' : 'Offline'}
+                                <div class="flex items-center gap-3">
+                                    <span class="font-medium text-[var(--text-primary)]">${escapeHTML(friend.friend_username)}</span>
+                                    <span class="flex items-center gap-2">
+                                        <span class="w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}"></span>
+                                        <span class="text-sm font-medium ${isOnline ? 'text-green-600' : 'text-gray-500'}">
+                                            ${isOnline ? 'Online' : 'Offline'}
+                                        </span>
                                     </span>
-                                </span>
+                                </div>
+                                <button 
+                                    class="view-profile-btn px-3 py-1 bg-[var(--primary-color)] text-white text-sm rounded-lg hover:bg-blue-600 transition-colors"
+                                    data-username="${escapeHTML(friend.friend_username)}"
+                                >
+                                    View Profile
+                                </button>
                             </li>
                         `;
                     }
@@ -276,8 +284,142 @@ export const profilePage = (pageContainer: HTMLElement) => {
                         <li class="text-left text-[var(--text-secondary)]">Add friends above to see their online status</li>
                     `;
                 }
+
+                const viewProfileBtns = friendsList.querySelectorAll('.view-profile-btn');
+                viewProfileBtns.forEach(btn => {
+                    btn.addEventListener('click', handleViewFriendProfile);
+                });
             }
         }
+
+        const handleViewFriendProfile = async (event: Event) => {
+            const button = event.target as HTMLButtonElement;
+            const username = button.dataset.username;
+            
+            if (!username) {
+                showToast('Invalid friend username', ToastType.ERROR);
+                return;
+            }
+
+            // Disable button during request
+            button.disabled = true;
+            button.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(`${HTTPS_API_URL}/get-friend-profile/${encodeURIComponent(username)}`, {
+                    headers: {
+                        Authorization: `Bearer ${getToken()}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const friendData: getFriendProfileResponse = await response.json();
+                    showFriendProfileModal(friendData);
+                } else {
+                    const error = await response.json();
+                    showToast(error.error || 'Failed to load friend profile', ToastType.ERROR);
+                }
+            } catch (error) {
+                console.error('Get friend profile error:', error);
+                showToast('An error occurred while loading friend profile', ToastType.ERROR);
+            } finally {
+                button.disabled = false;
+                button.textContent = 'View Profile';
+            }
+        };
+
+        const showFriendProfileModal = (friendData: getFriendProfileResponse) => {
+            const existingModal = document.getElementById('friend-profile-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            const avatarUrl = friendData.avatar 
+                ? `${HTTPS_API_URL}/uploads/${friendData.avatar}`
+                : `${HTTPS_API_URL}/uploads/default.jpg`;
+
+            const matchHistoryRows = friendData.matches.map(match => `
+                <tr>
+                    <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.winner_username)}</td>
+                    <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.opponent_username)}</td>
+                    <td class="p-3 whitespace-nowrap text-sm">${match.user1_score}-${match.user2_score}</td>
+                    <td class="p-3 whitespace-nowrap text-sm">${match.match_date}</td>
+                </tr>
+            `).join('');
+
+            const modalHTML = `
+                <div id="friend-profile-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div class="bg-[var(--secondary-color)] rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-[var(--text-primary)]">Friend Profile</h2>
+                            <button id="close-friend-modal" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-2xl">&times;</button>
+                        </div>
+                        
+                        <div class="flex flex-col items-center text-center mb-6">
+                            <div class="w-24 h-24 rounded-full bg-cover bg-center bg-no-repeat mb-4" 
+                                style="background-image: url('${avatarUrl}')"></div>
+                            <h3 class="text-xl font-bold text-[var(--text-primary)]">${escapeHTML(friendData.nickname)}</h3>
+                            <p class="text-[var(--text-secondary)]">@${escapeHTML(friendData.username)}</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6 mb-6">
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-green-600">${friendData.wins}</p>
+                                <p class="text-sm text-[var(--text-secondary)]">Wins</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-red-600">${friendData.loses}</p>
+                                <p class="text-sm text-[var(--text-secondary)]">Losses</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="text-lg font-semibold text-[var(--text-primary)] mb-3">Match History</h4>
+                            <div class="overflow-x-auto rounded-lg border border-[var(--border-color)]">
+                                <table class="w-full text-left">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Winner</th>
+                                            <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Opponent</th>
+                                            <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Score</th>
+                                            <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-[var(--border-color)]">
+                                        ${matchHistoryRows || '<tr><td colspan="4" class="p-3 text-center text-[var(--text-secondary)]">No matches found</td></tr>'}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button id="close-friend-modal-btn" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+            const closeBtn = document.getElementById('close-friend-modal');
+            const closeBtnBottom = document.getElementById('close-friend-modal-btn');
+            const modal = document.getElementById('friend-profile-modal');
+
+            const closeModal = () => {
+                modal?.remove();
+            };
+
+            closeBtn?.addEventListener('click', closeModal);
+            closeBtnBottom?.addEventListener('click', closeModal);
+            
+            modal?.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        };
 
         const fetchAndRenderOnlineStatus = async () => {
             const friendIds = friends.map(f => f.friend_id).join(",");

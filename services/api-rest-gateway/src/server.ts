@@ -131,6 +131,12 @@ const proxyConfigs = [
 		prefix: "/google-login",
 		rewritePrefix: "/google-login",
 	},
+	{
+		upstream:
+			process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:5000" : "http://auth:5000",
+		prefix: "/get-friend-profile",
+		rewritePrefix: "/get-friend-profile",
+	},
 
 	// pong
 	{
