@@ -43,6 +43,9 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 			return { id: result.lastInsertRowid };
 		} catch (err: any) {
 			reply.status(400);
+			if (err.message.includes("UNIQUE constraint failed: users.email")) {
+				return { error: "Email address is already registered." };
+			}
 			return { error: err.message };
 		}
 	});
