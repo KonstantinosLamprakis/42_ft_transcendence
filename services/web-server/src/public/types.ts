@@ -65,3 +65,12 @@ export type Friend = {
 	friend_id: string;
 	is_online?: boolean;
 }
+
+export type getFriendProfileResponse = {
+	username: string;
+	nickname: string;
+	avatar: string | undefined;
+	wins: number;
+	loses: number;
+	matches: Match[];
+}

@@ -66,6 +66,15 @@ type meResponse = {
 	friends: Friend[],
 }
 
+type getFriendProfileResponse = {
+	username: string;
+	nickname: string;
+	avatar: string | undefined;
+	wins: number;
+	loses: number;
+	matches: Match[];
+}
+
 type Match = {
 	user1_score: string;
 	user2_score: string;
@@ -306,6 +315,56 @@ fastify.put("/update-user/:id", async (req, reply) => {
 		}
 		console.error("Error during signup:", error);
 		reply.status(500).send({ error: "Internal server error" });
+	}
+});
+
+fastify.get("/get-friend-profile/:username", async (req, reply) => {	
+	try {
+		const { username } = req.params as { username: string };
+
+		const res = await axios.get(
+			`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
+		);
+		const user = res.data;
+
+		if (!user) {
+			return reply.status(404).send({ error: "User not found" });
+		}
+
+		if (user.error) {
+			return reply.status(404).send({ error: user.error });
+		}
+
+		if (user.avatar && !user.isGoogleAccount) {
+			const avatarPath = path.join(uploadsDir, user.avatar);
+			try {
+				statSync(avatarPath); // throws an error if it doesn't exist
+			} catch {
+				user.avatar = undefined;
+			}
+		}
+		
+		const matchedRes = await axios.get(
+			`${SQLITE_DB_URL}/get-user-matches/${encodeURIComponent(user.id)}`,
+		);
+
+		const friends = await axios.get(
+			`${SQLITE_DB_URL}/get-friends/${encodeURIComponent(user.id)}`,
+		);
+
+		const response: getFriendProfileResponse = {
+			username: user.username,
+			nickname: user.nickname,
+			avatar: user.avatar || undefined,
+			wins: user.wins,
+			loses: user.loses,
+			matches: matchedRes.data,
+		};
+
+		reply.send(response);
+	} catch (error: any) {
+		console.error("Authentication error:", error);
+		reply.status(401).send({ error: "Unauthorized" });
 	}
 });
 
