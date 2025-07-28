@@ -6,7 +6,7 @@ import { escapeHTML } from "../utils/xss-safety.js";
 export const profilePage = (pageContainer: HTMLElement) => {
     let friends: Friend[] = [];
     let onlineStatusInterval: number | undefined;
-	pageContainer.innerHTML = `
+    pageContainer.innerHTML = `
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
             <div class="lg:col-span-2">
@@ -206,276 +206,286 @@ export const profilePage = (pageContainer: HTMLElement) => {
     `;
 
     const getInfo = async () => {
-        const res = await fetch(`${HTTPS_API_URL}/me`, {
-            headers: { Authorization: `Bearer ${getToken()}` },
-        });
+        try {
+            const res = await fetch(`${HTTPS_API_URL}/me`, {
+                headers: { Authorization: `Bearer ${getToken()}` },
+            });
 
-        const data: meResponse = await res.json();
-        const matches: Match[] = data.matches;
-        friends = data.friends;
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
 
-        // Update the UI with actual data
-        const avatarElement = document.getElementById("avatar")!;
-        const winsElement = document.getElementById("wins-count")!;
-        const lossesElement = document.getElementById("losses-count")!;
-        const userNameElement = document.getElementById("user-name")! as HTMLInputElement;
-        const userEmailElement = document.getElementById("user-email")! as HTMLInputElement;
-        const userNicknameElement = document.getElementById("user-nickname")! as HTMLInputElement;
-        const userUsernameElement = document.getElementById("user-username")! as HTMLInputElement;
+            const data: meResponse = await res.json();
+            const matches: Match[] = data.matches;
+            friends = data.friends;
 
-        winsElement.textContent = data.wins.toString();
-        lossesElement.textContent = data.loses.toString();
-        userNameElement.value = data.name;
-        userEmailElement.value = data.email;
-        userNicknameElement.value = data.nickname;
-        userUsernameElement.value = data.username;
+            // Update the UI with actual data
+            const avatarElement = document.getElementById("avatar")!;
+            const winsElement = document.getElementById("wins-count")!;
+            const lossesElement = document.getElementById("losses-count")!;
+            const userNameElement = document.getElementById("user-name")! as HTMLInputElement;
+            const userEmailElement = document.getElementById("user-email")! as HTMLInputElement;
+            const userNicknameElement = document.getElementById("user-nickname")! as HTMLInputElement;
+            const userUsernameElement = document.getElementById("user-username")! as HTMLInputElement;
 
-        if (data.avatar) {
-            const imgPath = !data.isGoogleAccount
-                ? `${HTTPS_API_URL}/uploads/${data.avatar}`
-                : data.avatar;
-            avatarElement.style.backgroundImage = `url("${imgPath}")`;
-        } else {
-            // Google accounts with no images
-            const imgPath = `${HTTPS_API_URL}/uploads/default.jpg`;
-            avatarElement.style.backgroundImage = `url("${imgPath}")`;
-        }
+            winsElement.textContent = data.wins.toString();
+            lossesElement.textContent = data.loses.toString();
+            userNameElement.value = data.name;
+            userEmailElement.value = data.email;
+            userNicknameElement.value = data.nickname;
+            userUsernameElement.value = data.username;
 
-        const avatarUpload = document.getElementById('avatar-upload') as HTMLInputElement;
-        const avatarLabel = document.querySelector('label[for="avatar-upload"]') as HTMLElement;
-        
-        if (data.isGoogleAccount) {
-            avatarUpload.disabled = true;
-            avatarLabel.classList.add('opacity-50', 'cursor-not-allowed');
-            avatarLabel.classList.remove('cursor-pointer', 'hover:bg-blue-600');
-        }
+            if (data.avatar) {
+                const imgPath = !data.isGoogleAccount
+                    ? `${HTTPS_API_URL}/uploads/${data.avatar}`
+                    : data.avatar;
+                avatarElement.style.backgroundImage = `url("${imgPath}")`;
+            } else {
+                // Google accounts with no images
+                const imgPath = `${HTTPS_API_URL}/uploads/default.jpg`;
+                avatarElement.style.backgroundImage = `url("${imgPath}")`;
+            }
 
-        
-        function renderFriendsList(friends: Friend[]) {
-            const friendsList = document.getElementById("friends-list");
-            if (friendsList) {
-                friendsList.innerHTML = friends.map(friend => {
-                    if (friend.friend_username) {
-                        const isOnline = friend.is_online;
-                        return `
-                            <li class="flex items-center justify-between bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg px-4 py-3 shadow-sm">
-                                <div class="flex items-center gap-3">
-                                    <span class="font-medium text-[var(--text-primary)]">${escapeHTML(friend.friend_username)}</span>
-                                    <span class="flex items-center gap-2">
-                                        <span class="w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}"></span>
-                                        <span class="text-sm font-medium ${isOnline ? 'text-green-600' : 'text-gray-500'}">
-                                            ${isOnline ? 'Online' : 'Offline'}
+            const avatarUpload = document.getElementById('avatar-upload') as HTMLInputElement;
+            const avatarLabel = document.querySelector('label[for="avatar-upload"]') as HTMLElement;
+            
+            if (data.isGoogleAccount) {
+                avatarUpload.disabled = true;
+                avatarLabel.classList.add('opacity-50', 'cursor-not-allowed');
+                avatarLabel.classList.remove('cursor-pointer', 'hover:bg-blue-600');
+            }
+
+            function renderFriendsList(friends: Friend[]) {
+                const friendsList = document.getElementById("friends-list");
+                if (friendsList) {
+                    friendsList.innerHTML = friends.map(friend => {
+                        if (friend.friend_username) {
+                            const isOnline = friend.is_online;
+                            return `
+                                <li class="flex items-center justify-between bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg px-4 py-3 shadow-sm">
+                                    <div class="flex items-center gap-3">
+                                        <span class="font-medium text-[var(--text-primary)]">${escapeHTML(friend.friend_username)}</span>
+                                        <span class="flex items-center gap-2">
+                                            <span class="w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}"></span>
+                                            <span class="text-sm font-medium ${isOnline ? 'text-green-600' : 'text-gray-500'}">
+                                                ${isOnline ? 'Online' : 'Offline'}
+                                            </span>
                                         </span>
-                                    </span>
-                                </div>
-                                <button 
-                                    class="view-profile-btn px-3 py-1 bg-[var(--primary-color)] text-white text-sm rounded-lg hover:bg-blue-600 transition-colors"
-                                    data-username="${escapeHTML(friend.friend_username)}"
-                                >
-                                    View Profile
-                                </button>
-                            </li>
+                                    </div>
+                                    <button 
+                                        class="view-profile-btn px-3 py-1 bg-[var(--primary-color)] text-white text-sm rounded-lg hover:bg-blue-600 transition-colors"
+                                        data-username="${escapeHTML(friend.friend_username)}"
+                                    >
+                                        Viewdocumentclass Profile
+                                    </button>
+                                </li>
+                            `;
+                        }
+                        return '';
+                    }).filter(Boolean).join("");
+                    if (friendsList && friends.length === 0) {
+                        friendsList.innerHTML = `
+                            <li class="text-left text-[var(--text-secondary)]">Add friends above to see their online status</li>
                         `;
                     }
-                    return '';
-                }).filter(Boolean).join("");
-                if (friendsList && friends.length === 0) {
-                    friendsList.innerHTML = `
-                        <li class="text-left text-[var(--text-secondary)]">Add friends above to see their online status</li>
-                    `;
+
+                    const viewProfileBtns = friendsList.querySelectorAll('.view-profile-btn');
+                    viewProfileBtns.forEach(btn => {
+                        btn.addEventListener('click', handleViewFriendProfile);
+                    });
+                }
+            }
+
+            const handleViewFriendProfile = async (event: Event) => {
+                const button = event.target as HTMLButtonElement;
+                const username = button.dataset.username;
+                
+                if (!username) {
+                    showToast('Invalid friend username', ToastType.ERROR);
+                    return;
                 }
 
-                const viewProfileBtns = friendsList.querySelectorAll('.view-profile-btn');
-                viewProfileBtns.forEach(btn => {
-                    btn.addEventListener('click', handleViewFriendProfile);
-                });
-            }
-        }
+                // Disable button during request
+                button.disabled = true;
+                button.textContent = 'Loading...';
 
-        const handleViewFriendProfile = async (event: Event) => {
-            const button = event.target as HTMLButtonElement;
-            const username = button.dataset.username;
-            
-            if (!username) {
-                showToast('Invalid friend username', ToastType.ERROR);
-                return;
-            }
+                try {
+                    const response = await fetch(`${HTTPS_API_URL}/get-friend-profile/${encodeURIComponent(username)}`, {
+                        headers: {
+                            Authorization: `Bearer ${getToken()}`,
+                        },
+                    });
 
-            // Disable button during request
-            button.disabled = true;
-            button.textContent = 'Loading...';
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
-            try {
-                const response = await fetch(`${HTTPS_API_URL}/get-friend-profile/${encodeURIComponent(username)}`, {
-                    headers: {
-                        Authorization: `Bearer ${getToken()}`,
-                    },
-                });
-
-                if (response.ok) {
                     const friendData: getFriendProfileResponse = await response.json();
                     showFriendProfileModal(friendData);
-                } else {
-                    const error = await response.json();
-                    showToast(error.error || 'Failed to load friend profile', ToastType.ERROR);
+                } catch (error) {
+                    console.error('Get friend profile error:', error);
+                    showToast('An error occurred while loading friend profile', ToastType.ERROR);
+                } finally {
+                    button.disabled = false;
+                    button.textContent = 'View Profile';
                 }
-            } catch (error) {
-                console.error('Get friend profile error:', error);
-                showToast('An error occurred while loading friend profile', ToastType.ERROR);
-            } finally {
-                button.disabled = false;
-                button.textContent = 'View Profile';
-            }
-        };
-
-        const showFriendProfileModal = (friendData: getFriendProfileResponse) => {
-            const existingModal = document.getElementById('friend-profile-modal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-
-            const avatarUrl = friendData.avatar 
-                ? `${HTTPS_API_URL}/uploads/${friendData.avatar}`
-                : `${HTTPS_API_URL}/uploads/default.jpg`;
-
-            const matchHistoryRows = friendData.matches.map(match => `
-                <tr>
-                    <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.winner_username)}</td>
-                    <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.opponent_username)}</td>
-                    <td class="p-3 whitespace-nowrap text-sm">${match.user1_score}-${match.user2_score}</td>
-                    <td class="p-3 whitespace-nowrap text-sm">${match.match_date}</td>
-                </tr>
-            `).join('');
-
-            const modalHTML = `
-                <div id="friend-profile-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div class="bg-[var(--secondary-color)] rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-2xl font-bold text-[var(--text-primary)]">Friend Profile</h2>
-                            <button id="close-friend-modal" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-2xl">&times;</button>
-                        </div>
-                        
-                        <div class="flex flex-col items-center text-center mb-6">
-                            <div class="w-24 h-24 rounded-full bg-cover bg-center bg-no-repeat mb-4" 
-                                style="background-image: url('${avatarUrl}')"></div>
-                            <h3 class="text-xl font-bold text-[var(--text-primary)]">${escapeHTML(friendData.nickname)}</h3>
-                            <p class="text-[var(--text-secondary)]">@${escapeHTML(friendData.username)}</p>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-6 mb-6">
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-green-600">${friendData.wins}</p>
-                                <p class="text-sm text-[var(--text-secondary)]">Wins</p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-red-600">${friendData.loses}</p>
-                                <p class="text-sm text-[var(--text-secondary)]">Losses</p>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <h4 class="text-lg font-semibold text-[var(--text-primary)] mb-3">Match History</h4>
-                            <div class="overflow-x-auto rounded-lg border border-[var(--border-color)]">
-                                <table class="w-full text-left">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Winner</th>
-                                            <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Opponent</th>
-                                            <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Score</th>
-                                            <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-[var(--border-color)]">
-                                        ${matchHistoryRows || '<tr><td colspan="4" class="p-3 text-center text-[var(--text-secondary)]">No matches found</td></tr>'}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end">
-                            <button id="close-friend-modal-btn" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-blue-600 transition-colors">
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-            const closeBtn = document.getElementById('close-friend-modal');
-            const closeBtnBottom = document.getElementById('close-friend-modal-btn');
-            const modal = document.getElementById('friend-profile-modal');
-
-            const closeModal = () => {
-                modal?.remove();
             };
 
-            closeBtn?.addEventListener('click', closeModal);
-            closeBtnBottom?.addEventListener('click', closeModal);
-            
-            modal?.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeModal();
+            const showFriendProfileModal = (friendData: getFriendProfileResponse) => {
+                const existingModal = document.getElementById('friend-profile-modal');
+                if (existingModal) {
+                    existingModal.remove();
                 }
-            });
-        };
 
-        const fetchAndRenderOnlineStatus = async () => {
-            const friendIds = friends.map(f => f.friend_id).join(",");
-            let onlineStatus: Record<string, boolean> = {};
-            if (friendIds) {
-                try {
-                    const resp = await fetch(`${HTTPS_API_URL}/check-online-users?userIds=${encodeURIComponent(friendIds)}`, {
-                        headers: { Authorization: `Bearer ${getToken()}` },
-                    });
-                    if (resp.ok) {
+                const avatarUrl = friendData.avatar 
+                    ? `${HTTPS_API_URL}/uploads/${friendData.avatar}`
+                    : `${HTTPS_API_URL}/uploads/default.jpg`;
+
+                const matchHistoryRows = friendData.matches.map(match => `
+                    <tr>
+                        <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.winner_username)}</td>
+                        <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.opponent_username)}</td>
+                        <td class="p-3 whitespace-nowrap text-sm">${match.user1_score}-${match.user2_score}</td>
+                        <td class="p-3 whitespace-nowrap text-sm">${match.match_date}</td>
+                    </tr>
+                `).join('');
+
+                const modalHTML = `
+                    <div id="friend-profile-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div class="bg-[var(--secondary-color)] rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-2xl font-bold text-[var(--text-primary)]">Friend Profile</h2>
+                                <button id="close-friend-modal" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-2xl">&times;</button>
+                            </div>
+                            
+                            <div class="flex flex-col items-center text-center mb-6">
+                                <div class="w-24 h-24 rounded-full bg-cover bg-center bg-no-repeat mb-4" 
+                                    style="background-image: url('${avatarUrl}')"></div>
+                                <h3 class="text-xl font-bold text-[var(--text-primary)]">${escapeHTML(friendData.nickname)}</h3>
+                                <p class="text-[var(--text-secondary)]">@${escapeHTML(friendData.username)}</p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-6 mb-6">
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-green-600">${friendData.wins}</p>
+                                    <p class="text-sm text-[var(--text-secondary)]">Wins</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-red-600">${friendData.loses}</p>
+                                    <p class="text-sm text-[var(--text-secondary)]">Losses</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h4 class="text-lg font-semibold text-[var(--text-primary)] mb-3">Match History</h4>
+                                <div class="overflow-x-auto rounded-lg border border-[var(--border-color)]">
+                                    <table class="w-full text-left">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Winner</th>
+                                                <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Opponent</th>
+                                                <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Score</th>
+                                                <th class="p-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-[var(--border-color)]">
+                                            ${matchHistoryRows || '<tr><td colspan="4" class="p-3 text-center text-[var(--text-secondary)]">No matches found</td></tr>'}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button id="close-friend-modal-btn" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                const closeBtn = document.getElementById('close-friend-modal');
+                const closeBtnBottom = document.getElementById('close-friend-modal-btn');
+                const modal = document.getElementById('friend-profile-modal');
+
+                const closeModal = () => {
+                    modal?.remove();
+                };
+
+                closeBtn?.addEventListener('click', closeModal);
+                closeBtnBottom?.addEventListener('click', closeModal);
+                
+                modal?.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            };
+
+            const fetchAndRenderOnlineStatus = async () => {
+                const friendIds = friends.map(f => f.friend_id).join(",");
+                let onlineStatus: Record<string, boolean> = {};
+                if (friendIds) {
+                    try {
+                        const resp = await fetch(`${HTTPS_API_URL}/check-online-users?userIds=${encodeURIComponent(friendIds)}`, {
+                            headers: { Authorization: `Bearer ${getToken()}` },
+                        });
+
+                        if (!resp.ok) {
+                            throw new Error(`HTTP error! status: ${resp.status}`);
+                        }
+
                         const result = await resp.json();
                         onlineStatus = result.onlineStatus || {};
+                    } catch (err) {
+                        console.error("Failed to fetch online status:", err);
+                        showToast('Failed to fetch online status', ToastType.ERROR);
                     }
-                } catch (err) {
-                    console.error("Failed to fetch online status:", err);
                 }
-            }
-            friends.forEach(friend => {
-                friend.is_online = onlineStatus[friend.friend_id] || false;
-            });
-            renderFriendsList(friends);
-        };
+                friends.forEach(friend => {
+                    friend.is_online = onlineStatus[friend.friend_id] || false;
+                });
+                renderFriendsList(friends);
+            };
 
-        await fetchAndRenderOnlineStatus();
-        onlineStatusInterval = window.setInterval(fetchAndRenderOnlineStatus, 5000);
+            await fetchAndRenderOnlineStatus();
+            onlineStatusInterval = window.setInterval(fetchAndRenderOnlineStatus, 5000);
 
-
-        // Update match history table
-        const tableBody = document.querySelector('tbody');
-        if (tableBody && matches && matches.length > 0) {
-            tableBody.innerHTML = '';
-            
-            matches.forEach(match => {
-                const isWinner = match.winner_username === data.username;
-                const winnerClass = isWinner ? 'font-bold text-green-500' : '';
-                const loserClass = !isWinner ? 'font-bold text-red-500' : '';
+            // Update match history table
+            const tableBody = document.querySelector('tbody');
+            if (tableBody && matches && matches.length > 0) {
+                tableBody.innerHTML = '';
                 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="p-4 whitespace-nowrap">
-                        <span class="${isWinner ? winnerClass : ''}">${escapeHTML(match.winner_username)}</span>
-                    </td>
-                    <td class="p-4 whitespace-nowrap">
-                        <span class="${!isWinner ? loserClass : 'text-gray-900'}">${isWinner ? escapeHTML(match.opponent_username) : escapeHTML(data.username)}</span>
-                    </td>
-                    <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.user1_score}-${match.user2_score}</td>
-                    <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.match_date}</td>
+                matches.forEach(match => {
+                    const isWinner = match.winner_username === data.username;
+                    const winnerClass = isWinner ? 'font-bold text-green-500' : '';
+                    const loserClass = !isWinner ? 'font-bold text-red-500' : '';
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="p-4 whitespace-nowrap">
+                            <span class="${isWinner ? winnerClass : ''}">${escapeHTML(match.winner_username)}</span>
+                        </td>
+                        <td class="p-4 whitespace-nowrap">
+                            <span class="${!isWinner ? loserClass : 'text-gray-900'}">${isWinner ? escapeHTML(match.opponent_username) : escapeHTML(data.username)}</span>
+                        </td>
+                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.user1_score}-${match.user2_score}</td>
+                        <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.match_date}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else if (tableBody) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="p-4 text-center text-[var(--text-secondary)]">No matches found</td>
+                    </tr>
                 `;
-                tableBody.appendChild(row);
-            });
-        } else if (tableBody) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="4" class="p-4 text-center text-[var(--text-secondary)]">No matches found</td>
-                </tr>
-            `;
+            }
+        } catch (error) {
+            console.error('Get profile info error:', error);
+            showToast('Failed to load profile information', ToastType.ERROR);
         }
     };
 
@@ -499,22 +509,22 @@ export const profilePage = (pageContainer: HTMLElement) => {
                 body: formData,
             });
 
-            if (response.ok) {
-                showToast("Profile updated successfully", ToastType.SUCCESS);
-                await getInfo(); // Refresh profile data
-                
-                // Reset password fields if they were visible
-                const passwordFields = document.getElementById('password-fields');
-                const changePasswordBtn = document.getElementById('change-password-btn');
-                if (passwordFields && !passwordFields.classList.contains('hidden')) {
-                    passwordFields.classList.add('hidden');
-                    changePasswordBtn!.textContent = 'Change Password';
-                    (document.getElementById('new-password') as HTMLInputElement).value = '';
-                    (document.getElementById('confirm-password') as HTMLInputElement).value = '';
-                }
-            } else {
-                const error = await response.json();
-                showToast(error.error || 'Failed to update profile', ToastType.ERROR);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            showToast("Profile updated successfully", ToastType.SUCCESS);
+            await getInfo(); // Refresh profile data
+            
+            // Reset password fields if they were visible
+            const passwordFields = document.getElementById('password-fields');
+            const changePasswordBtn = document.getElementById('change-password-btn');
+            if (passwordFields && !passwordFields.classList.contains('hidden')) {
+                passwordFields.classList.add('hidden');
+                changePasswordBtn!.textContent = 'Change Password';
+                (document.getElementById('new-password') as HTMLInputElement).value = '';
+                (document.getElementById('confirm-password') as HTMLInputElement).value = '';
             }
         } catch (error) {
             console.error('Update profile error:', error);
@@ -528,7 +538,9 @@ export const profilePage = (pageContainer: HTMLElement) => {
 
     const validatePasswords = (): { newPassword: string; isValid: boolean } => {
         const newPassword = (document.getElementById('new-password') as HTMLInputElement).value;
-        const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement).value;
+        const
+
+ confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement).value;
         
         if (!newPassword || !confirmPassword) {
             showToast('Please fill in both password fields', ToastType.ERROR);
@@ -554,8 +566,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
         const friendUsernameInput = document.getElementById('friend-add-text') as HTMLInputElement;
         const friendUsername = friendUsernameInput.value.trim();
         
-        console.log('Adding friend:', friendUsername);
-
         if (!friendUsername) {
             showToast('Please enter a username', ToastType.ERROR);
             return;
@@ -570,23 +580,19 @@ export const profilePage = (pageContainer: HTMLElement) => {
                 },
                 body: JSON.stringify({ friendUsername: friendUsername }),
             });
-            
-            // console.log('Fetch completed with response:', response);
 
-            if (response.ok) {
-                const data = await response.json();
-                const friendId = data.friendId;
-                const newFriend: Friend = { friend_id: friendId, friend_username: friendUsername };
-                friends.push(newFriend);
-                friendUsernameInput.value = '';
-                showToast('Friend added successfully', ToastType.SUCCESS);
-                await getInfo();
-            } else {
-                const error = await response.json();
-                showToast(error.error || 'Failed to add friend', ToastType.ERROR);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        }
-        catch (error: any) {
+
+            const data = await response.json();
+            const friendId = data.friendId;
+            const newFriend: Friend = { friend_id: friendId, friend_username: friendUsername };
+            friends.push(newFriend);
+            friendUsernameInput.value = '';
+            showToast('Friend added successfully', ToastType.SUCCESS);
+            await getInfo();
+        } catch (error) {
             console.error('Add friend error:', error);
             showToast('An error occurred while adding friend', ToastType.ERROR);
         }
@@ -596,8 +602,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
         const friendUsernameInput = document.getElementById('friend-remove-text') as HTMLInputElement;
         const friendUsername = friendUsernameInput.value.trim();
         
-        console.log('Removing friend:', friendUsername);
-
         if (!friendUsername) {
             showToast('Please enter a username', ToastType.ERROR);
             return;
@@ -612,23 +616,19 @@ export const profilePage = (pageContainer: HTMLElement) => {
                 },
                 body: JSON.stringify({ friendUsername: friendUsername }),
             });
-            
-            // console.log('Fetch completed with response:', response);
 
-            if (response.ok) {
-                const index = friends.findIndex(f => f.friend_username === friendUsername);
-                if (index !== -1) {
-                    friends.splice(index, 1);
-                }
-                friendUsernameInput.value = '';
-                showToast('Friend removed successfully', ToastType.SUCCESS);
-                await getInfo();
-            } else {
-                const error = await response.json();
-                showToast(error.error || 'Failed to remove friend', ToastType.ERROR);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        }
-        catch (error: any) {
+
+            const index = friends.findIndex(f => f.friend_username === friendUsername);
+            if (index !== -1) {
+                friends.splice(index, 1);
+            }
+            friendUsernameInput.value = '';
+            showToast('Friend removed successfully', ToastType.SUCCESS);
+            await getInfo();
+        } catch (error) {
             console.error('Remove friend error:', error);
             showToast('An error occurred while removing friend', ToastType.ERROR);
         }
@@ -730,7 +730,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
         (document.getElementById('confirm-password') as HTMLInputElement).value = '';
     };
 
-	getInfo();
+    getInfo();
 
     const nicknameInput = document.getElementById('user-nickname') as HTMLInputElement;
     nicknameInput.dataset.original = nicknameInput.value;
