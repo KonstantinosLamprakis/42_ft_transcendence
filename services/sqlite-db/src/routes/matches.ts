@@ -26,8 +26,8 @@ export default async function matchesRoutes(fastify: FastifyInstance, opts: any)
 		user_matches.user1_score,
 		user_matches.user2_score,
 		user_matches.match_date,
-		opponent_user.username AS opponent_username,
-		winner_user.username   AS winner_username
+		opponent_user.nickname AS opponent_nickname,
+		winner_user.nickname   AS winner_nickname
 		FROM user_matches
 		JOIN users AS opponent_user
 		ON opponent_user.id = user_matches.opponent_id

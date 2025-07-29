@@ -46,6 +46,9 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 			if (err.message.includes("UNIQUE constraint failed: users.email")) {
 				return { error: "Email address is already registered." };
 			}
+			if (err.message.includes("UNIQUE constraint failed: users.nickname")) {
+				return { error: "Nickname is already registered." };
+			}
 			return { error: err.message };
 		}
 	});
@@ -91,6 +94,13 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 		const { username } = request.params as { username: string };
 		const stmt = db.prepare("SELECT * FROM users WHERE username = ?");
 		const user = stmt.get(username);
+		return user || { error: "User not found" };
+	});
+
+	fastify.get("/get-user-by-nickname/:nickname", async (request) => {
+		const { nickname } = request.params as { nickname: string };
+		const stmt = db.prepare("SELECT * FROM users WHERE nickname = ?");
+		const user = stmt.get(nickname);
 		return user || { error: "User not found" };
 	});
 

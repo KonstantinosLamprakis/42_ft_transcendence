@@ -79,8 +79,8 @@ type Match = {
 	user1_score: string;
 	user2_score: string;
 	match_date: string;
-	opponent_username: string;
-	winner_username: string;
+	opponent_nickname: string;
+	winner_nickname: string;
 }
 
 type Friend = {
@@ -318,12 +318,12 @@ fastify.put("/update-user/:id", async (req, reply) => {
 	}
 });
 
-fastify.get("/get-friend-profile/:username", async (req, reply) => {	
+fastify.get("/get-friend-profile/:nickname", async (req, reply) => {	
 	try {
-		const { username } = req.params as { username: string };
+		const { nickname } = req.params as { nickname: string };
 
 		const res = await axios.get(
-			`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
+			`${SQLITE_DB_URL}/get-user-by-nickname/${encodeURIComponent(nickname)}`,
 		);
 		const user = res.data;
 

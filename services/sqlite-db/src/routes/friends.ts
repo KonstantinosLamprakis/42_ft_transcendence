@@ -17,7 +17,7 @@ export default async function friendsRoutes(fastify: FastifyInstance, opts: any)
 
 			const stmt = db.prepare(`
 			SELECT
-				users.username AS friend_username,
+				users.nickname AS friend_nickname,
 				users.id AS friend_id
 			FROM friends
 			JOIN users ON users.id = friends.friend_id
@@ -45,8 +45,8 @@ export default async function friendsRoutes(fastify: FastifyInstance, opts: any)
 				return reply.status(404).send({ error: "User not found" });
 			}
 
-			const { friendUsername } = request.body as { friendUsername: string };
-			const friendRow = db.prepare("SELECT id FROM users WHERE username = ?").get(friendUsername);
+			const { friendNickname } = request.body as { friendNickname: string };
+			const friendRow = db.prepare("SELECT id FROM users WHERE nickname = ?").get(friendNickname);
 			if (!friendRow) {
 				return reply.status(404).send({ error: "Friend not found" });
 			}
@@ -90,8 +90,8 @@ export default async function friendsRoutes(fastify: FastifyInstance, opts: any)
 				return reply.status(404).send({ error: "User not found" });
 			}
 
-			const { friendUsername } = request.body as { friendUsername: string };
-			const friendRow = db.prepare("SELECT id FROM users WHERE username = ?").get(friendUsername);
+			const { friendNickname } = request.body as { friendNickname: string };
+			const friendRow = db.prepare("SELECT id FROM users WHERE nickname = ?").get(friendNickname);
 			if (!friendRow) {
 				return reply.status(404).send({ error: "Friend not found" });
 			}
