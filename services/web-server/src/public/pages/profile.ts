@@ -45,7 +45,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                         <h3 class="text-xl font-bold mb-4 text-[var(--text-primary)]">Add/Remove Friends</h3>
                         <div class="flex items-end gap-4 mb-6">
                             <div class="flex-1">
-                                <label class="text-sm font-medium text-[var(--text-secondary)]" for="friend-add-text">Username of friend to add</label>
+                                <label class="text-sm font-medium text-[var(--text-secondary)]" for="friend-add-text">Nickname of friend to add</label>
                                 <input
                                     class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
                                     id="friend-add-text" type="text" value="" />
@@ -57,7 +57,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                         </div>
                         <div class="flex items-end gap-4">
                             <div class="flex-1">
-                                <label class="text-sm font-medium text-[var(--text-secondary)]" for="friend-remove-text">Username of friend to remove</label>
+                                <label class="text-sm font-medium text-[var(--text-secondary)]" for="friend-remove-text">Nickname of friend to remove</label>
                                 <input
                                     class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
                                     id="friend-remove-text" type="text" value="" />
@@ -255,12 +255,12 @@ export const profilePage = (pageContainer: HTMLElement) => {
             const friendsList = document.getElementById("friends-list");
             if (friendsList) {
                 friendsList.innerHTML = friends.map(friend => {
-                    if (friend.friend_username) {
+                    if (friend.friend_nickname) {
                         const isOnline = friend.is_online;
                         return `
                             <li class="flex items-center justify-between bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg px-4 py-3 shadow-sm">
                                 <div class="flex items-center gap-3">
-                                    <span class="font-medium text-[var(--text-primary)]">${escapeHTML(friend.friend_username)}</span>
+                                    <span class="font-medium text-[var(--text-primary)]">${escapeHTML(friend.friend_nickname)}</span>
                                     <span class="flex items-center gap-2">
                                         <span class="w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}"></span>
                                         <span class="text-sm font-medium ${isOnline ? 'text-green-600' : 'text-gray-500'}">
@@ -270,7 +270,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                 </div>
                                 <button 
                                     class="view-profile-btn px-3 py-1 bg-[var(--primary-color)] text-white text-sm rounded-lg hover:bg-blue-600 transition-colors"
-                                    data-username="${escapeHTML(friend.friend_username)}"
+                                    data-nickname="${escapeHTML(friend.friend_nickname)}"
                                 >
                                     View Profile
                                 </button>
@@ -294,10 +294,10 @@ export const profilePage = (pageContainer: HTMLElement) => {
 
         const handleViewFriendProfile = async (event: Event) => {
             const button = event.target as HTMLButtonElement;
-            const username = button.dataset.username;
+            const nickname = button.dataset.nickname;
             
-            if (!username) {
-                showToast('Invalid friend username', ToastType.ERROR);
+            if (!nickname) {
+                showToast('Invalid friend nickname', ToastType.ERROR);
                 return;
             }
 
@@ -306,7 +306,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
             button.textContent = 'Loading...';
 
             try {
-                const response = await fetch(`${HTTPS_API_URL}/get-friend-profile/${encodeURIComponent(username)}`, {
+                const response = await fetch(`${HTTPS_API_URL}/get-friend-profile/${encodeURIComponent(nickname)}`, {
                     headers: {
                         Authorization: `Bearer ${getToken()}`,
                     },
@@ -340,8 +340,8 @@ export const profilePage = (pageContainer: HTMLElement) => {
 
             const matchHistoryRows = friendData.matches.map(match => `
                 <tr>
-                    <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.winner_username)}</td>
-                    <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.opponent_username)}</td>
+                    <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.winner_nickname)}</td>
+                    <td class="p-3 whitespace-nowrap text-sm">${escapeHTML(match.opponent_nickname)}</td>
                     <td class="p-3 whitespace-nowrap text-sm">${match.user1_score}-${match.user2_score}</td>
                     <td class="p-3 whitespace-nowrap text-sm">${match.match_date}</td>
                 </tr>
@@ -359,7 +359,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
                             <div class="w-24 h-24 rounded-full bg-cover bg-center bg-no-repeat mb-4" 
                                 style="background-image: url('${avatarUrl}')"></div>
                             <h3 class="text-xl font-bold text-[var(--text-primary)]">${escapeHTML(friendData.nickname)}</h3>
-                            <p class="text-[var(--text-secondary)]">@${escapeHTML(friendData.username)}</p>
                         </div>
 
                         <div class="grid grid-cols-2 gap-6 mb-6">
@@ -453,17 +452,17 @@ export const profilePage = (pageContainer: HTMLElement) => {
             tableBody.innerHTML = '';
             
             matches.forEach(match => {
-                const isWinner = match.winner_username === data.username;
+                const isWinner = match.winner_nickname === data.nickname;
                 const winnerClass = isWinner ? 'font-bold text-green-500' : '';
                 const loserClass = !isWinner ? 'font-bold text-red-500' : '';
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="p-4 whitespace-nowrap">
-                        <span class="${isWinner ? winnerClass : ''}">${escapeHTML(match.winner_username)}</span>
+                        <span class="${isWinner ? winnerClass : ''}">${escapeHTML(match.winner_nickname)}</span>
                     </td>
                     <td class="p-4 whitespace-nowrap">
-                        <span class="${!isWinner ? loserClass : 'text-gray-900'}">${isWinner ? escapeHTML(match.opponent_username) : escapeHTML(data.username)}</span>
+                        <span class="${!isWinner ? loserClass : 'text-gray-900'}">${isWinner ? escapeHTML(match.opponent_nickname) : escapeHTML(data.username)}</span>
                     </td>
                     <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.user1_score}-${match.user2_score}</td>
                     <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.match_date}</td>
@@ -551,12 +550,12 @@ export const profilePage = (pageContainer: HTMLElement) => {
     };
 
     const handleAddFriend = async () => {
-        const friendUsernameInput = document.getElementById('friend-add-text') as HTMLInputElement;
-        const friendUsername = friendUsernameInput.value.trim();
+        const friendNicknameInput = document.getElementById('friend-add-text') as HTMLInputElement;
+        const friendNickname = friendNicknameInput.value.trim();
         
-        console.log('Adding friend:', friendUsername);
+        console.log('Adding friend:', friendNickname);
 
-        if (!friendUsername) {
+        if (!friendNickname) {
             showToast('Please enter a username', ToastType.ERROR);
             return;
         }
@@ -568,7 +567,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${getToken()}`,
                 },
-                body: JSON.stringify({ friendUsername: friendUsername }),
+                body: JSON.stringify({ friendNickname: friendNickname }),
             });
             
             // console.log('Fetch completed with response:', response);
@@ -576,9 +575,9 @@ export const profilePage = (pageContainer: HTMLElement) => {
             if (response.ok) {
                 const data = await response.json();
                 const friendId = data.friendId;
-                const newFriend: Friend = { friend_id: friendId, friend_username: friendUsername };
+                const newFriend: Friend = { friend_id: friendId, friend_nickname: friendNickname };
                 friends.push(newFriend);
-                friendUsernameInput.value = '';
+                friendNicknameInput.value = '';
                 showToast('Friend added successfully', ToastType.SUCCESS);
                 await getInfo();
             } else {
@@ -593,12 +592,12 @@ export const profilePage = (pageContainer: HTMLElement) => {
     };
 
     const handleRemoveFriend = async () => {
-        const friendUsernameInput = document.getElementById('friend-remove-text') as HTMLInputElement;
-        const friendUsername = friendUsernameInput.value.trim();
+        const friendNicknameInput = document.getElementById('friend-remove-text') as HTMLInputElement;
+        const friendNickname = friendNicknameInput.value.trim();
         
-        console.log('Removing friend:', friendUsername);
+        console.log('Removing friend:', friendNickname);
 
-        if (!friendUsername) {
+        if (!friendNickname) {
             showToast('Please enter a username', ToastType.ERROR);
             return;
         }
@@ -610,17 +609,17 @@ export const profilePage = (pageContainer: HTMLElement) => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${getToken()}`,
                 },
-                body: JSON.stringify({ friendUsername: friendUsername }),
+                body: JSON.stringify({ friendNickname: friendNickname }),
             });
             
             // console.log('Fetch completed with response:', response);
 
             if (response.ok) {
-                const index = friends.findIndex(f => f.friend_username === friendUsername);
+                const index = friends.findIndex(f => f.friend_nickname === friendNickname);
                 if (index !== -1) {
                     friends.splice(index, 1);
                 }
-                friendUsernameInput.value = '';
+                friendNicknameInput.value = '';
                 showToast('Friend removed successfully', ToastType.SUCCESS);
                 await getInfo();
             } else {
