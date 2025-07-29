@@ -6,6 +6,7 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 import usersRoutes from "./routes/users.js";
 import matchesRoutes from "./routes/matches.js";
+import friendsRoutes from "./routes/friends.js";
 
 dotenv.config();
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -33,6 +34,7 @@ db.exec(schema);
 
 fastify.register(usersRoutes, { db });
 fastify.register(matchesRoutes, { db });
+fastify.register(friendsRoutes, { db });
 
 fastify.listen({ port: 4000, host: "0.0.0.0" }, (err) => {
 	if (err) {

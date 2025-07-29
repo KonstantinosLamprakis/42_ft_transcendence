@@ -63,6 +63,16 @@ type meResponse = {
 	loses: number;
 	isGoogleAccount: boolean | undefined;
 	matches: Match[];
+	friends: Friend[],
+}
+
+type getFriendProfileResponse = {
+	username: string;
+	nickname: string;
+	avatar: string | undefined;
+	wins: number;
+	loses: number;
+	matches: Match[];
 }
 
 type Match = {
@@ -71,6 +81,12 @@ type Match = {
 	match_date: string;
 	opponent_username: string;
 	winner_username: string;
+}
+
+type Friend = {
+	friend_username: string;
+	friend_id: string;
+	is_online?: boolean;
 }
 
 type MatchResponse = {
@@ -302,6 +318,56 @@ fastify.put("/update-user/:id", async (req, reply) => {
 	}
 });
 
+fastify.get("/get-friend-profile/:username", async (req, reply) => {	
+	try {
+		const { username } = req.params as { username: string };
+
+		const res = await axios.get(
+			`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
+		);
+		const user = res.data;
+
+		if (!user) {
+			return reply.status(404).send({ error: "User not found" });
+		}
+
+		if (user.error) {
+			return reply.status(404).send({ error: user.error });
+		}
+
+		if (user.avatar && !user.isGoogleAccount) {
+			const avatarPath = path.join(uploadsDir, user.avatar);
+			try {
+				statSync(avatarPath); // throws an error if it doesn't exist
+			} catch {
+				user.avatar = undefined;
+			}
+		}
+		
+		const matchedRes = await axios.get(
+			`${SQLITE_DB_URL}/get-user-matches/${encodeURIComponent(user.id)}`,
+		);
+
+		const friends = await axios.get(
+			`${SQLITE_DB_URL}/get-friends/${encodeURIComponent(user.id)}`,
+		);
+
+		const response: getFriendProfileResponse = {
+			username: user.username,
+			nickname: user.nickname,
+			avatar: user.avatar || undefined,
+			wins: user.wins,
+			loses: user.loses,
+			matches: matchedRes.data,
+		};
+
+		reply.send(response);
+	} catch (error: any) {
+		console.error("Authentication error:", error);
+		reply.status(401).send({ error: "Unauthorized" });
+	}
+});
+
 fastify.get("/me", async (req, reply) => {	
 	try {
         const username = req.headers['x-username'] as string;
@@ -335,6 +401,10 @@ fastify.get("/me", async (req, reply) => {
 			`${SQLITE_DB_URL}/get-user-matches/${encodeURIComponent(user.id)}`,
 		);
 
+		const friends = await axios.get(
+			`${SQLITE_DB_URL}/get-friends/${encodeURIComponent(user.id)}`,
+		);
+
 		const response: meResponse = {
 			id: user.id.toString(),
 			username: user.username,
@@ -346,6 +416,7 @@ fastify.get("/me", async (req, reply) => {
 			loses: user.loses,
 			isGoogleAccount: user.isGoogleAccount ?? false,
 			matches: matchedRes.data,
+			friends: friends.data,
 		};
 
 		reply.send(response);

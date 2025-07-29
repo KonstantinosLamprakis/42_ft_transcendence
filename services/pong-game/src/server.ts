@@ -1,7 +1,6 @@
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 import type { WebSocket } from "ws";
-import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
 import {

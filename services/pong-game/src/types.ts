@@ -35,6 +35,8 @@ export type PongServerResponse = {
 	scorePlayer1: number;
 	scorePlayer2: number;
 	winner?: number;
+	nicknamePlayer1?: string;
+	nicknamePlayer2?: string;
 	usernamePlayer1?: string;
 	usernamePlayer2?: string;
 	usernamePlayer3?: string;

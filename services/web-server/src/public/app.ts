@@ -3,6 +3,7 @@ import { gamePage } from "./pages/game.js";
 import { profilePage } from "./pages/profile.js";
 import { isLogged, clearToken } from "./token.js";
 import { showToast, ToastType } from "./utils/toast.js";
+import { connectSocket, disconnectSocket } from "./utils/online-status.js";
 
 type RouteHandler = () => void;
 
@@ -16,6 +17,7 @@ const routes: Record<string, RouteHandler> = {
 			loginPage(appDiv);
 		} else {
 			gamePage(appDiv);
+			connectSocket();
 		}
     },
     "/profile": async () => {
@@ -25,9 +27,22 @@ const routes: Record<string, RouteHandler> = {
 			loginPage(appDiv);
 		} else {
 			profilePage(appDiv);
+			connectSocket();
 		}
     },
 };
+
+window.addEventListener("storage", (event) => {
+	if (event.key === "logout") {
+		disconnectSocket();
+		clearToken();
+		showToast("Logged out!", ToastType.SUCCESS);
+		navigateTo("/");
+	}
+    if (event.key === "login") {
+        window.location.reload();
+    }
+});
 
 function notFound(): void {
 	appDiv.innerHTML = `<h1>404 - Page Not Found</h1>`;
@@ -56,6 +71,8 @@ document.body.addEventListener("click", (e) => {
 window.addEventListener("popstate", router);
 
 document.getElementById("logout-btn")!.addEventListener("click", async (e) => {
+		disconnectSocket();
+		localStorage.setItem("logout", Date.now().toString());
 		clearToken();
 		showToast("Logged out!", ToastType.SUCCESS);
 		// Optionally clear profile and 2FA UI

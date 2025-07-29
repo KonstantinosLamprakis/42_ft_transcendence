@@ -43,6 +43,9 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 			return { id: result.lastInsertRowid };
 		} catch (err: any) {
 			reply.status(400);
+			if (err.message.includes("UNIQUE constraint failed: users.email")) {
+				return { error: "Email address is already registered." };
+			}
 			return { error: err.message };
 		}
 	});
@@ -77,11 +80,11 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 		return { deleted: result.changes > 0 };
 	});
 
-	fastify.get("/get-user-by-id/:id", async (request) => {
+	fastify.get("/get-user-and-nickname-by-id/:id", async (request) => {
 		const { id } = request.params as { id: string };
-		const stmt = db.prepare("SELECT username FROM users WHERE id = ?");
-		const username = stmt.get(id);
-		return username || { error: "User not found" };
+		const stmt = db.prepare("SELECT username, nickname FROM users WHERE id = ?");
+		const user = stmt.get(id);
+		return user || { error: "User not found" };
 	});
 
 	fastify.get("/get-user-by-username/:username", async (request) => {

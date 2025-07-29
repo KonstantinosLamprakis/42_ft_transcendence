@@ -27,3 +27,12 @@ CREATE TABLE
         FOREIGN KEY(user2_id) REFERENCES users(id),
         FOREIGN KEY(winner_id) REFERENCES users(id)
     );
+
+CREATE TABLE
+    IF NOT EXISTS friends (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        friend_id INTEGER NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        FOREIGN KEY(friend_id) REFERENCES users(id)
+    );

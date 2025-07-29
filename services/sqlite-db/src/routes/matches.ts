@@ -9,6 +9,7 @@ export default async function matchesRoutes(fastify: FastifyInstance, opts: any)
 		const stmt = db.prepare(`
 		WITH user_matches AS (
 		SELECT
+			matches.id,
 			matches.user1_score,
 			matches.user2_score,
 			matches.winner_id,
@@ -32,7 +33,7 @@ export default async function matchesRoutes(fastify: FastifyInstance, opts: any)
 		ON opponent_user.id = user_matches.opponent_id
 		LEFT JOIN users AS winner_user
 		ON winner_user.id = user_matches.winner_id
-		ORDER BY user_matches.match_date DESC;
+		ORDER BY user_matches.id DESC;
 		`);
 
 		const matches = stmt.all(id, id, id);
