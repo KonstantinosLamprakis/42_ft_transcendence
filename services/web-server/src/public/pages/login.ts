@@ -5,7 +5,7 @@ import { escapeHTML } from "../utils/xss-safety.js";
 declare const google: any;
 
 export const loginPage = (pageContainer: HTMLElement) => {
-	pageContainer.innerHTML = `
+    pageContainer.innerHTML = `
     <main id="auth" class="bg-background-color text-foreground-color" style="font-family: 'Inter', sans-serif;">
         <div class="flex min-h-screen">
             <div class="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
@@ -102,8 +102,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium leading-6 text-foreground-color"
-                                    for="name">Full Name</label>
+                                <label class="block text-sm font-medium leading-6 text-foreground-color" for="name">Full Name</label>
                                 <div class="mt-2">
                                     <input
                                         class="block w-full rounded-md border-0 py-2.5 px-3 text-foreground-color shadow-sm ring-1 ring-inset ring-subtle-border placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-color sm:text-sm sm:leading-6"
@@ -163,61 +162,61 @@ export const loginPage = (pageContainer: HTMLElement) => {
     </main>
     `;
 
-	const showSignInBtn = document.getElementById("show-signin-btn");
-	const showSignUpBtn = document.getElementById("show-signup-btn");
-	const signInForm = document.getElementById("signin-form");
-	const signUpForm = document.getElementById("signup-form");
+    const showSignInBtn = document.getElementById("show-signin-btn");
+    const showSignUpBtn = document.getElementById("show-signup-btn");
+    const signInForm = document.getElementById("signin-form");
+    const signUpForm = document.getElementById("signup-form");
 
-	if (!showSignInBtn || !showSignUpBtn || !signInForm || !signUpForm) {
-		console.error("One or more elements not found");
-		return;
-	}
+    if (!showSignInBtn || !showSignUpBtn || !signInForm || !signUpForm) {
+        console.error("One or more elements not found");
+        return;
+    }
 
-	const showForm = (formToShow: HTMLElement, btnToActivate: HTMLElement) => {
-		const forms = [signInForm, signUpForm];
-		const buttons = [showSignInBtn, showSignUpBtn];
-		forms.forEach((form) => {
-			if (form === formToShow) {
-				form.classList.remove("opacity-0", "max-h-0");
-				form.classList.add("opacity-100", "max-h-screen");
-			} else {
-				form?.classList.add("opacity-0", "max-h-0");
-				form?.classList.remove("opacity-100", "max-h-screen");
-			}
-		});
-		buttons.forEach((btn) => {
-			if (btn === btnToActivate) {
-				btn.classList.add(
-					"bg-[var(--primary-color)]",
-					"opacity-50",
-					"cursor-not-allowed",
-					"text-white",
-				);
-				btn.classList.remove("hover:bg-gray-200");
-			} else {
-				btn.classList.remove(
-					"bg-[var(--primary-color)]",
-					"opacity-50",
-					"cursor-not-allowed",
-					"text-white",
-				);
-				btn.classList.add("hover:bg-gray-200");
-			}
-		});
-	};
+    const showForm = (formToShow: HTMLElement, btnToActivate: HTMLElement) => {
+        const forms = [signInForm, signUpForm];
+        const buttons = [showSignInBtn, showSignUpBtn];
+        forms.forEach((form) => {
+            if (form === formToShow) {
+                form.classList.remove("opacity-0", "max-h-0");
+                form.classList.add("opacity-100", "max-h-screen");
+            } else {
+                form?.classList.add("opacity-0", "max-h-0");
+                form?.classList.remove("opacity-100", "max-h-screen");
+            }
+        });
+        buttons.forEach((btn) => {
+            if (btn === btnToActivate) {
+                btn.classList.add(
+                    "bg-[var(--primary-color)]",
+                    "opacity-50",
+                    "cursor-not-allowed",
+                    "text-white",
+                );
+                btn.classList.remove("hover:bg-gray-200");
+            } else {
+                btn.classList.remove(
+                    "bg-[var(--primary-color)]",
+                    "opacity-50",
+                    "cursor-not-allowed",
+                    "text-white",
+                );
+                btn.classList.add("hover:bg-gray-200");
+            }
+        });
+    };
 
-	const handleSignInClick = () => showForm(signInForm, showSignInBtn);
-	const handleSignUpClick = () => showForm(signUpForm, showSignUpBtn);
+    const handleSignInClick = () => showForm(signInForm, showSignInBtn);
+    const handleSignUpClick = () => showForm(signUpForm, showSignUpBtn);
 
-	const show2FAForm = (username: string, sessionId: string) => {
-		const authDiv = document.getElementById("auth")!;
-		let twofaForm = document.getElementById("twofa-form");
-		if (!twofaForm) {
-			twofaForm = document.createElement("form");
-			twofaForm.id = "twofa-form";
-			twofaForm.className =
-				"mt-8 space-y-6 bg-white rounded-lg shadow-sm border border-subtle-border p-6";
-			twofaForm.innerHTML = `
+    const show2FAForm = (username: string, sessionId: string) => {
+        const authDiv = document.getElementById("auth")!;
+        let twofaForm = document.getElementById("twofa-form");
+        if (!twofaForm) {
+            twofaForm = document.createElement("form");
+            twofaForm.id = "twofa-form";
+            twofaForm.className =
+                "mt-8 space-y-6 bg-white rounded-lg shadow-sm border border-subtle-border p-6";
+            twofaForm.innerHTML = `
                 <div class="text-center">
                     <h3 class="text-lg font-semibold text-foreground-color mb-2">Two-Factor Authentication</h3>
                     <p class="text-sm text-gray-600 mb-4">Please enter the 6-digit code from your authenticator app</p>
@@ -257,285 +256,310 @@ export const loginPage = (pageContainer: HTMLElement) => {
                 </div>
             `;
 
-			const mainContainer = document.querySelector("#auth .mx-auto");
-			if (mainContainer) {
-				mainContainer.appendChild(twofaForm);
-			} else {
-				authDiv.appendChild(twofaForm);
-			}
+            const mainContainer = document.querySelector("#auth .mx-auto");
+            if (mainContainer) {
+                mainContainer.appendChild(twofaForm);
+            } else {
+                authDiv.appendChild(twofaForm);
+            }
 
-			const cancelBtn = twofaForm.querySelector("#cancel-2fa") as HTMLButtonElement;
-			cancelBtn.addEventListener("click", () => {
-				twofaForm?.remove();
-			});
-		}
+            const cancelBtn = twofaForm.querySelector("#cancel-2fa") as HTMLButtonElement;
+            cancelBtn.addEventListener("click", () => {
+                twofaForm?.remove();
+            });
+        }
 
-		// Show the form with animation
-		twofaForm.classList.remove("hidden");
-		twofaForm.style.opacity = "0";
-		twofaForm.style.transform = "translateY(-10px)";
+        // Show the form with animation
+        twofaForm.classList.remove("hidden");
+        twofaForm.style.opacity = "0";
+        twofaForm.style.transform = "translateY(-10px)";
 
-		// Animate in
-		setTimeout(() => {
-			twofaForm!.style.transition = "all 0.3s ease-out";
-			twofaForm!.style.opacity = "1";
-			twofaForm!.style.transform = "translateY(0)";
-		}, 10);
+        // Animate in
+        setTimeout(() => {
+            twofaForm!.style.transition = "all 0.3s ease-out";
+            twofaForm!.style.opacity = "1";
+            twofaForm!.style.transform = "translateY(0)";
+        }, 10);
 
-		// Focus the input field
-		const tokenInput = twofaForm.querySelector("#twofa-token") as HTMLInputElement;
-		setTimeout(() => tokenInput?.focus(), 100);
+        // Focus the input field
+        const tokenInput = twofaForm.querySelector("#twofa-token") as HTMLInputElement;
+        setTimeout(() => tokenInput?.focus(), 100);
 
-		twofaForm.onsubmit = async (e) => {
-			e.preventDefault();
-			const form = e.target as HTMLFormElement;
-			const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+        twofaForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const form = e.target as HTMLFormElement;
+            const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
 
-			// Show loading state
-			const originalText = submitBtn.textContent;
-			submitBtn.textContent = "Verifying...";
-			submitBtn.disabled = true;
+            // Show loading state
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = "Verifying...";
+            submitBtn.disabled = true;
 
-			const tokenVal = (form.querySelector('input[name="pong-token"]') as HTMLInputElement)
-				.value;
+            const tokenVal = (form.querySelector('input[name="pong-token"]') as HTMLInputElement)
+                .value;
 
-			try {
-				const res = await fetch(`${HTTPS_API_URL}/2fa/verify`, {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ sessionId, token: tokenVal }), // Use sessionId instead of username
-				});
+            try {
+                const res = await fetch(`${HTTPS_API_URL}/2fa/verify`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ sessionId, token: tokenVal }),
+                });
 
-				const data = await res.json();
-				if (data.token) {
-					await setToken(data.token);
-					showToast("2FA verified! Logged in.", ToastType.SUCCESS);
-					// Animate out and remove
-					twofaForm!.style.transition = "all 0.3s ease-in";
-					twofaForm!.style.opacity = "0";
-					twofaForm!.style.transform = "translateY(-10px)";
-					setTimeout(() => form.remove(), 300);
-					window.location.reload();
-				} else {
-					showToast(data.error || "Invalid 2FA code. Please try again.", ToastType.ERROR);
-					// Reset button state
-					submitBtn.textContent = originalText;
-					submitBtn.disabled = false;
-					tokenInput.value = "";
-					tokenInput.focus();
-				}
-			} catch (error) {
-				showToast("2FA verification failed", ToastType.ERROR);
-				submitBtn.textContent = originalText;
-				submitBtn.disabled = false;
-				tokenInput.value = "";
-				tokenInput.focus();
-			}
-		};
-	};
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
 
-	const handleSignInSubmit = async (e: SubmitEvent) => {
-		e.preventDefault();
-		const form = e.target as HTMLFormElement;
-		const body = {
-			username: (form.username as HTMLInputElement).value,
-			password: (form.password as HTMLInputElement).value,
-		};
+                const data = await res.json();
+                if (data.token) {
+                    await setToken(data.token);
+                    showToast("2FA verified! Logged in.", ToastType.SUCCESS);
+                    // Animate out and remove
+                    twofaForm!.style.transition = "all 0.3s ease-in";
+                    twofaForm!.style.opacity = "0";
+                    twofaForm!.style.transform = "translateY(-10px)";
+                    setTimeout(() => form.remove(), 300);
+                    window.location.reload();
+                } else {
+                    showToast(data.error || "Invalid 2FA code. Please try again.", ToastType.ERROR);
+                    // Reset button state
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    tokenInput.value = "";
+                    tokenInput.focus();
+                }
+            } catch (error) {
+                console.error("2FA verification error:", error);
+                showToast("2FA verification failed", ToastType.ERROR);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                tokenInput.value = "";
+                tokenInput.focus();
+            }
+        };
+    };
 
-		const res = await fetch(`${HTTPS_API_URL}/login`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(body),
-		});
+    const handleSignInSubmit = async (e: SubmitEvent) => {
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const body = {
+            username: (form.username as HTMLInputElement).value,
+            password: (form.password as HTMLInputElement).value,
+        };
 
-		const data = await res.json();
-		if (data.require2fa && data.sessionId) {
-			showToast("2FA required. Please enter your code.", ToastType.INFO);
-			form.reset();
-			show2FAForm(body.username, data.sessionId);
-		} else if (data.token) {
-			await setToken(data.token);
-			form.reset();
-			localStorage.setItem("login", Date.now().toString());
-			showToast("Logged in!", ToastType.SUCCESS);
-			window.location.reload();
-		} else {
-			showToast(data.error || "Login failed", ToastType.ERROR);
-		}
-	};
+        try {
+            const res = await fetch(`${HTTPS_API_URL}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            });
 
-	const handleSignUpSubmit = async (e: SubmitEvent) => {
-		e.preventDefault();
-		const form = e.target as HTMLFormElement;
-		const formData = new FormData(form);
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
 
-		// Get password values for validation
-		const password = formData.get("password") as string;
-		const confirmPassword = formData.get("confirm-password") as string;
+            const data = await res.json();
+            if (data.require2fa && data.sessionId) {
+                showToast("2FA required. Please enter your code.", ToastType.INFO);
+                form.reset();
+                show2FAForm(body.username, data.sessionId);
+            } else if (data.token) {
+                await setToken(data.token);
+                form.reset();
+                localStorage.setItem("login", Date.now().toString());
+                showToast("Logged in!", ToastType.SUCCESS);
+                window.location.reload();
+            } else {
+                showToast(data.error || "Login failed", ToastType.ERROR);
+            }
+        } catch (error) {
+            console.error("Sign-in error:", error);
+            showToast("Login failed. Please try again.", ToastType.ERROR);
+        }
+    };
 
-		// Validate password confirmation
-		if (password !== confirmPassword) {
-			// Add error styling to confirm password field
-			const confirmPasswordInput = document.getElementById(
-				"confirm-password",
-			) as HTMLInputElement;
-			const confirmPasswordContainer = confirmPasswordInput.parentElement;
+    const handleSignUpSubmit = async (e: SubmitEvent) => {
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const formData = new FormData(form);
 
-			// Remove existing error if any
-			const existingError = confirmPasswordContainer?.querySelector(".password-error");
-			if (existingError) {
-				existingError.remove();
-			}
+        // Get password values for validation
+        const password = formData.get("password") as string;
+        const confirmPassword = formData.get("confirm-password") as string;
 
-			// Add error styling
-			confirmPasswordInput.classList.add("ring-red-500", "focus:ring-red-500");
-			confirmPasswordInput.classList.remove("ring-subtle-border", "focus:ring-primary-color");
+        // Validate password confirmation
+        if (password !== confirmPassword) {
+            // Add error styling to confirm password field
+            const confirmPasswordInput = document.getElementById(
+                "confirm-password",
+            ) as HTMLInputElement;
+            const confirmPasswordContainer = confirmPasswordInput.parentElement;
 
-			// Add error message
-			const errorMessage = document.createElement("p");
-			errorMessage.className = "mt-1 text-sm text-red-600 password-error";
-			errorMessage.textContent = "Passwords do not match";
-			confirmPasswordContainer?.appendChild(errorMessage);
+            // Remove existing error if any
+            const existingError = confirmPasswordContainer?.querySelector(".password-error");
+            if (existingError) {
+                existingError.remove();
+            }
 
-			// Focus the confirm password field
-			confirmPasswordInput.focus();
-			return;
-		}
+            // Add error styling
+            confirmPasswordInput.classList.add("ring-red-500", "focus:ring-red-500");
+            confirmPasswordInput.classList.remove("ring-subtle-border", "focus:ring-primary-color");
 
-		const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
-    
-        if (!passwordRegex.test(password)) {
-			showToast(`Password must be at least 8 characters long and contain at least one letter and one number`, ToastType.ERROR);
+            // Add error message
+            const errorMessage = document.createElement("p");
+            errorMessage.className = "mt-1 text-sm text-red-600 password-error";
+            errorMessage.textContent = "Passwords do not match";
+            confirmPasswordContainer?.appendChild(errorMessage);
+
+            // Focus the confirm password field
+            confirmPasswordInput.focus();
             return;
         }
-        
 
-		// Clear any existing password error styling
-		const confirmPasswordInput = document.getElementById(
-			"confirm-password",
-		) as HTMLInputElement;
-		const confirmPasswordContainer = confirmPasswordInput.parentElement;
-		const existingError = confirmPasswordContainer?.querySelector(".password-error");
-		if (existingError) {
-			existingError.remove();
-		}
-		confirmPasswordInput.classList.remove("ring-red-500", "focus:ring-red-500");
-		confirmPasswordInput.classList.add("ring-subtle-border", "focus:ring-primary-color");
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
+    
+        if (!passwordRegex.test(password)) {
+            showToast(`Password must be at least 8 characters long and contain at least one letter and one number`, ToastType.ERROR);
+            return;
+        }
 
-		formData.forEach((value, key) => {
-			console.log(`FormData: ${key} = ${value}`);
-		});
+        // Clear any existing password error styling
+        const confirmPasswordInput = document.getElementById(
+            "confirm-password",
+        ) as HTMLInputElement;
+        const confirmPasswordContainer = confirmPasswordInput.parentElement;
+        const existingError = confirmPasswordContainer?.querySelector(".password-error");
+        if (existingError) {
+            existingError.remove();
+        }
+        confirmPasswordInput.classList.remove("ring-red-500", "focus:ring-red-500");
+        confirmPasswordInput.classList.add("ring-subtle-border", "focus:ring-primary-color");
 
-		const unusedFields = ["confirm-password", "enable-2fa"];
-		const if2FAEnabled = formData.get("enable-2fa") === "on";
-		unusedFields.forEach((field) => {
-			if (formData.has(field)) {
-				formData.delete(field);
-				console.log(`Removed unused field: ${field}`);
-			} else {
-				console.log(`Keep field: ${field}`);
-			}
-		});
+        formData.forEach((value, key) => {
+            console.log(`FormData: ${key} = ${value}`);
+        });
 
-		try {
-			const res = await fetch(`${HTTPS_API_URL}/signup`, {
-				method: "POST",
-				body: formData,
-			});
+        const unusedFields = ["confirm-password", "enable-2fa"];
+        const if2FAEnabled = formData.get("enable-2fa") === "on";
+        unusedFields.forEach((field) => {
+            if (formData.has(field)) {
+                formData.delete(field);
+                console.log(`Removed unused field: ${field}`);
+            } else {
+                console.log(`Keep field: ${field}`);
+            }
+        });
 
-			const data = await res.json();
+        try {
+            const res = await fetch(`${HTTPS_API_URL}/signup`, {
+                method: "POST",
+                body: formData,
+            });
 
-			if (data.error) {
-				showToast(`Signup failed: ${data.error}`, ToastType.ERROR);
-			} else {
-				showToast("Signup successful!", ToastType.SUCCESS);
-				form.reset();
-				const username = formData.get("username");
-				if (if2FAEnabled && username !== null) {
-					setup2FA(username.toString());
-				}
-			}
-		} catch (error) {
-			console.error("Signup error:", error);
-			showToast("Signup failed. Please try again.", ToastType.ERROR);
-		}
-	};
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
 
-	// Handle Google Sign-In callback
-	const initializeGoogleSignIn = () => {
-		if (typeof google !== "undefined" && google.accounts) {
-			google.accounts.id.initialize({
-				client_id:
-					"1047975304392-v6d4bg1uvk93ip443tb943eh18qc3bm3.apps.googleusercontent.com",
-				callback: handleGoogleSignIn,
-			});
+            const data = await res.json();
 
-			const buttonContainer = document.getElementById("google-signin-button");
-			if (buttonContainer) {
-				google.accounts.id.renderButton(buttonContainer, {
-					theme: "outline",
-					size: "large",
-					width: "100%",
-				});
-			}
-		} else {
-			setTimeout(initializeGoogleSignIn, 100);
-		}
-	};
+            if (data.error) {
+                showToast(`Signup failed: ${data.error}`, ToastType.ERROR);
+            } else {
+                showToast("Signup successful!", ToastType.SUCCESS);
+                form.reset();
+                const username = formData.get("username");
+                if (if2FAEnabled && username !== null) {
+                    setup2FA(username.toString());
+                }
+            }
+        } catch (error) {
+            console.error("Signup error:", error);
+            showToast("Signup failed. Please try again.", ToastType.ERROR);
+        }
+    };
 
-	const handleGoogleSignIn = (response: any) => {
-		const idToken = response.credential;
-		fetch(`${HTTPS_API_URL}/google-login`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ idToken }),
-		})
-			.then((res) => res.json())
-			.then(async (data) => {
-				if (data.token) {
-					await setToken(data.token);
-					localStorage.setItem("login", Date.now().toString());
-					showToast("Logged in with Google!", ToastType.SUCCESS);
-					window.location.reload();
-				} else {
-					showToast(data.error || "Google login failed", ToastType.ERROR);
-				}
-			})
-			.catch((error) => {
-				console.error("Google login error:", error);
-				showToast("Google login failed", ToastType.ERROR);
-			});
-	};
+    // Handle Google Sign-In callback
+    const initializeGoogleSignIn = () => {
+        if (typeof google !== "undefined" && google.accounts) {
+            google.accounts.id.initialize({
+                client_id:
+                    "1047975304392-v6d4bg1uvk93ip443tb943eh18qc3bm3.apps.googleusercontent.com",
+                callback: handleGoogleSignIn,
+            });
 
-	const setup2FA = async (username: string) => {
-		if (!username) return;
+            const buttonContainer = document.getElementById("google-signin-button");
+            if (buttonContainer) {
+                google.accounts.id.renderButton(buttonContainer, {
+                    theme: "outline",
+                    size: "large",
+                    width: "100%",
+                });
+            }
+        } else {
+            setTimeout(initializeGoogleSignIn, 100);
+        }
+    };
 
-		try {
-			const res = await fetch(`${HTTPS_API_URL}/2fa/setup`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ username }),
-			});
+    const handleGoogleSignIn = async (response: any) => {
+        const idToken = response.credential;
+        try {
+            const res = await fetch(`${HTTPS_API_URL}/google-login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idToken }),
+            });
 
-			const data = await res.json();
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
 
-			if (data.qr && data.requiresActivation) {
-				showQRCodeWithActivation(data.qr, data.secret, username);
-			} else {
-				showToast(data.error || "Failed to setup 2FA", ToastType.ERROR);
-			}
-		} catch (error) {
-			console.error("Error setting up 2FA:", error);
-			showToast("Failed to setup 2FA", ToastType.ERROR);
-		}
-	};
+            const data = await res.json();
+            if (data.token) {
+                await setToken(data.token);
+                localStorage.setItem("login", Date.now().toString());
+                showToast("Logged in with Google!", ToastType.SUCCESS);
+                window.location.reload();
+            } else {
+                showToast(data.error || "Google login failed", ToastType.ERROR);
+            }
+        } catch (error) {
+            console.error("Google login error:", error);
+            showToast("Google login failed", ToastType.ERROR);
+        }
+    };
 
-	const showQRCodeWithActivation = (qrCode: string, secret: string, username: string) => {
-		const qrDiv = document.createElement("div");
-		qrDiv.id = "2fa-activation";
-		qrDiv.className =
-			"mt-8 bg-white rounded-lg shadow-sm border border-subtle-border p-6 max-w-md mx-auto";
-		qrDiv.innerHTML = `
+    const setup2FA = async (username: string) => {
+        if (!username) return;
+
+        try {
+            const res = await fetch(`${HTTPS_API_URL}/2fa/setup`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username }),
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
+            const data = await res.json();
+
+            if (data.qr && data.requiresActivation) {
+                showQRCodeWithActivation(data.qr, data.secret, username);
+            } else {
+                showToast(data.error || "Failed to setup 2FA", ToastType.ERROR);
+            }
+        } catch (error) {
+            console.error("Error setting up 2FA:", error);
+            showToast("Failed to setup 2FA", ToastType.ERROR);
+        }
+    };
+
+    const showQRCodeWithActivation = (qrCode: string, secret: string, username: string) => {
+        const qrDiv = document.createElement("div");
+        qrDiv.id = "2fa-activation";
+        qrDiv.className =
+            "mt-8 bg-white rounded-lg shadow-sm border border-subtle-border p-6 max-w-md mx-auto";
+        qrDiv.innerHTML = `
             <div class="text-center space-y-4">
                 <div class="flex items-center justify-center w-12 h-12 mx-auto bg-blue-100 rounded-full">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -598,82 +622,86 @@ export const loginPage = (pageContainer: HTMLElement) => {
             </div>
         `;
 
-		const cancelBtn = qrDiv.querySelector("#cancel-2fa-activation") as HTMLButtonElement;
-		cancelBtn.addEventListener("click", () => {
-			qrDiv?.remove();
-		});
-		// Insert the activation form
-		const mainContainer = document.querySelector("#auth .mx-auto");
-		if (mainContainer) {
-			mainContainer.appendChild(qrDiv);
-		}
+        const cancelBtn = qrDiv.querySelector("#cancel-2fa-activation") as HTMLButtonElement;
+        cancelBtn.addEventListener("click", () => {
+            qrDiv?.remove();
+        });
+        // Insert the activation form
+        const mainContainer = document.querySelector("#auth .mx-auto");
+        if (mainContainer) {
+            mainContainer.appendChild(qrDiv);
+        }
 
-		// Handle activation form submission
-		const activationForm = qrDiv.querySelector("#activate-2fa-form") as HTMLFormElement;
-		activationForm.addEventListener("submit", async (e) => {
-			e.preventDefault();
+        // Handle activation form submission
+        const activationForm = qrDiv.querySelector("#activate-2fa-form") as HTMLFormElement;
+        activationForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-			const formData = new FormData(activationForm);
-			const token = formData.get("pong-token") as string;
-			const submitBtn = activationForm.querySelector(
-				'button[type="submit"]',
-			) as HTMLButtonElement;
+            const formData = new FormData(activationForm);
+            const token = formData.get("pong-token") as string;
+            const submitBtn = activationForm.querySelector(
+                'button[type="submit"]',
+            ) as HTMLButtonElement;
 
-			submitBtn.textContent = "Activating...";
-			submitBtn.disabled = true;
+            submitBtn.textContent = "Activating...";
+            submitBtn.disabled = true;
 
-			try {
-				const res = await fetch(`${HTTPS_API_URL}/2fa/activate`, {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ username, token }),
-				});
+            try {
+                const res = await fetch(`${HTTPS_API_URL}/2fa/activate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, token }),
+                });
 
-				const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
 
-				if (data.success) {
-					showToast(
-						"2FA activated successfully! You can now use it to secure your account.",
-						ToastType.SUCCESS,
-					);
-					qrDiv.remove();
-				} else {
-					showToast(data.error || "Failed to activate 2FA", ToastType.ERROR);
-					submitBtn.textContent = "Activate 2FA";
-					submitBtn.disabled = false;
-					const tokenInput = qrDiv.querySelector("#activation-token") as HTMLInputElement;
-					tokenInput.value = "";
-					tokenInput.focus();
-				}
-			} catch (error) {
-				console.error("Error activating 2FA:", error);
-				showToast("Failed to activate 2FA", ToastType.ERROR);
-				submitBtn.textContent = "Activate 2FA";
-				submitBtn.disabled = false;
-			}
-		});
+                const data = await res.json();
 
-		// Focus the token input
-		setTimeout(() => {
-			const tokenInput = qrDiv.querySelector("#activation-token") as HTMLInputElement;
-			tokenInput?.focus();
-		}, 100);
-	};
+                if (data.success) {
+                    showToast(
+                        "2FA activated successfully! You can now use it to secure your account.",
+                        ToastType.SUCCESS,
+                    );
+                    qrDiv.remove();
+                } else {
+                    showToast(data.error || "Failed to activate 2FA", ToastType.ERROR);
+                    submitBtn.textContent = "Activate 2FA";
+                    submitBtn.disabled = false;
+                    const tokenInput = qrDiv.querySelector("#activation-token") as HTMLInputElement;
+                    tokenInput.value = "";
+                    tokenInput.focus();
+                }
+            } catch (error) {
+                console.error("Error activating 2FA:", error);
+                showToast("Failed to activate 2FA", ToastType.ERROR);
+                submitBtn.textContent = "Activate 2FA";
+                submitBtn.disabled = false;
+            }
+        });
 
-	// Add event listeners
-	showSignInBtn.addEventListener("click", handleSignInClick);
-	showSignUpBtn.addEventListener("click", handleSignUpClick);
-	signInForm.addEventListener("submit", handleSignInSubmit);
-	signUpForm.addEventListener("submit", handleSignUpSubmit);
+        // Focus the token input
+        setTimeout(() => {
+            const tokenInput = qrDiv.querySelector("#activation-token") as HTMLInputElement;
+            tokenInput?.focus();
+        }, 100);
+    };
 
-	(pageContainer as any)._cleanupListeners = () => {
-		showSignInBtn?.removeEventListener("click", handleSignInClick);
-		showSignUpBtn?.removeEventListener("click", handleSignUpClick);
-		signInForm?.removeEventListener("submit", handleSignInSubmit);
-		signUpForm?.removeEventListener("submit", handleSignUpSubmit);
-	};
+    // Add event listeners
+    showSignInBtn.addEventListener("click", handleSignInClick);
+    showSignUpBtn.addEventListener("click", handleSignUpClick);
+    signInForm.addEventListener("submit", handleSignInSubmit);
+    signUpForm.addEventListener("submit", handleSignUpSubmit);
 
-	// Initialize other components
-	initializeGoogleSignIn();
-	showForm(signInForm, showSignInBtn);
+    (pageContainer as any)._cleanupListeners = () => {
+        showSignInBtn?.removeEventListener("click", handleSignInClick);
+        showSignUpBtn?.removeEventListener("click", handleSignUpClick);
+        signInForm?.removeEventListener("submit", handleSignInSubmit);
+        signUpForm?.removeEventListener("submit", handleSignUpSubmit);
+    };
+
+    // Initialize other components
+    initializeGoogleSignIn();
+    showForm(signInForm, showSignInBtn);
 };

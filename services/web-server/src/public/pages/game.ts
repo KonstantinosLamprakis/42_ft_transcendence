@@ -345,11 +345,23 @@ export const gamePage = (pageContainer: HTMLElement) => {
 	// Event listeners
 	const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
 
+	// <-- UPDATED function with try-catch here -->
 	const handleStartGameClick = async (e: MouseEvent) => {
 		e.preventDefault();
-		const user = await fetchUser();
-		startGameButton.disabled = true;
-		connectWebSocket(user);
+
+		try {
+			const user = await fetchUser();
+			if (!user) {
+				alert("Failed to authenticate user. Please try logging in again.");
+				return;
+			}
+
+			startGameButton.disabled = true;
+			connectWebSocket(user);
+		} catch (err) {
+			console.error("Failed to fetch user:", err);
+			alert("An unexpected error occurred. Please check your connection and try again.");
+		}
 	};
 
 	const handleDisconnectClick = () => {

@@ -32,20 +32,32 @@ export async function isLogged(): Promise<boolean> {
 	return !!token && user !== undefined;
 }
 
-export const fetchUser = async () => {
+export const fetchUser = async (): Promise<meResponse | undefined> => {
 	if (!token) return undefined;
-	else if (user) return user;
+	if (user) return user;
 
-	const res = await fetch(`${HTTPS_API_URL}/me`, {
-		headers: { Authorization: `Bearer ${getToken()}` },
-	});
+	try {
+		const res = await fetch(`${HTTPS_API_URL}/me`, {
+			headers: { Authorization: `Bearer ${getToken()}` },
+		});
 
-	const data = await res.json();
-	if (data.error){
+		if (!res.ok) {
+			user = undefined;
+			return undefined;
+		}
+
+		const data = await res.json();
+
+		if (data.error) {
+			user = undefined;
+			return undefined;
+		}
+
+		user = data;
+		return user;
+	} catch (err) {
+		console.error("Error fetching user:", err);
 		user = undefined;
 		return undefined;
 	}
-
-	user = data;
-	return user;
-}
+};
