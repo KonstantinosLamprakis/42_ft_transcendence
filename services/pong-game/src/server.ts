@@ -149,6 +149,7 @@ fastify.register(async function (fastify) {
 				if (!tour.started)
 					tour.removePlayer(socket, userId);
 				else{
+					socketToTournament.delete(socket);
 					//Code to remove player after start
 				}
 			}

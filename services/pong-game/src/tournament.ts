@@ -34,7 +34,7 @@ export class Tournament {
 	private matchWinners : Game | null = null;
 	private matchLosers : Game | null = null;
 
-	public score = Map<number, number>;
+	public score = new Map<number, number>;
 
 	public isOver() : boolean{
 		if (!this.matchWinners || !this.matchLosers)
@@ -61,7 +61,7 @@ export class Tournament {
 			this.connectionPlayer4 = Player;
 			this.player4UserId = PlayerID;
 		}
-		this.score[PlayerID] = 0;
+		this.score.set(PlayerID, 0);
 		socketToTournament.set(Player, this);
 		this.userCount++;
 	}
@@ -84,6 +84,7 @@ export class Tournament {
 			this.player4UserId = null;
 		}
 		this.userCount--;
+		this.score.delete(PlayerID);
 		socketToTournament.delete(Player);
 	}
 
@@ -130,14 +131,14 @@ export class Tournament {
 		socketToGame.set(this.connectionPlayer4, this.match2.gameId);
 
 		this.started = true;
-		let res = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player1UserId}`, {});
-		this.usernamePlayer1 = res.data.username;
-		res = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player2UserId}`, {});
-		this.usernamePlayer2 = res.data.username;
-		res = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player3UserId}`, {});
-		this.usernamePlayer3 = res.data.username;
-		res = await axios.get(`${SQLITE_DB_URL}/get-user-by-id/${this.player4UserId}`, {});
-		this.usernamePlayer4 = res.data.username;
+		let res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player1UserId}`, {});
+		this.usernamePlayer1 = res.data.nickname;
+		res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player2UserId}`, {});
+		this.usernamePlayer2 = res.data.nickname;
+		res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player3UserId}`, {});
+		this.usernamePlayer3 = res.data.nickname;
+		res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player4UserId}`, {});
+		this.usernamePlayer4 = res.data.nickname;
 		this.match1.Start();
 		this.match2.Start();
 	}
