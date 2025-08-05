@@ -4,7 +4,7 @@ CREATE TABLE
         username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         name TEXT NOT NULL,
-        nickname TEXT NOT NULL,
+        nickname TEXT UNIQUE NOT NULL,
         email TEXT UNIQUE NOT NULL,
         avatar TEXT, -- store the filename or URL of the uploaded image
         wins INTEGER DEFAULT 0,

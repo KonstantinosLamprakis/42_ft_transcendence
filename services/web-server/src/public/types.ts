@@ -61,12 +61,12 @@ export type Match = {
 	user1_score: string;
 	user2_score: string;
 	match_date: string;
-	opponent_username: string;
-	winner_username: string;
+	opponent_nickname: string;
+	winner_nickname: string;
 }
 
 export type Friend = {
-	friend_username: string;
+	friend_nickname: string;
 	friend_id: string;
 	is_online?: boolean;
 }
