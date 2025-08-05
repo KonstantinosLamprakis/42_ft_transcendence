@@ -69,7 +69,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                     <input
                                         class="block w-full rounded-md border-0 py-2.5 px-3 text-foreground-color shadow-sm ring-1 ring-inset ring-subtle-border placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-color sm:text-sm sm:leading-6"
                                         id="signup-username" name="username" placeholder="Choose a username" required=""
-                                        type="text" />
+                                        type="text" maxlength="20"/>
                                 </div>
                             </div>
                             <div>
@@ -79,7 +79,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                     <input
                                         class="block w-full rounded-md border-0 py-2.5 px-3 text-foreground-color shadow-sm ring-1 ring-inset ring-subtle-border placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-color sm:text-sm sm:leading-6"
                                         id="signup-password" name="password" placeholder="Create a password" required=""
-                                        type="password" />
+                                        type="password" maxlength="20"/>
                                 </div>
                             </div>
                             <div>
@@ -89,7 +89,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                     <input
                                         class="block w-full rounded-md border-0 py-2.5 px-3 text-foreground-color shadow-sm ring-1 ring-inset ring-subtle-border placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-color sm:text-sm sm:leading-6"
                                         id="confirm-password" name="confirm-password" placeholder="Confirm your password"
-                                        required="" type="password" />
+                                        required="" type="password" maxlength="20"/>
                                 </div>
                             </div>
                             <div>
@@ -98,7 +98,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                 <div class="mt-2">
                                     <input autocomplete="email"
                                         class="block w-full rounded-md border-0 py-2.5 px-3 text-foreground-color shadow-sm ring-1 ring-inset ring-subtle-border placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-color sm:text-sm sm:leading-6"
-                                        id="email" name="email" placeholder="Enter your email" required="" type="email" />
+                                        id="email" name="email" placeholder="Enter your email" required="" type="email" maxlength="50"/>
                                 </div>
                             </div>
                             <div>
@@ -108,7 +108,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                     <input
                                         class="block w-full rounded-md border-0 py-2.5 px-3 text-foreground-color shadow-sm ring-1 ring-inset ring-subtle-border placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-color sm:text-sm sm:leading-6"
                                         id="name" name="name" placeholder="Enter your full name" required=""
-                                        type="text" />
+                                        type="text" maxlength="40"/>
                                 </div>
                             </div>
                             <div>
@@ -118,7 +118,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                     <input
                                         class="block w-full rounded-md border-0 py-2.5 px-3 text-foreground-color shadow-sm ring-1 ring-inset ring-subtle-border placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-color sm:text-sm sm:leading-6"
                                         id="nickname" name="nickname" placeholder="Enter your nickname" required=""
-                                        type="text" />
+                                        type="text" maxlength="20"/>
                                 </div>
                             </div>
                             <div>
