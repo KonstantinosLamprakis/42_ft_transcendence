@@ -159,8 +159,12 @@ fastify.post("/signup", async (req, reply) => {
 		}
 	}
 
-	if (!data.username || !data.password || !data.name) {
+	if (!data.username || !data.password || !data.name || !data.nickname || !data.email) {
 		return reply.status(400).send({ error: "Missing required fields" });
+	}
+
+	if (data.username.length > 20 || data.password.length > 20 || data.name.length > 40 || data.nickname.length > 20 || data.email.length > 50) {
+		return reply.status(400).send({ error: "Some fields exceed the allowed length" });
 	}
 
 	const res = await axios.get(
