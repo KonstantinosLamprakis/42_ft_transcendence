@@ -61,7 +61,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
                                 </button>
                             </div>
                         </form>
-                        <form class="mt-8 space-y-6 form-container opacity-0 max-h-0 overflow-hidden p-1" id="signup-form">
+                        <form class="mt-8 mb-8 space-y-6 form-container opacity-0 max-h-0 p-1" id="signup-form">
                             <div>
                                 <label class="block text-sm font-medium leading-6 text-foreground-color"
                                     for="signup-username">Username</label>
