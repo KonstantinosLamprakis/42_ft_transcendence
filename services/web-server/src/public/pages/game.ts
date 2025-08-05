@@ -218,6 +218,83 @@ export const gamePage = (pageContainer: HTMLElement) => {
 		opponentScoreEl.textContent = opponentScore.toString();
 	}
 
+	function drawBracket(user1 : string, user2: string, user3: string, user4: string) {
+	const centerX = WIDTH / 2;
+	const startY = 100;
+	const spacingY = 80;
+	const boxWidth = 140;
+	const boxHeight = 40;
+
+	// Helper to draw glowing text boxes
+	function drawBox(x: number, y: number, text: string, color: string) {
+		ctx.fillStyle = color;
+		ctx.shadowColor = color;
+		ctx.shadowBlur = 10;
+		ctx.fillRect(x - boxWidth / 2, y - boxHeight / 2, boxWidth, boxHeight);
+
+		ctx.shadowBlur = 0;
+		ctx.fillStyle = "white";
+		ctx.font = "16px Arial";
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+		ctx.fillText(text, x, y);
+	}
+
+	// Draw brackets and lines
+	const match1Y1 = startY;
+	const match1Y2 = startY + spacingY;
+	const match1MidY = (match1Y1 + match1Y2) / 2;
+
+	const match2Y1 = startY + 3 * spacingY;
+	const match2Y2 = startY + 4 * spacingY;
+	const match2MidY = (match2Y1 + match2Y2) / 2;
+
+	const finalMatchY = (match1MidY + match2MidY) / 2;
+
+	// Match 1
+	drawBox(centerX - 200, match1Y1, user1, "#4ade80"); // Green
+	drawBox(centerX - 200, match1Y2, user2, "#f87171"); // Red
+
+	// Line to match1 mid
+	ctx.strokeStyle = "white";
+	ctx.lineWidth = 2;
+	ctx.beginPath();
+	ctx.moveTo(centerX - 130, match1Y1);
+	ctx.lineTo(centerX - 100, match1MidY);
+	ctx.lineTo(centerX - 130, match1Y2);
+	ctx.stroke();
+
+	// Match 2
+	drawBox(centerX - 200, match2Y1, user3, "#4ade80");
+	drawBox(centerX - 200, match2Y2, user4, "#f87171");
+
+	// Line to match2 mid
+	ctx.beginPath();
+	ctx.moveTo(centerX - 130, match2Y1);
+	ctx.lineTo(centerX - 100, match2MidY);
+	ctx.lineTo(centerX - 130, match2Y2);
+	ctx.stroke();
+
+	// Final match box
+	drawBox(centerX + 140, finalMatchY, "???", "#60a5fa"); // Blue for final placeholder
+
+	// Connect match 1 to final
+	ctx.beginPath();
+	ctx.moveTo(centerX - 100, match1MidY);
+	ctx.lineTo(centerX, match1MidY);
+	ctx.lineTo(centerX, finalMatchY);
+	ctx.lineTo(centerX + boxWidth / 2, finalMatchY);
+	ctx.stroke();
+
+	// Connect match 2 to final
+	ctx.beginPath();
+	ctx.moveTo(centerX - 100, match2MidY);
+	ctx.lineTo(centerX, match2MidY);
+	ctx.lineTo(centerX, finalMatchY);
+	ctx.stroke();
+	}
+
+
 	function updateConnectionStatus(status: "connecting" | "connected" | "disconnected") {
 		const statusMap = {
 			connecting: {
@@ -300,6 +377,11 @@ export const gamePage = (pageContainer: HTMLElement) => {
 
 					socket?.close();
 					return;
+				}
+
+				if (data.type === PongMessageType.T_STAT) {
+					loadingDiv.style.display = "none";
+					drawBracket(data.usernamePlayer1, data.usernamePlayer2, data.usernamePlayer3, data.usernamePlayer4);
 				}
 
 				if (data.type === PongMessageType.T_END) {

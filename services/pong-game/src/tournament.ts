@@ -44,22 +44,30 @@ export class Tournament {
 		return false;
 	}
 
-	public	addPlayer(Player : WebSocket, PlayerID : number){
+	public	async addPlayer(Player : WebSocket, PlayerID : number){
 		if (!this.connectionPlayer1){
 			this.connectionPlayer1 = Player;
 			this.player1UserId = PlayerID;
+			let res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player1UserId}`, {});
+			this.usernamePlayer1 = res.data.nickname;
 		}
 		else if (!this.connectionPlayer2){
 			this.connectionPlayer2 = Player;
 			this.player2UserId = PlayerID;
+			let res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player2UserId}`, {});
+			this.usernamePlayer2 = res.data.nickname;
 		}
 		else if (!this.connectionPlayer3){
 			this.connectionPlayer3 = Player;
 			this.player3UserId = PlayerID;
+			let res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player3UserId}`, {});
+			this.usernamePlayer3 = res.data.nickname;
 		}
 		else if (!this.connectionPlayer4){
 			this.connectionPlayer4 = Player;
 			this.player4UserId = PlayerID;
+			let res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player4UserId}`, {});
+			this.usernamePlayer4 = res.data.nickname;
 		}
 		this.score.set(PlayerID, 0);
 		socketToTournament.set(Player, this);
@@ -67,25 +75,32 @@ export class Tournament {
 	}
 
 	public	removePlayer(Player : WebSocket, PlayerID : number){
-		if (this.connectionPlayer1 == Player){
+		if (this.player1UserId == PlayerID){
 			this.connectionPlayer1 = null;
 			this.player1UserId = null;
+			this.usernamePlayer1 = null;
 		}
-		else if (this.connectionPlayer2 == Player){
+		else if (this.player2UserId == PlayerID){
 			this.connectionPlayer2 = null;
 			this.player2UserId = null;
+			this.usernamePlayer2 = null;
 		}
-		else if (this.connectionPlayer3 == Player){
+		else if (this.player3UserId == PlayerID){
 			this.connectionPlayer3 = null;
 			this.player3UserId = null;
+			this.usernamePlayer3 = null;
 		}
-		else if (this.connectionPlayer4 == Player){
+		else if (this.player4UserId == PlayerID){
 			this.connectionPlayer4 = null;
 			this.player4UserId = null;
+			this.usernamePlayer4 = null;
 		}
+		else 
+			return;
+		
 		this.userCount--;
 		this.score.delete(PlayerID);
-		socketToTournament.delete(Player);
+		// socketToTournament.delete(Player);
 	}
 
 	public getPos(pos : number) : string{
@@ -131,14 +146,6 @@ export class Tournament {
 		socketToGame.set(this.connectionPlayer4, this.match2.gameId);
 
 		this.started = true;
-		let res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player1UserId}`, {});
-		this.usernamePlayer1 = res.data.nickname;
-		res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player2UserId}`, {});
-		this.usernamePlayer2 = res.data.nickname;
-		res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player3UserId}`, {});
-		this.usernamePlayer3 = res.data.nickname;
-		res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player4UserId}`, {});
-		this.usernamePlayer4 = res.data.nickname;
 		this.match1.Start();
 		this.match2.Start();
 	}

@@ -10,6 +10,7 @@ export enum PongMessageType {
 	TOURNAMENT = "tournament",
 	T_CONTINUE = "t_continue",
 	T_END = "t_end",
+	T_STAT = "t_status",
 	MOVE = "move",
 	END = "end",
 	DRAW = "draw",

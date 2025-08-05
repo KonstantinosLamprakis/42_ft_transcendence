@@ -41,6 +41,34 @@ function findOpenTournament(userID): Tournament | null {
 	return null;
 }
 
+function updateTournamentStatus(Room : Tournament) {
+	const status: PongServerResponse = {
+		type: PongMessageType.T_STAT,
+		usernamePlayer1: "finding...",
+		usernamePlayer2: "finding...",
+		usernamePlayer3: "finding...",
+		usernamePlayer4: "finding...",
+	};
+
+	if (Room.usernamePlayer1)
+		status.usernamePlayer1 = Room.usernamePlayer1;
+	if (Room.usernamePlayer2)
+		status.usernamePlayer2 = Room.usernamePlayer2;
+	if (Room.usernamePlayer3)
+		status.usernamePlayer3 = Room.usernamePlayer3;
+	if (Room.usernamePlayer4)
+		status.usernamePlayer4 = Room.usernamePlayer4;
+
+	if (Room.connectionPlayer1)
+		Room.connectionPlayer1.send(JSON.stringify(status));
+	if (Room.connectionPlayer2)
+		Room.connectionPlayer2.send(JSON.stringify(status));
+	if (Room.connectionPlayer3)
+		Room.connectionPlayer3.send(JSON.stringify(status));
+	if (Room.connectionPlayer4)
+		Room.connectionPlayer4.send(JSON.stringify(status));
+}
+
 // let modifier = 1.0;
 
 fastify.addHook("onRequest", (request, reply, done) => {
@@ -106,10 +134,13 @@ fastify.register(async function (fastify) {
 					Room.Id = num;
 					tournaments.set(num, Room);
 				}
-				Room.addPlayer(socket, userId);
+				await Room.addPlayer(socket, userId);
 				socketToTournament.set(socket, Room);
 				if (Room.userCount >= 4)
 					Room.start();
+				
+				updateTournamentStatus(Room);
+					
 			}
 
 			else if (parsed.type === PongMessageType.MOVE) {
@@ -146,18 +177,18 @@ fastify.register(async function (fastify) {
 
 			if (tour)
 			{
-				if (!tour.started)
+				if (!tour.started){
+					socketToTournament.delete(socket);
 					tour.removePlayer(socket, userId);
+					updateTournamentStatus(tour);
+				}
 				else{
 					socketToTournament.delete(socket);
 					//Code to remove player after start
 				}
 			}
 
-			if (!game || game.isGameOver)
-				return ;
-
-			if (!game.isGameOver) {
+			if (game && !game.isGameOver) {
 				if (socket === game.connectionPlayer1) {
 					game.scorePlayer2 = 11;
 					game.scorePlayer1 = 0;

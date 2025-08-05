@@ -9,6 +9,7 @@ export enum PongMessageType {
 	TOURNAMENT = "tournament",
 	T_CONTINUE = "t_continue",
 	T_END = "t_end",
+	T_STAT = "t_status",
 	MOVE = "move",
 	END = "end",
 	DRAW = "draw",
@@ -28,12 +29,12 @@ export type PongClientRequest = {
 
 export type PongServerResponse = {
 	type: PongMessageType;
-	ballX: number;
-	ballY: number;
-	player1Y: number;
-	player2Y: number;
-	scorePlayer1: number;
-	scorePlayer2: number;
+	ballX?: number;
+	ballY?: number;
+	player1Y?: number;
+	player2Y?: number;
+	scorePlayer1?: number;
+	scorePlayer2?: number;
 	winner?: number;
 	nicknamePlayer1?: string;
 	nicknamePlayer2?: string;
