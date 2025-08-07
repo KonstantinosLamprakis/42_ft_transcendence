@@ -32,14 +32,11 @@ export class Tournament {
 	private match1 : Game | null = null;
 	private match2 : Game | null = null;
 	private matchWinners : Game | null = null;
-	private matchLosers : Game | null = null;
-
-	public score = new Map<number, number>;
 
 	public isOver() : boolean{
-		if (!this.matchWinners || !this.matchLosers)
+		if (!this.matchWinners)
 			return false;
-		else if (this.matchWinners.isGameOver && this.matchLosers.isGameOver)
+		else if (this.matchWinners.isGameOver)
 			return true
 		return false;
 	}
@@ -69,7 +66,6 @@ export class Tournament {
 			let res = await axios.get(`${SQLITE_DB_URL}/get-user-and-nickname-by-id/${this.player4UserId}`, {});
 			this.usernamePlayer4 = res.data.nickname;
 		}
-		this.score.set(PlayerID, 0);
 		socketToTournament.set(Player, this);
 		this.userCount++;
 	}
@@ -97,25 +93,8 @@ export class Tournament {
 		}
 		else 
 			return;
-		
-		this.userCount--;
-		this.score.delete(PlayerID);
-		// socketToTournament.delete(Player);
-	}
 
-	public getPos(pos : number) : string{
-		if (!this.isOver)
-			return "";
-		else{
-			if (this.score[this.player1UserId] == pos)
-				return this.usernamePlayer1;
-			else if (this.score[this.player2UserId] == pos)
-				return this.usernamePlayer2;
-			else if (this.score[this.player3UserId] == pos)
-				return this.usernamePlayer3;
-			else
-				return this.usernamePlayer4;
-		}
+		this.userCount--;
 	}
 
 	public async start(){
@@ -158,38 +137,38 @@ export class Tournament {
 		if (!this.matchWinners){
 			
 			this.matchWinners = new Game();
-			this.matchLosers = new Game();
+			// this.matchLosers = new Game();
 			this.matchWinners.tournament = this;
-			this.matchLosers.tournament = this;
+			// this.matchLosers.tournament = this;
 			this.matchWinners.gameId = uuidv4();
-			this.matchLosers.gameId = uuidv4();
+			// this.matchLosers.gameId = uuidv4();
 			
 			games.set(this.matchWinners.gameId, this.matchWinners);
-			games.set(this.matchLosers.gameId, this.matchLosers);
+			// games.set(this.matchLosers.gameId, this.matchLosers);
 			
 			this.matchWinners.connectionPlayer1 = winnerSock;
 			this.matchWinners.player1UserId = winnerId;
 			
-			this.matchLosers.connectionPlayer1 = loserSock;
-			this.matchLosers.player1UserId = loserId;
+			// this.matchLosers.connectionPlayer1 = loserSock;
+			// this.matchLosers.player1UserId = loserId;
 			
 			socketToGame.set(winnerSock, this.matchWinners.gameId);
-			socketToGame.set(loserSock, this.matchLosers.gameId);
+			// socketToGame.set(loserSock, this.matchLosers.gameId);
 		}
 		else{
 			
 			this.matchWinners.connectionPlayer2 = winnerSock;
 			this.matchWinners.player2UserId = winnerId;
 			
-			this.matchLosers.connectionPlayer2 = loserSock;
-			this.matchLosers.player2UserId = loserId;
+			// this.matchLosers.connectionPlayer2 = loserSock;
+			// this.matchLosers.player2UserId = loserId;
 			
 			socketToGame.set(winnerSock, this.matchWinners.gameId);
-			socketToGame.set(loserSock, this.matchLosers.gameId);
+			// socketToGame.set(loserSock, this.matchLosers.gameId);
 			
 			this.secondRound = true;
 			this.matchWinners.Start();
-			this.matchLosers.Start();
+			// this.matchLosers.Start();
 		}
 	}
 

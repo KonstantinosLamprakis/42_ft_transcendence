@@ -292,41 +292,46 @@ export const gamePage = (pageContainer: HTMLElement) => {
 	ctx.lineTo(centerX, match2MidY);
 	ctx.lineTo(centerX, finalMatchY);
 	ctx.stroke();
+}
+
+
+function updateConnectionStatus(status: "connecting" | "connected" | "disconnected") {
+	const statusMap = {
+		connecting: {
+			color: "bg-yellow-500",
+			text: "Connecting...",
+			animation: "animate-pulse",
+		},
+		connected: { color: "bg-green-500", text: "Connected", animation: "" },
+		disconnected: { color: "bg-red-500", text: "Disconnected", animation: "animate-pulse" },
+	};
+	
+	const { color, text, animation } = statusMap[status];
+	connectionStatus.className = `w-2 h-2 ${color} rounded-full ${animation}`;
+	connectionText.textContent = text;
+}
+
+// Event listeners
+const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
+const startTournamentButton= document.getElementById("start-tournament") as HTMLButtonElement;
+
+function connectWebSocket(user: meResponse | undefined, tournament : boolean): void {
+	const token = getToken();
+	if (!token) {
+		console.error("No authentication token found");
+		return;
 	}
-
-
-	function updateConnectionStatus(status: "connecting" | "connected" | "disconnected") {
-		const statusMap = {
-			connecting: {
-				color: "bg-yellow-500",
-				text: "Connecting...",
-				animation: "animate-pulse",
-			},
-			connected: { color: "bg-green-500", text: "Connected", animation: "" },
-			disconnected: { color: "bg-red-500", text: "Disconnected", animation: "animate-pulse" },
-		};
-
-		const { color, text, animation } = statusMap[status];
-		connectionStatus.className = `w-2 h-2 ${color} rounded-full ${animation}`;
-		connectionText.textContent = text;
-	}
-
-	function connectWebSocket(user: meResponse | undefined, tournament : boolean): void {
-		const token = getToken();
-		if (!token) {
-			console.error("No authentication token found");
-			return;
-		}
-
-		updateConnectionStatus("connecting");
-		loadingDiv.style.display = "flex";
-
-		socket = new WebSocket(
-			`${WEBSOCKET_API_URL}/pong?userId=${encodeURIComponent(user?.id ?? "")}&token=${encodeURIComponent(token)}`,
-		);
-
-		socket.onopen = (event: Event) => {
-			console.log("WebSocket connected:", event);
+	
+	updateConnectionStatus("connecting");
+	loadingDiv.style.display = "flex";
+	
+	socket = new WebSocket(
+		`${WEBSOCKET_API_URL}/pong?userId=${encodeURIComponent(user?.id ?? "")}&token=${encodeURIComponent(token)}`,
+	);
+	
+	
+	socket.onopen = (event: Event) => {
+		console.log("WebSocket connected:", event);
 			updateConnectionStatus("connected");
 			disconnectBtn.disabled = false;
 
@@ -376,6 +381,11 @@ export const gamePage = (pageContainer: HTMLElement) => {
 					);
 
 					socket?.close();
+					updateConnectionStatus("disconnected");
+					disconnectBtn.disabled = true;
+					startGameButton.disabled = false;
+					startTournamentButton.disabled = false;
+					loadingDiv.style.display = "flex";
 					return;
 				}
 
@@ -385,14 +395,14 @@ export const gamePage = (pageContainer: HTMLElement) => {
 				}
 
 				if (data.type === PongMessageType.T_END) {
-					// playerScore = data.scorePlayer1;
-					// opponentScore = data.scorePlayer2;
+					playerScore = data.scorePlayer1;
+					opponentScore = data.scorePlayer2;
 					draw();
 
 					// Enhanced game over modal
-					// const winner = data.winner === user?.id ? "You Won!" : "You Lost!";
-					// const winnerClass =
-						// data.winner === user?.id ? "text-green-600" : "text-red-600";
+					const winner = data.winner === user?.id ? "You Won!" : "You're OUT'!";
+					const winnerClass =
+						data.winner === user?.id ? "text-green-600" : "text-red-600";
 
 					document.getElementById("game-over-modal")?.remove(); // prevent duplicate modals
 
@@ -401,22 +411,25 @@ export const gamePage = (pageContainer: HTMLElement) => {
 					`
 					<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="game-over-modal">
 						<div class="bg-white rounded-xl p-8 max-w-md mx-4 text-center">
-						<p class="text-gray-600 mb-6">Tournament Score:</p>
-						<p class="text-gray-600 mb-6">1st: ${data?.usernamePlayer1 ?? "N/A"}</p>
-						<p class="text-gray-600 mb-6">2nd: ${data?.usernamePlayer2 ?? "N/A"}</p>
-						<p class="text-gray-600 mb-6">3rd: ${data?.usernamePlayer3 ?? "N/A"}</p>
-						<p class="text-gray-600 mb-6">4th: ${data?.usernamePlayer4 ?? "N/A"}</p>
-						<button onclick="document.getElementById('game-over-modal')?.remove()" 
-							class="px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition-colors">
-							Close
-						</button>
+							<h2 class="text-2xl font-bold ${winnerClass} mb-4">${winner}</h2>
+							<p class="text-gray-600 mb-6">Final Score: ${data.scorePlayer1} - ${data.scorePlayer2}</p>
+							<p class="text-gray-600 mb-6">This tournament is over.</p>
+							<button onclick="document.getElementById('game-over-modal').remove()" 
+								class="px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition-colors">
+								Close
+							</button>
 						</div>
-					</div>
-					`
+                    </div>
+					`,
 					);
 
 
 					socket?.close();
+					updateConnectionStatus("disconnected");
+					disconnectBtn.disabled = true;
+					startGameButton.disabled = false;
+					startTournamentButton.disabled = false;
+					loadingDiv.style.display = "flex";
 					return;
 				}
 
@@ -426,7 +439,7 @@ export const gamePage = (pageContainer: HTMLElement) => {
 					draw();
 
 					// Enhanced game over modal
-					const winner = data.winner === user?.id ? "You Won!" : "You Lost!";
+					const winner = data.winner === user?.id ? "You Won! Please wait for the next match" : "You're OUT''!";
 					const winnerClass =
 						data.winner === user?.id ? "text-green-600" : "text-red-600";
 
@@ -437,7 +450,8 @@ export const gamePage = (pageContainer: HTMLElement) => {
                             <div class="bg-white rounded-xl p-8 max-w-md mx-4 text-center">
                                 <h2 class="text-2xl font-bold ${winnerClass} mb-4">${winner}</h2>
                                 <p class="text-gray-600 mb-6">Score: ${data.scorePlayer1} - ${data.scorePlayer2}</p>
-                                <p class="text-gray-600 mb-6">Please wait for the next match to continue the Tournament</p>
+                                <p class="text-gray-600 mb-6">Only the WINNER moves on to the next round!</p>
+                                <p class="text-gray-600 mb-6">Please wait patiently for the next match</p>
                                 <button onclick="document.getElementById('game-over-modal').remove()" 
                                     class="px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-opacity-90 transition-colors">
                                     Close
@@ -447,7 +461,13 @@ export const gamePage = (pageContainer: HTMLElement) => {
                     `,
 					);
 
-					// socket?.close();
+					if (data.winner !== user?.id)
+						socket?.close();
+					else {
+						setTimeout(() => {
+							document.getElementById("game-over-modal")?.remove();
+						}, 2500);
+					}
 					return;
 				}
 
@@ -495,6 +515,8 @@ export const gamePage = (pageContainer: HTMLElement) => {
 		socket.onclose = () => {
 			updateConnectionStatus("disconnected");
 			disconnectBtn.disabled = true;
+			startGameButton.disabled = false;
+			startTournamentButton.disabled = false;
 			loadingDiv.style.display = "flex";
 		};
 
@@ -504,9 +526,6 @@ export const gamePage = (pageContainer: HTMLElement) => {
 		};
 	}
 
-	// Event listeners
-	const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
-	const startTournamentButton= document.getElementById("start-tournament") as HTMLButtonElement;
 
 	const handleStartGameClick = async (e: MouseEvent) => {
 		e.preventDefault();
