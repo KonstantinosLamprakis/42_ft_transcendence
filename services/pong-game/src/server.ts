@@ -13,19 +13,64 @@ import {
 
 import { Game, HEIGHT, PADDLE_HEIGHT, PADDLE_SPEED, WIDTH } from "./game.js";
 
+import { Tournament } from "./tournament.js";
+
 
 const fastify = Fastify();
 fastify.register(websocket);
 // const games = new Map<number, Game>();
 
 export const games = new Map<string, Game>();
+export const tournaments = new Map<string, Tournament>();
 export const socketToGame = new Map<WebSocket, string>();
+export const socketToTournament = new Map<WebSocket, Tournament>();
 
-function findOpenGame(): Game | null {
+function findOpenGame(userID): Game | null {
 	for (const game of games.values()) {
-		if (!game.connectionPlayer2 && !game.isGameOver) return game;
+		if (!game.connectionPlayer2 && !game.isGameOver && game.player1UserId != userID) return game;
 	}
 	return null;
+}
+
+function findOpenTournament(userID): Tournament | null {
+	for (const room of tournaments.values()){
+		if (room.userCount < 4 && !room.started && room.player1UserId !== userID && room.player2UserId !== userID && room.player3UserId !== userID && room.player4UserId !== userID){
+			return room;
+		}
+	}
+	return null;
+}
+
+function updateTournamentStatus(Room : Tournament) {
+	let status: PongServerResponse = {
+		type: PongMessageType.T_STAT,
+	};
+
+	if (Room.usernamePlayer1)
+		status.usernamePlayer1 = Room.usernamePlayer1;
+	else
+		status.usernamePlayer1 = "Finding...";
+	if (Room.usernamePlayer2)
+		status.usernamePlayer2 = Room.usernamePlayer2;
+	else
+		status.usernamePlayer2 = "Finding...";
+	if (Room.usernamePlayer3)
+		status.usernamePlayer3 = Room.usernamePlayer3;
+	else
+		status.usernamePlayer3 = "Finding...";
+	if (Room.usernamePlayer4)
+		status.usernamePlayer4 = Room.usernamePlayer4;
+	else
+		status.usernamePlayer4 = "Finding...";
+
+	if (Room.connectionPlayer1)
+		Room.connectionPlayer1.send(JSON.stringify(status));
+	if (Room.connectionPlayer2)
+		Room.connectionPlayer2.send(JSON.stringify(status));
+	if (Room.connectionPlayer3)
+		Room.connectionPlayer3.send(JSON.stringify(status));
+	if (Room.connectionPlayer4)
+		Room.connectionPlayer4.send(JSON.stringify(status));
 }
 
 // let modifier = 1.0;
@@ -63,7 +108,7 @@ fastify.register(async function (fastify) {
 			// console.log("Received message:", parsed);
 			if (parsed.type === PongMessageType.INIT) {
 				
-				let Room = findOpenGame();
+				let Room = findOpenGame(userId);
 
 				if (!Room)
 				{
@@ -82,6 +127,24 @@ fastify.register(async function (fastify) {
 					socketToGame.set(socket, Room.gameId);
 					Room.Start();
 				}
+			}
+
+			else if (parsed.type === PongMessageType.TOURNAMENT) {
+				let Room = findOpenTournament(userId);
+
+				if (!Room){
+					const num = uuidv4();
+					Room = new Tournament();
+					Room.Id = num;
+					tournaments.set(num, Room);
+				}
+				await Room.addPlayer(socket, userId);
+				socketToTournament.set(socket, Room);
+				if (Room.userCount >= 4)
+					Room.start();
+				
+				updateTournamentStatus(Room);
+					
 			}
 
 			else if (parsed.type === PongMessageType.MOVE) {
@@ -109,14 +172,36 @@ fastify.register(async function (fastify) {
 
 		socket.on("close", () => {
 
-			const _id = socketToGame.get(socket);
-			if (!_id)
-				return ;
-			const game = games.get(_id);
-			if (!game || game.isGameOver)
-				return ;
+			// console.log("Socket closure\n");
+			
+			const tour = socketToTournament.get(socket);
+			
+			if (tour)
+				{
+				// console.log("Tour is true\n");
+				if (!tour.started){
+					// console.log("Tour is not started\n");
+					socketToTournament.delete(socket); // FIX! doesnt always delete right tour
+					tour.removePlayer(socket, userId);
+					updateTournamentStatus(tour);
+				}
+				else{
+					socketToTournament.delete(socket);
+					//Code to remove player after start
+				}
+			}
+			// else
+				// console.log("Tournament not found!");
 
-			if (!game.isGameOver) {
+			const _id = socketToGame.get(socket);
+			if (!_id){
+				// console.log("No game found\n");
+				return ;
+			}
+			const game = games.get(_id);
+			
+
+			if (game && !game.isGameOver) {
 				if (socket === game.connectionPlayer1) {
 					game.scorePlayer2 = 11;
 					game.scorePlayer1 = 0;
@@ -129,6 +214,7 @@ fastify.register(async function (fastify) {
 				game.isGameOver = true;
 				game.endGame();
 			}
+
 		});
 	});
 });

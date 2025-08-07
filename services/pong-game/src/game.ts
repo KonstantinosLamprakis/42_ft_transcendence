@@ -2,7 +2,8 @@ import axios from "axios";
 import type { WebSocket } from "ws";
 
 
-import { games, socketToGame } from "./server.js";
+import { games, socketToGame, tournaments, socketToTournament } from "./server.js";
+import { Tournament, wait } from "./tournament.js";
 
 
 import {
@@ -13,7 +14,7 @@ import {
 	Runtime,
 } from "./types.js";
 
-const SQLITE_DB_URL = process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:4000" : "http://sqlite-db:4000";
+export const SQLITE_DB_URL = process.env.RUNTIME === Runtime.LOCAL ? "http://127.0.0.1:4000" : "http://sqlite-db:4000";
 
 export const WIDTH = 800;
 export const HEIGHT = 500;
@@ -40,12 +41,14 @@ export class Game {
 	public ballSpeed = 7.0;
 	public modifier = 1.0;
 	public isGameOver = false;
-	public winner: number | null;
-	public gameId: string;
-	public connectionPlayer1: WebSocket | null;
-	public connectionPlayer2: WebSocket | null;
-    public player1UserId: number | null;
-    public player2UserId: number | null;
+	public winner: number | null = null;
+	public gameId: string = null;
+	public connectionPlayer1: WebSocket | null = null;
+	public connectionPlayer2: WebSocket | null = null;
+    public player1UserId: number | null = null;
+    public player2UserId: number | null = null;
+
+	public tournament : Tournament | null = null; 
 	
 	private interval: NodeJS.Timeout;
 	
@@ -171,7 +174,7 @@ export class Game {
 	
 		if ((p1 >= 11 || p2 >= 11) && Math.abs(p1 - p2) >= 2) {
 			this.isGameOver = true;
-			this.winner = p1 > p2
+			this.winner = p1 >= p2
 				? this.player1UserId
 				: this.player2UserId;
 			return true;
@@ -182,8 +185,8 @@ export class Game {
 
 
 	public async endGame() {
-		// console.log(`P1_ID: ${this.player1UserId}`);
-		// console.log(`P2_ID: ${this.player2UserId}`);
+
+		this.isGameOver = true;
 		const result: PongServerResponse = {
 			type: PongMessageType.END,
 			ballX: this.ballX,
@@ -194,6 +197,15 @@ export class Game {
 			scorePlayer2: this.scorePlayer2,
 			winner: this.winner,
 		};
+
+		if (this.tournament){
+			if (!this.tournament.secondRound){
+				result.type = PongMessageType.T_CONTINUE;
+			}
+			else{
+				result.type = PongMessageType.T_END;
+			}
+		}
 	
 		if (this.connectionPlayer1) {
 			this.connectionPlayer1.send(JSON.stringify(result));
@@ -202,7 +214,6 @@ export class Game {
 			this.connectionPlayer2.send(JSON.stringify(result));		
 		}
 		
-		// fastify.log.info(`Game INFO: id: ${this.gameId}  user1_score: ${this.scorePlayer1}  user2_score: ${this.scorePlayer2}  winner: ${this.winner}`);
 		if (this.gameId) {
 			const dateNow = new Date(Date.now());
 			const res = await axios.post(`${SQLITE_DB_URL}/add-match`, {
@@ -229,43 +240,28 @@ export class Game {
 		socketToGame.delete(this.connectionPlayer1);
 		socketToGame.delete(this.connectionPlayer2);
 		games.delete(this.gameId);
+
+		if (this.tournament)
+		{
+			if (this.tournament.secondRound){
+				if (this.tournament.isOver()){
+					tournaments.delete(this.tournament.Id);
+					socketToTournament.delete(this.connectionPlayer1);
+					socketToTournament.delete(this.connectionPlayer2);
+				}
+			}
+			else{
+				if (this.player1UserId == this.winner){
+					this.tournament.continue(this.connectionPlayer1, this.player1UserId, this.connectionPlayer2, this.player2UserId);
+				}
+				else{
+					this.tournament.continue(this.connectionPlayer2, this.player2UserId, this.connectionPlayer1, this.player1UserId);
+				}
+			}
+		}
 	
-		// if (this.winner) {
-		// 	fastify.log.info(`Game ended. Winner: ${this.winner}`);
-		// }
-		
-		// Reset the game after a short delay to allow rematches
-		// setTimeout(() => {
-		// 	game = createNewGame();
-		// }, 1000);
 	}
 
-	// public async endGame() {
-	// 	const res = await axios.put(`${SQLITE_DB_URL}/update-match`, {
-	// 		id: this.gameId,
-	// 		user1_score: this.scorePlayer1,
-	// 		user2_score: this.scorePlayer2,
-	// 		winner_id: this.winner,
-	// 	});
-	
-	// 	const win = await axios.put(`${SQLITE_DB_URL}/add-win/${this.winner}`, {
-	// 		win: 1
-	// 	});
-	
-	// 	let loser = this.player1UserId;
-	// 	if (this.winner === this.player1UserId) {
-	// 		loser = this.player2UserId;
-	// 	}
-	// 	const loss = await axios.put(`${SQLITE_DB_URL}/add-loss/${loser}`, {
-	// 		loss: 1
-	// 	});
-		
-	// 	clearInterval(this.interval);
-	// 	socketToGame.delete(this.connectionPlayer1);
-	// 	socketToGame.delete(this.connectionPlayer2);
-	// 	games.delete(this.gameId);
-	// 	// fastify.log.info(`Game ended. Winner: ${this.winner}`);
-	// }
 
 	public async Start()
 	{
