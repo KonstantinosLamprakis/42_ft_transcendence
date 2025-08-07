@@ -42,22 +42,26 @@ function findOpenTournament(userID): Tournament | null {
 }
 
 function updateTournamentStatus(Room : Tournament) {
-	const status: PongServerResponse = {
+	let status: PongServerResponse = {
 		type: PongMessageType.T_STAT,
-		usernamePlayer1: "finding...",
-		usernamePlayer2: "finding...",
-		usernamePlayer3: "finding...",
-		usernamePlayer4: "finding...",
 	};
 
 	if (Room.usernamePlayer1)
 		status.usernamePlayer1 = Room.usernamePlayer1;
+	else
+		status.usernamePlayer1 = "Finding...";
 	if (Room.usernamePlayer2)
 		status.usernamePlayer2 = Room.usernamePlayer2;
+	else
+		status.usernamePlayer2 = "Finding...";
 	if (Room.usernamePlayer3)
 		status.usernamePlayer3 = Room.usernamePlayer3;
+	else
+		status.usernamePlayer3 = "Finding...";
 	if (Room.usernamePlayer4)
 		status.usernamePlayer4 = Room.usernamePlayer4;
+	else
+		status.usernamePlayer4 = "Finding...";
 
 	if (Room.connectionPlayer1)
 		Room.connectionPlayer1.send(JSON.stringify(status));
@@ -168,17 +172,16 @@ fastify.register(async function (fastify) {
 
 		socket.on("close", () => {
 
-			const _id = socketToGame.get(socket);
-			if (!_id)
-				return ;
-			const game = games.get(_id);
-
+			// console.log("Socket closure\n");
+			
 			const tour = socketToTournament.get(socket);
-
+			
 			if (tour)
-			{
+				{
+				// console.log("Tour is true\n");
 				if (!tour.started){
-					socketToTournament.delete(socket);
+					// console.log("Tour is not started\n");
+					socketToTournament.delete(socket); // FIX! doesnt always delete right tour
 					tour.removePlayer(socket, userId);
 					updateTournamentStatus(tour);
 				}
@@ -187,6 +190,16 @@ fastify.register(async function (fastify) {
 					//Code to remove player after start
 				}
 			}
+			// else
+				// console.log("Tournament not found!");
+
+			const _id = socketToGame.get(socket);
+			if (!_id){
+				// console.log("No game found\n");
+				return ;
+			}
+			const game = games.get(_id);
+			
 
 			if (game && !game.isGameOver) {
 				if (socket === game.connectionPlayer1) {

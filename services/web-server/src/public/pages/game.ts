@@ -400,7 +400,7 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
 					draw();
 
 					// Enhanced game over modal
-					const winner = data.winner === user?.id ? "You Won!" : "You're OUT'!";
+					const winner = data.winner === user?.id ? "You Won!" : "You're OUT!";
 					const winnerClass =
 						data.winner === user?.id ? "text-green-600" : "text-red-600";
 
@@ -439,7 +439,7 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
 					draw();
 
 					// Enhanced game over modal
-					const winner = data.winner === user?.id ? "You Won! Please wait for the next match" : "You're OUT''!";
+					const winner = data.winner === user?.id ? "You Won!" : "You're OUT!";
 					const winnerClass =
 						data.winner === user?.id ? "text-green-600" : "text-red-600";
 
@@ -461,13 +461,23 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
                     `,
 					);
 
-					if (data.winner !== user?.id)
+					if (data.winner !== user?.id){
 						socket?.close();
-					else {
-						setTimeout(() => {
-							document.getElementById("game-over-modal")?.remove();
-						}, 2500);
+						updateConnectionStatus("disconnected");
+						disconnectBtn.disabled = true;
+						startGameButton.disabled = false;
+						startTournamentButton.disabled = false;
+						loadingDiv.style.display = "flex";
 					}
+					else {
+						loadingDiv.style.display = "flex";
+					}
+					return;
+				}
+				
+				if (data.type === PongMessageType.T_CLOSE) {
+					document.getElementById("game-over-modal")?.remove();
+					loadingDiv.style.display = "none";
 					return;
 				}
 

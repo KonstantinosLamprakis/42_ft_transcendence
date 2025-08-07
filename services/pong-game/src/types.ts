@@ -10,6 +10,7 @@ export enum PongMessageType {
 	T_CONTINUE = "t_continue",
 	T_END = "t_end",
 	T_STAT = "t_status",
+	T_CLOSE = "t_close",
 	MOVE = "move",
 	END = "end",
 	DRAW = "draw",

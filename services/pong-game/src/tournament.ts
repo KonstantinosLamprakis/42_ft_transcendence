@@ -1,10 +1,11 @@
 import { WebSocket } from "ws";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import { PongMessageType, PongServerResponse } from "./types.js";
 
 
 import { Game, SQLITE_DB_URL } from "./game.js";
-import { games, socketToGame, socketToTournament } from "./server.js";
+import { games, socketToGame, socketToTournament, tournaments } from "./server.js";
 
 export function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -91,10 +92,15 @@ export class Tournament {
 			this.player4UserId = null;
 			this.usernamePlayer4 = null;
 		}
-		else 
+		else {
 			return;
+		}
 
 		this.userCount--;
+		
+		if (!this.userCount){
+			tournaments.delete(this.Id);
+		}
 	}
 
 	public async start(){
@@ -167,9 +173,16 @@ export class Tournament {
 			// socketToGame.set(loserSock, this.matchLosers.gameId);
 			
 			this.secondRound = true;
+			let status: PongServerResponse = {
+					type: PongMessageType.T_CLOSE,
+			};
+			if (this.matchWinners.connectionPlayer1)
+				this.matchWinners.connectionPlayer1.send(JSON.stringify(status));
+			if (this.matchWinners.connectionPlayer2)
+				this.matchWinners.connectionPlayer2.send(JSON.stringify(status));
 			this.matchWinners.Start();
-			// this.matchLosers.Start();
 		}
+		socketToTournament.delete(loserSock);
 	}
 
 
