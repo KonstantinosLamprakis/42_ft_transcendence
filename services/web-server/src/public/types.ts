@@ -16,7 +16,7 @@ export enum PongMessageType {
 	END = "end",
 	DRAW = "draw",
 	START = "start",
-};
+}
 
 export enum PongClientMove {
 	UP = "w",
@@ -57,7 +57,7 @@ export type meResponse = {
 	isGoogleAccount: boolean | undefined;
 	matches: Match[];
 	friends: Friend[];
-}
+};
 
 export type Match = {
 	user1_score: string;
@@ -65,13 +65,13 @@ export type Match = {
 	match_date: string;
 	opponent_nickname: string;
 	winner_nickname: string;
-}
+};
 
 export type Friend = {
 	friend_nickname: string;
 	friend_id: string;
 	is_online?: boolean;
-}
+};
 
 export type getFriendProfileResponse = {
 	username: string;
@@ -80,4 +80,5 @@ export type getFriendProfileResponse = {
 	wins: number;
 	loses: number;
 	matches: Match[];
-}
+	isGoogleAccount: boolean;
+};
