@@ -490,21 +490,23 @@ export const loginPage = (pageContainer: HTMLElement) => {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ idToken }),
 		})
-			.then((res) => res.json())
-			.then(async (data) => {
-				if (data.token) {
-					await setToken(data.token);
-					localStorage.setItem("login", Date.now().toString());
-					showToast("Logged in with Google!", ToastType.SUCCESS);
-					window.location.reload();
-				} else {
-					showToast(data.error || "Google login failed", ToastType.ERROR);
-				}
-			})
-			.catch((error) => {
-				console.error("Google login error:", error);
-				showToast("Google login failed", ToastType.ERROR);
-			});
+		.then((res) => res.json())
+		.then(async (data) => {
+			if (data.error) {
+				showToast(`Signup failed: ${data.error}`, ToastType.ERROR);
+			} else if (data.token) {
+				await setToken(data.token);
+				localStorage.setItem("login", Date.now().toString());
+				showToast("Logged in with Google!", ToastType.SUCCESS);
+				window.location.reload();
+			} else {
+				showToast(data.error || "Google login failed", ToastType.ERROR);
+			}
+		})
+		.catch((error) => {
+			console.error("Google login error:", error);
+			showToast("Google login failed", ToastType.ERROR);
+		});
 	};
 
 	const setup2FA = async (username: string) => {
