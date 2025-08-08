@@ -49,3 +49,7 @@ export const fetchUser = async () => {
 	user = data;
 	return user;
 }
+
+export const clearUser = () => {
+	user = undefined;
+}
