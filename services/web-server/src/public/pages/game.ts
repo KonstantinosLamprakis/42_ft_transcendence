@@ -570,6 +570,11 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
 	document.addEventListener("keydown", handleKeyDown);
 
 	(pageContainer as any)._cleanupListeners = () => {
+		if (socket) {
+			socket.close();
+			socket = null;
+		}
+		
 		startGameButton.removeEventListener("click", handleStartGameClick);
 		startTournamentButton.removeEventListener("click", handleStartTournamentClick);
 		disconnectBtn.removeEventListener("click", handleDisconnectClick);
