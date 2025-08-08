@@ -73,6 +73,7 @@ type getFriendProfileResponse = {
 	wins: number;
 	loses: number;
 	matches: Match[];
+	isGoogleAccount: boolean;
 }
 
 type Match = {
@@ -361,6 +362,7 @@ fastify.get("/get-friend-profile/:nickname", async (req, reply) => {
 			wins: user.wins,
 			loses: user.loses,
 			matches: matchedRes.data,
+			isGoogleAccount: user.isGoogleAccount ?? false,
 		};
 
 		reply.send(response);

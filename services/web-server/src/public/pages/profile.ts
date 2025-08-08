@@ -341,7 +341,9 @@ export const profilePage = (pageContainer: HTMLElement) => {
 			}
 
 			const avatarUrl = friendData.avatar
-				? `${HTTPS_API_URL}/uploads/${friendData.avatar}`
+				? friendData.isGoogleAccount
+					? friendData.avatar
+					: `${HTTPS_API_URL}/uploads/${friendData.avatar}`
 				: `${HTTPS_API_URL}/uploads/default.jpg`;
 
 			const matchHistoryRows = friendData.matches
