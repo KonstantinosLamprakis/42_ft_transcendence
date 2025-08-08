@@ -20,12 +20,12 @@ export const loginPage = (pageContainer: HTMLElement) => {
                         <div class="mt-6">
                             <div class="flex gap-4 mb-6">
                                 <button
-                                    class="flex-1 py-3 px-4 justify-center items-center gap-2 rounded-md bg-subtle-background text-foreground-color text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                                    class="flex-1 py-3 px-4 justify-center items-center gap-2 rounded-md text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                                     id="show-signin-btn">
                                     Sign In
                                 </button>
                                 <button
-                                    class="flex-1 py-3 px-4 justify-center items-center gap-2 rounded-md bg-subtle-background text-foreground-color text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                                    class="flex-1 py-3 px-4 justify-center items-center gap-2 rounded-md text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                                     id="show-signup-btn">
                                     Sign Up
                                 </button>

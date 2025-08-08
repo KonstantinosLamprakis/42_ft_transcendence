@@ -4,6 +4,7 @@ dist
 .env
 **/public/*.js
 *.js
+!**/tailwind.config.js
 *.d.ts
 *.tsbuildinfo
 certs
