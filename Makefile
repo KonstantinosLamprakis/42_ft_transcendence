@@ -33,7 +33,7 @@ clean:
 
 docker-prune:
 	docker system prune -f
-	docker volume prune -f
+	# docker volume prune -f use this wisely, it maybe will delete the persisted data
 	docker network prune -f
 	docker image prune -f
 
