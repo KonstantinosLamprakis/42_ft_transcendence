@@ -54,14 +54,16 @@ fastify.register(fastifyHttpProxy, {
 });
 
 fastify.setNotFoundHandler(async (request, reply) => {
-    if (request.url.startsWith('/api/') || 
-        request.url.includes('.') || 
-        request.url.startsWith('/uploads/')) {
-        reply.status(404).send({ error: 'Not found' });
-        return;
-    }
-    
-    return reply.sendFile('index.html');
+	if (
+		request.url.startsWith("/api/") ||
+		request.url.includes(".") ||
+		request.url.startsWith("/uploads/")
+	) {
+		reply.status(404).send({ error: "Not found" });
+		return;
+	}
+
+	return reply.sendFile("index.html");
 });
 
 const start = async () => {

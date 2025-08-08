@@ -6,41 +6,44 @@ let MAX_RETRIES = 5;
 let retryCount = 0;
 
 export async function connectSocket() {
-    if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) return;
+	if (
+		socket &&
+		(socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)
+	)
+		return;
 
-    const result = await fetchUser();
-    const token = getToken();
-    if (!result || !result.id || !token) {
-        console.error("No user ID or token found");
-        return;
-    }
-    const userId = result.id;
+	const result = await fetchUser();
+	const token = getToken();
+	if (!result || !result.id || !token) {
+		return;
+	}
+	const userId = result.id;
 
-    socket = new WebSocket(`${WEBSOCKET_API_URL}/online-status?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}`);
+	socket = new WebSocket(
+		`${WEBSOCKET_API_URL}/online-status?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}`,
+	);
 
-    socket.onopen = () => {
-        retryCount = 0;
-    };
+	socket.onopen = () => {
+		retryCount = 0;
+	};
 
-    socket.onclose = () => {
-        console.log("WebSocket disconnected — retrying in 2s");
-        if (retryCount < MAX_RETRIES) {
-            retryCount++;
-            setTimeout(connectSocket, 2000);
-        }
-        socket = null;
-    };
+	socket.onclose = () => {
+		if (retryCount < MAX_RETRIES) {
+			retryCount++;
+			setTimeout(connectSocket, 2000);
+		}
+		socket = null;
+	};
 
-    socket.onerror = (err) => {
-        console.error("WebSocket error:", err);
-        socket?.close();
-    };
+	socket.onerror = (err) => {
+		console.log("WebSocket closed");
+		socket?.close();
+	};
 }
 
 export function disconnectSocket() {
-  if (socket) {
-    socket.close();
-    socket = null;
-  }
+	if (socket) {
+		socket.close();
+		socket = null;
+	}
 }
-
