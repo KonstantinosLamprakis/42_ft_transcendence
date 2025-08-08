@@ -5,18 +5,6 @@ export default {
         "./public/**/*.{html,js,ts}",
         "./public/index.html"
     ],
-    // safelist: [
-    //     'mx-auto',
-    //     'mt-1',
-    //     'text-red-600',
-    //     'text-sm',
-    //     'ring-red-500',
-    //     'focus:ring-red-500',
-    //     // all 0.3s ease-in translateY(-10px) ease-out bg-[var(--primary-color)] opacity-50 cursor-not-allowed text-white hover:bg-gray-200 max-h-0 max-h-screen font-bold text-green-500 tbody hidden text-green-600 text-red-600 none flex
-    //     'ring-subtle-border',
-    //     'focus:ring-primary-color',
-    //     'hover:bg-blue-600',
-    // ],
     safelist: [
         // Exact classes
         'mx-auto',

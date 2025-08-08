@@ -218,133 +218,128 @@ export const gamePage = (pageContainer: HTMLElement) => {
 		opponentScoreEl.textContent = opponentScore.toString();
 	}
 
-	function drawBracket(user1 : string, user2: string, user3: string, user4: string) {
-	const centerX = WIDTH / 2;
-	const startY = 100;
-	const spacingY = 80;
-	const boxWidth = 140;
-	const boxHeight = 40;
+	function drawBracket(user1: string, user2: string, user3: string, user4: string) {
+		const centerX = WIDTH / 2;
+		const startY = 100;
+		const spacingY = 80;
+		const boxWidth = 140;
+		const boxHeight = 40;
 
-	// Helper to draw glowing text boxes
-	function drawBox(x: number, y: number, text: string, color: string) {
-		ctx.fillStyle = color;
-		ctx.shadowColor = color;
-		ctx.shadowBlur = 10;
-		ctx.fillRect(x - boxWidth / 2, y - boxHeight / 2, boxWidth, boxHeight);
+		// Helper to draw glowing text boxes
+		function drawBox(x: number, y: number, text: string, color: string) {
+			ctx.fillStyle = color;
+			ctx.shadowColor = color;
+			ctx.shadowBlur = 10;
+			ctx.fillRect(x - boxWidth / 2, y - boxHeight / 2, boxWidth, boxHeight);
 
-		ctx.shadowBlur = 0;
-		ctx.fillStyle = "white";
-		ctx.font = "16px Arial";
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillText(text, x, y);
+			ctx.shadowBlur = 0;
+			ctx.fillStyle = "white";
+			ctx.font = "16px Arial";
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+			ctx.fillText(text, x, y);
+		}
+
+		// Draw brackets and lines
+		const match1Y1 = startY;
+		const match1Y2 = startY + spacingY;
+		const match1MidY = (match1Y1 + match1Y2) / 2;
+
+		const match2Y1 = startY + 3 * spacingY;
+		const match2Y2 = startY + 4 * spacingY;
+		const match2MidY = (match2Y1 + match2Y2) / 2;
+
+		const finalMatchY = (match1MidY + match2MidY) / 2;
+
+		// Match 1
+		drawBox(centerX - 200, match1Y1, user1, "#4ade80"); // Green
+		drawBox(centerX - 200, match1Y2, user2, "#f87171"); // Red
+
+		// Line to match1 mid
+		ctx.strokeStyle = "white";
+		ctx.lineWidth = 2;
+		ctx.beginPath();
+		ctx.moveTo(centerX - 130, match1Y1);
+		ctx.lineTo(centerX - 100, match1MidY);
+		ctx.lineTo(centerX - 130, match1Y2);
+		ctx.stroke();
+
+		// Match 2
+		drawBox(centerX - 200, match2Y1, user3, "#4ade80");
+		drawBox(centerX - 200, match2Y2, user4, "#f87171");
+
+		// Line to match2 mid
+		ctx.beginPath();
+		ctx.moveTo(centerX - 130, match2Y1);
+		ctx.lineTo(centerX - 100, match2MidY);
+		ctx.lineTo(centerX - 130, match2Y2);
+		ctx.stroke();
+
+		// Final match box
+		drawBox(centerX + 140, finalMatchY, "???", "#60a5fa"); // Blue for final placeholder
+
+		// Connect match 1 to final
+		ctx.beginPath();
+		ctx.moveTo(centerX - 100, match1MidY);
+		ctx.lineTo(centerX, match1MidY);
+		ctx.lineTo(centerX, finalMatchY);
+		ctx.lineTo(centerX + boxWidth / 2, finalMatchY);
+		ctx.stroke();
+
+		// Connect match 2 to final
+		ctx.beginPath();
+		ctx.moveTo(centerX - 100, match2MidY);
+		ctx.lineTo(centerX, match2MidY);
+		ctx.lineTo(centerX, finalMatchY);
+		ctx.stroke();
 	}
 
-	// Draw brackets and lines
-	const match1Y1 = startY;
-	const match1Y2 = startY + spacingY;
-	const match1MidY = (match1Y1 + match1Y2) / 2;
+	function updateConnectionStatus(status: "connecting" | "connected" | "disconnected") {
+		const statusMap = {
+			connecting: {
+				color: "bg-yellow-500",
+				text: "Connecting...",
+				animation: "animate-pulse",
+			},
+			connected: { color: "bg-green-500", text: "Connected", animation: "" },
+			disconnected: { color: "bg-red-500", text: "Disconnected", animation: "animate-pulse" },
+		};
 
-	const match2Y1 = startY + 3 * spacingY;
-	const match2Y2 = startY + 4 * spacingY;
-	const match2MidY = (match2Y1 + match2Y2) / 2;
-
-	const finalMatchY = (match1MidY + match2MidY) / 2;
-
-	// Match 1
-	drawBox(centerX - 200, match1Y1, user1, "#4ade80"); // Green
-	drawBox(centerX - 200, match1Y2, user2, "#f87171"); // Red
-
-	// Line to match1 mid
-	ctx.strokeStyle = "white";
-	ctx.lineWidth = 2;
-	ctx.beginPath();
-	ctx.moveTo(centerX - 130, match1Y1);
-	ctx.lineTo(centerX - 100, match1MidY);
-	ctx.lineTo(centerX - 130, match1Y2);
-	ctx.stroke();
-
-	// Match 2
-	drawBox(centerX - 200, match2Y1, user3, "#4ade80");
-	drawBox(centerX - 200, match2Y2, user4, "#f87171");
-
-	// Line to match2 mid
-	ctx.beginPath();
-	ctx.moveTo(centerX - 130, match2Y1);
-	ctx.lineTo(centerX - 100, match2MidY);
-	ctx.lineTo(centerX - 130, match2Y2);
-	ctx.stroke();
-
-	// Final match box
-	drawBox(centerX + 140, finalMatchY, "???", "#60a5fa"); // Blue for final placeholder
-
-	// Connect match 1 to final
-	ctx.beginPath();
-	ctx.moveTo(centerX - 100, match1MidY);
-	ctx.lineTo(centerX, match1MidY);
-	ctx.lineTo(centerX, finalMatchY);
-	ctx.lineTo(centerX + boxWidth / 2, finalMatchY);
-	ctx.stroke();
-
-	// Connect match 2 to final
-	ctx.beginPath();
-	ctx.moveTo(centerX - 100, match2MidY);
-	ctx.lineTo(centerX, match2MidY);
-	ctx.lineTo(centerX, finalMatchY);
-	ctx.stroke();
-}
-
-
-function updateConnectionStatus(status: "connecting" | "connected" | "disconnected") {
-	const statusMap = {
-		connecting: {
-			color: "bg-yellow-500",
-			text: "Connecting...",
-			animation: "animate-pulse",
-		},
-		connected: { color: "bg-green-500", text: "Connected", animation: "" },
-		disconnected: { color: "bg-red-500", text: "Disconnected", animation: "animate-pulse" },
-	};
-	
-	const { color, text, animation } = statusMap[status];
-	connectionStatus.className = `w-2 h-2 ${color} rounded-full ${animation}`;
-	connectionText.textContent = text;
-}
-
-// Event listeners
-const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
-const startTournamentButton= document.getElementById("start-tournament") as HTMLButtonElement;
-
-function connectWebSocket(user: meResponse | undefined, tournament : boolean): void {
-	const token = getToken();
-	if (!token) {
-		console.error("No authentication token found");
-		return;
+		const { color, text, animation } = statusMap[status];
+		connectionStatus.className = `w-2 h-2 ${color} rounded-full ${animation}`;
+		connectionText.textContent = text;
 	}
-	
-	updateConnectionStatus("connecting");
-	loadingDiv.style.display = "flex";
-	
-	socket = new WebSocket(
-		`${WEBSOCKET_API_URL}/pong?userId=${encodeURIComponent(user?.id ?? "")}&token=${encodeURIComponent(token)}`,
-	);
-	
-	
-	socket.onopen = (event: Event) => {
-		console.log("WebSocket connected:", event);
+
+	// Event listeners
+	const startGameButton = document.getElementById("start-game") as HTMLButtonElement;
+	const startTournamentButton = document.getElementById("start-tournament") as HTMLButtonElement;
+
+	function connectWebSocket(user: meResponse | undefined, tournament: boolean): void {
+		const token = getToken();
+		if (!token) {
+			console.error("No authentication token found");
+			return;
+		}
+
+		updateConnectionStatus("connecting");
+		loadingDiv.style.display = "flex";
+
+		socket = new WebSocket(
+			`${WEBSOCKET_API_URL}/pong?userId=${encodeURIComponent(user?.id ?? "")}&token=${encodeURIComponent(token)}`,
+		);
+
+		socket.onopen = (event: Event) => {
 			updateConnectionStatus("connected");
 			disconnectBtn.disabled = false;
 
 			if (token) {
-				if (!tournament){
+				if (!tournament) {
 					socket?.send(JSON.stringify({ type: PongMessageType.INIT }));
-				}
-				else{
+				} else {
 					socket?.send(JSON.stringify({ type: PongMessageType.TOURNAMENT }));
 				}
-				console.log("Sent userId to server: ", token);
 			} else {
-				console.warn("No userId set before WebSocket connection.");
+				// No userId set before WebSocket connection.
 			}
 		};
 
@@ -391,7 +386,12 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
 
 				if (data.type === PongMessageType.T_STAT) {
 					loadingDiv.style.display = "none";
-					drawBracket(data.usernamePlayer1, data.usernamePlayer2, data.usernamePlayer3, data.usernamePlayer4);
+					drawBracket(
+						data.usernamePlayer1,
+						data.usernamePlayer2,
+						data.usernamePlayer3,
+						data.usernamePlayer4,
+					);
 				}
 
 				if (data.type === PongMessageType.T_END) {
@@ -407,8 +407,8 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
 					document.getElementById("game-over-modal")?.remove(); // prevent duplicate modals
 
 					pageContainer.insertAdjacentHTML(
-					"beforeend",
-					`
+						"beforeend",
+						`
 					<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="game-over-modal">
 						<div class="bg-white rounded-xl p-8 max-w-md mx-4 text-center">
 							<h2 class="text-2xl font-bold ${winnerClass} mb-4">${winner}</h2>
@@ -422,7 +422,6 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
                     </div>
 					`,
 					);
-
 
 					socket?.close();
 					updateConnectionStatus("disconnected");
@@ -461,20 +460,19 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
                     `,
 					);
 
-					if (data.winner !== user?.id){
+					if (data.winner !== user?.id) {
 						socket?.close();
 						updateConnectionStatus("disconnected");
 						disconnectBtn.disabled = true;
 						startGameButton.disabled = false;
 						startTournamentButton.disabled = false;
 						loadingDiv.style.display = "flex";
-					}
-					else {
+					} else {
 						loadingDiv.style.display = "flex";
 					}
 					return;
 				}
-				
+
 				if (data.type === PongMessageType.T_CLOSE) {
 					document.getElementById("game-over-modal")?.remove();
 					loadingDiv.style.display = "none";
@@ -507,7 +505,7 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
 					draw();
 				}
 			} catch (err) {
-				console.error("Failed to parse message from server:", err);
+				console.log("Message from server in different format");
 				return;
 			}
 
@@ -531,11 +529,10 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
 		};
 
 		socket.onerror = (error) => {
-			console.error("WebSocket error:", error);
+			console.error("WebSocket closed");
 			updateConnectionStatus("disconnected");
 		};
 	}
-
 
 	const handleStartGameClick = async (e: MouseEvent) => {
 		e.preventDefault();
@@ -574,7 +571,7 @@ function connectWebSocket(user: meResponse | undefined, tournament : boolean): v
 			socket.close();
 			socket = null;
 		}
-		
+
 		startGameButton.removeEventListener("click", handleStartGameClick);
 		startTournamentButton.removeEventListener("click", handleStartTournamentClick);
 		disconnectBtn.removeEventListener("click", handleDisconnectClick);

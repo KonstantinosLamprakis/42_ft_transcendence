@@ -326,7 +326,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
 					showToast(error.error || "Failed to load friend profile", ToastType.ERROR);
 				}
 			} catch (error) {
-				console.error("Get friend profile error:", error);
+				console.clear();
 				showToast("An error occurred while loading friend profile", ToastType.ERROR);
 			} finally {
 				button.disabled = false;
@@ -448,7 +448,8 @@ export const profilePage = (pageContainer: HTMLElement) => {
 						onlineStatus = result.onlineStatus || {};
 					}
 				} catch (err) {
-					console.error("Failed to fetch online status:", err);
+					console.clear();
+					console.log("Online status isn't fetched");
 				}
 			}
 			friends.forEach((friend) => {
@@ -533,7 +534,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
 				showToast(error.error || "Failed to update profile", ToastType.ERROR);
 			}
 		} catch (error) {
-			console.error("Update profile error:", error);
+			console.clear();
 			showToast("An error occurred while updating profile", ToastType.ERROR);
 		} finally {
 			const saveBtn = document.getElementById("save-changes-btn") as HTMLButtonElement;
@@ -574,8 +575,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
 		const friendNicknameInput = document.getElementById("friend-add-text") as HTMLInputElement;
 		const friendNickname = friendNicknameInput.value.trim();
 
-		console.log("Adding friend:", friendNickname);
-
 		if (!friendNickname) {
 			showToast("Please enter a username", ToastType.ERROR);
 			return;
@@ -601,10 +600,11 @@ export const profilePage = (pageContainer: HTMLElement) => {
 				await getInfo();
 			} else {
 				const error = await response.json();
+				console.clear();
 				showToast(error.error || "Failed to add friend", ToastType.ERROR);
 			}
 		} catch (error: any) {
-			console.error("Add friend error:", error);
+			console.clear();
 			showToast("An error occurred while adding friend", ToastType.ERROR);
 		}
 	};
@@ -614,8 +614,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
 			"friend-remove-text",
 		) as HTMLInputElement;
 		const friendNickname = friendNicknameInput.value.trim();
-
-		console.log("Removing friend:", friendNickname);
 
 		if (!friendNickname) {
 			showToast("Please enter a username", ToastType.ERROR);
@@ -632,8 +630,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
 				body: JSON.stringify({ friendNickname: friendNickname }),
 			});
 
-			// console.log('Fetch completed with response:', response);
-
 			if (response.ok) {
 				const index = friends.findIndex((f) => f.friend_nickname === friendNickname);
 				if (index !== -1) {
@@ -644,10 +640,11 @@ export const profilePage = (pageContainer: HTMLElement) => {
 				await getInfo();
 			} else {
 				const error = await response.json();
+				console.clear();
 				showToast(error.error || "Failed to remove friend", ToastType.ERROR);
 			}
 		} catch (error: any) {
-			console.error("Remove friend error:", error);
+			console.clear();
 			showToast("An error occurred while removing friend", ToastType.ERROR);
 		}
 	};

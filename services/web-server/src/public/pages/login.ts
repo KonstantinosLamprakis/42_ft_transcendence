@@ -169,7 +169,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 	const signUpForm = document.getElementById("signup-form");
 
 	if (!showSignInBtn || !showSignUpBtn || !signInForm || !signUpForm) {
-		console.error("One or more elements not found");
+		console.log("HTML elements didn't fetched");
 		return;
 	}
 
@@ -325,6 +325,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 					tokenInput.focus();
 				}
 			} catch (error) {
+				console.clear();
 				showToast("2FA verification failed", ToastType.ERROR);
 				submitBtn.textContent = originalText;
 				submitBtn.disabled = false;
@@ -403,12 +404,14 @@ export const loginPage = (pageContainer: HTMLElement) => {
 		}
 
 		const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
-    
-        if (!passwordRegex.test(password)) {
-			showToast(`Password must be at least 8 characters long and contain at least one letter and one number`, ToastType.ERROR);
-            return;
-        }
-        
+
+		if (!passwordRegex.test(password)) {
+			showToast(
+				`Password must be at least 8 characters long and contain at least one letter and one number`,
+				ToastType.ERROR,
+			);
+			return;
+		}
 
 		// Clear any existing password error styling
 		const confirmPasswordInput = document.getElementById(
@@ -422,18 +425,11 @@ export const loginPage = (pageContainer: HTMLElement) => {
 		confirmPasswordInput.classList.remove("ring-red-500", "focus:ring-red-500");
 		confirmPasswordInput.classList.add("ring-subtle-border", "focus:ring-primary-color");
 
-		formData.forEach((value, key) => {
-			console.log(`FormData: ${key} = ${value}`);
-		});
-
 		const unusedFields = ["confirm-password", "enable-2fa"];
 		const if2FAEnabled = formData.get("enable-2fa") === "on";
 		unusedFields.forEach((field) => {
 			if (formData.has(field)) {
 				formData.delete(field);
-				console.log(`Removed unused field: ${field}`);
-			} else {
-				console.log(`Keep field: ${field}`);
 			}
 		});
 
@@ -456,7 +452,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 				}
 			}
 		} catch (error) {
-			console.error("Signup error:", error);
+			console.clear();
 			showToast("Signup failed. Please try again.", ToastType.ERROR);
 		}
 	};
@@ -490,23 +486,24 @@ export const loginPage = (pageContainer: HTMLElement) => {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ idToken }),
 		})
-		.then((res) => res.json())
-		.then(async (data) => {
-			if (data.error) {
-				showToast(`Signup failed: ${data.error}`, ToastType.ERROR);
-			} else if (data.token) {
-				await setToken(data.token);
-				localStorage.setItem("login", Date.now().toString());
-				showToast("Logged in with Google!", ToastType.SUCCESS);
-				window.location.reload();
-			} else {
-				showToast(data.error || "Google login failed", ToastType.ERROR);
-			}
-		})
-		.catch((error) => {
-			console.error("Google login error:", error);
-			showToast("Google login failed", ToastType.ERROR);
-		});
+			.then((res) => res.json())
+			.then(async (data) => {
+				console.clear();
+				if (data.error) {
+					showToast(`Signup failed: ${data.error}`, ToastType.ERROR);
+				} else if (data.token) {
+					await setToken(data.token);
+					localStorage.setItem("login", Date.now().toString());
+					showToast("Logged in with Google!", ToastType.SUCCESS);
+					window.location.reload();
+				} else {
+					showToast(data.error || "Google login failed", ToastType.ERROR);
+				}
+			})
+			.catch((error) => {
+				console.clear();
+				showToast("Google login failed", ToastType.ERROR);
+			});
 	};
 
 	const setup2FA = async (username: string) => {
@@ -527,7 +524,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 				showToast(data.error || "Failed to setup 2FA", ToastType.ERROR);
 			}
 		} catch (error) {
-			console.error("Error setting up 2FA:", error);
+			console.clear();
 			showToast("Failed to setup 2FA", ToastType.ERROR);
 		}
 	};
@@ -648,7 +645,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 					tokenInput.focus();
 				}
 			} catch (error) {
-				console.error("Error activating 2FA:", error);
+				console.clear();
 				showToast("Failed to activate 2FA", ToastType.ERROR);
 				submitBtn.textContent = "Activate 2FA";
 				submitBtn.disabled = false;
