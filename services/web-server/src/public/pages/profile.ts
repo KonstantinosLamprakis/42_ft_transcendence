@@ -515,6 +515,8 @@ export const profilePage = (pageContainer: HTMLElement) => {
 			if (response.ok) {
 				clearUser();
 				showToast("Profile updated successfully", ToastType.SUCCESS);
+				const avatarUpload = document.getElementById("avatar-upload") as HTMLInputElement;
+				avatarUpload.value = ""; // Clear file input after upload
 				await getInfo(); // Refresh profile data
 
 				// Reset password fields if they were visible
