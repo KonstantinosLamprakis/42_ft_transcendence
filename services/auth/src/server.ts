@@ -217,7 +217,7 @@ fastify.post("/signup", async (req, reply) => {
 	}
 });
 
-fastify.put("/update-user/:id", async (req, reply) => {
+fastify.put("/update-user", async (req, reply) => {
 	const id = req.headers['x-user-id'] as string;
 	const username = req.headers['x-username'] as string;
 	if (!id || !username) {
@@ -304,8 +304,6 @@ fastify.put("/update-user/:id", async (req, reply) => {
 			const buffer = await avatarFile.toBuffer();
 			await writeFile(avatarPath, buffer);
 		}
-
-		console.log(updateUserReq)
 
 		const res = await axios.put(
 			`${SQLITE_DB_URL}/update-user/${encodeURIComponent(id)}`,
@@ -449,7 +447,10 @@ fastify.post("/google-login", async (req, reply) => {
 		return reply.status(401).send({ error: "Invalid Google user" });
 	}
 
-	const username = payload.email.split("@")[0];
+	let username = payload.email.split("@")[0];
+	if (username.length > 20) {
+		username = username.substring(0, 20);
+	}
 
 	// Check if user exists, else create
 	const userRes = await axios.get(
@@ -468,12 +469,26 @@ fastify.post("/google-login", async (req, reply) => {
 			isGoogleAccount: true,
 		}
 		// Create user
-		const createRes = await axios.post(`${SQLITE_DB_URL}/add-user`, addUserReq);
-		if (!createRes.data || !createRes.data.id) {
-			return reply.status(500).send({ error: "Failed to create Google user" });
+		try {
+			const createRes = await axios.post(`${SQLITE_DB_URL}/add-user`, addUserReq);
+			if (!createRes.data || !createRes.data.id) {
+				return reply.status(500).send({ error: "Failed to create Google user" });
+			}
+			user.id = createRes.data.id;
+			user.username = username;
+		} catch (error: any) {
+			if (error.response && error.response.data) {
+				return reply.status(400).send(error.response.data);
+			}
+			console.error("Error during signup:", error);
+			reply.status(500).send({ error: "Internal server error" });
 		}
-		user.id = createRes.data.id;
-		user.username = username;
+	} else if (!userRes.data.isGoogleAccount) {
+		// If the username is already taken by a non-Google account, we can't use it
+		return reply.status(400).send({ error: "You can not create user with this email." });
+	} else if (userRes.data.email !== payload.email) {
+		// If a google user already exists with same username but different email (due to username truncation)
+		return reply.status(400).send({ error: "You can not sign in with this email." });
 	}
 
 	// Issue JWT

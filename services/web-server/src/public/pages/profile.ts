@@ -491,8 +491,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
             saveBtn.disabled = true;
             saveBtn.textContent = 'Saving...';
 
-            // TODO(KL) remove placeholder
-            const response = await fetch(`${HTTPS_API_URL}/update-user/placeholder`, {
+            const response = await fetch(`${HTTPS_API_URL}/update-user`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
