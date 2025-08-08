@@ -1,5 +1,5 @@
 import { HTTPS_API_URL, meResponse, getFriendProfileResponse, Match, Friend } from "../types.js";
-import { getToken } from "../token.js";
+import { getToken, clearUser } from "../token.js";
 import { showToast, ToastType } from "../utils/toast.js";
 import { escapeHTML } from "../utils/xss-safety.js";
 
@@ -86,7 +86,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                     for="username">Username</label>
                                 <input
                                     class="w-full bg-gray-100 border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-700 placeholder-gray-500 pr-10"
-                                    disabled="" id="user-username" type="text" value="alexryder" />
+                                    disabled="" id="user-username" type="text" value="" />
                                 <div
                                     class="absolute inset-y-0 right-0 top-6 flex items-center pr-3 pointer-events-none text-[var(--text-secondary)]">
                                     <svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20"
@@ -102,7 +102,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                 <input 
                                     id="user-name"
                                     class="w-full bg-gray-100 border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-700 placeholder-gray-500 pr-10"
-                                    disabled="" id="fullname" type="text" value="Alex Ryder" />
+                                    disabled="" id="fullname" type="text" value="" />
                                 <div
                                     class="absolute inset-y-0 right-0 top-6 flex items-center pr-3 pointer-events-none text-[var(--text-secondary)]">
                                     <svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20"
@@ -117,7 +117,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                     for="email">Email</label>
                                 <input
                                     class="w-full bg-gray-100 border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-700 placeholder-gray-500 pr-10"
-                                    disabled="" id="user-email" type="email" value="alex.ryder@example.com" />
+                                    disabled="" id="user-email" type="email" value="" />
                                 <div
                                     class="absolute inset-y-0 right-0 top-6 flex items-center pr-3 pointer-events-none text-[var(--text-secondary)]">
                                     <svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20"
@@ -137,7 +137,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                     for="nickname">Nickname</label>
                                 <input
                                     class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
-                                    id="user-nickname" type="text" value="RyderX" />
+                                    id="user-nickname" type="text" value="" maxlength="20"/>
                             </div>
                             <div>
                                 <button id="change-password-btn"
@@ -150,13 +150,13 @@ export const profilePage = (pageContainer: HTMLElement) => {
                                             <label class="text-sm font-medium text-[var(--text-secondary)]" for="new-password">New Password</label>
                                             <input id="new-password" type="password" 
                                                 class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
-                                                placeholder="Enter new password" />
+                                                placeholder="Enter new password" maxlength="20"/>
                                         </div>
                                         <div>
                                             <label class="text-sm font-medium text-[var(--text-secondary)]" for="confirm-password">Confirm Password</label>
                                             <input id="confirm-password" type="password" 
                                                 class="w-full bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-lg p-3 mt-1 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
-                                                placeholder="Confirm new password" />
+                                                placeholder="Confirm new password" maxlength="20"/>
                                         </div>
                                     </div>
                                     <button id="cancel-password-btn" type="button"
@@ -228,16 +228,17 @@ export const profilePage = (pageContainer: HTMLElement) => {
         userNameElement.value = data.name;
         userEmailElement.value = data.email;
         userNicknameElement.value = data.nickname;
+        userNicknameElement.dataset.original = data.nickname;
         userUsernameElement.value = data.username;
 
         if (data.avatar) {
             const imgPath = !data.isGoogleAccount
-                ? `${HTTPS_API_URL}/uploads/${data.avatar}`
+                ? `${HTTPS_API_URL}/uploads/${data.avatar}?t=${Date.now()}`
                 : data.avatar;
             avatarElement.style.backgroundImage = `url("${imgPath}")`;
         } else {
             // Google accounts with no images
-            const imgPath = `${HTTPS_API_URL}/uploads/default.jpg`;
+            const imgPath = `${HTTPS_API_URL}/uploads/default.jpg?t=${Date.now()}`;
             avatarElement.style.backgroundImage = `url("${imgPath}")`;
         }
 
@@ -490,6 +491,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
             saveBtn.disabled = true;
             saveBtn.textContent = 'Saving...';
 
+            // TODO(KL) remove placeholder
             const response = await fetch(`${HTTPS_API_URL}/update-user/placeholder`, {
                 method: 'PUT',
                 headers: {
@@ -499,6 +501,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
             });
 
             if (response.ok) {
+                clearUser();
                 showToast("Profile updated successfully", ToastType.SUCCESS);
                 await getInfo(); // Refresh profile data
                 
@@ -570,8 +573,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
                 body: JSON.stringify({ friendNickname: friendNickname }),
             });
             
-            // console.log('Fetch completed with response:', response);
-
             if (response.ok) {
                 const data = await response.json();
                 const friendId = data.friendId;
@@ -732,7 +733,6 @@ export const profilePage = (pageContainer: HTMLElement) => {
 	getInfo();
 
     const nicknameInput = document.getElementById('user-nickname') as HTMLInputElement;
-    nicknameInput.dataset.original = nicknameInput.value;
 
     // Set up event listeners
     const avatarUpload = document.getElementById('avatar-upload') as HTMLInputElement;

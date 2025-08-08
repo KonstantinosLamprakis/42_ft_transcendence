@@ -256,6 +256,10 @@ fastify.put("/update-user/:id", async (req, reply) => {
 		return reply.status(400).send({ error: "An empty update request was sent" });
 	}
 
+	if ((data.nickname && data.nickname.length > 20) || (data.password && data.password.length > 20)) {
+		return reply.status(400).send({ error: "Some fields exceed the allowed length" });
+	}
+
 	const res = await axios.get(
 		`${SQLITE_DB_URL}/get-user-by-username/${encodeURIComponent(username)}`,
 	);
@@ -271,7 +275,7 @@ fastify.put("/update-user/:id", async (req, reply) => {
 
 	const updateUserReq: UpdateUserRequest = {
 		avatar: undefined,
-		nickname: data.nickname,
+		nickname: data.nickname ?? undefined,
 		password: data.password ? await bcrypt.hash(data.password, 10) : undefined,
 	}
 	
@@ -299,10 +303,6 @@ fastify.put("/update-user/:id", async (req, reply) => {
 			: `/data/uploads/${avatarName}`;
 			const buffer = await avatarFile.toBuffer();
 			await writeFile(avatarPath, buffer);
-		}
-
-		if (data.nickname) {
-			updateUserReq.nickname = data.nickname;
 		}
 
 		console.log(updateUserReq)

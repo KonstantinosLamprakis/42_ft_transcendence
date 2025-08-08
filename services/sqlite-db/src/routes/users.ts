@@ -65,7 +65,7 @@ export default async function usersRoutes(fastify: FastifyInstance, opts: any) {
 
 		const stmt = db.prepare(
 			`UPDATE users SET
-                nickname = COALESCE(?, name),
+                nickname = COALESCE(?, nickname),
                 avatar = COALESCE(?, avatar),
                 password = COALESCE(?, password)
             WHERE id = ?`,
