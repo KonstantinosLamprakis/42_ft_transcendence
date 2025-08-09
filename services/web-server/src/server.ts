@@ -30,7 +30,7 @@ redirectApp.all("*", (request, reply) => {
 });
 
 fastify.register(fastifyCors, {
-	origin: "*",
+	origin: ["https://127.0.0.1", "https://localhost", "https://42project.ddns.net"],
 });
 
 fastify.register(fastifyStatic, {
