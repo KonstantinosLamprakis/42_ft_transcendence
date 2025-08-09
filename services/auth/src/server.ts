@@ -348,7 +348,7 @@ fastify.get("/get-friend-profile/:nickname", async (req, reply) => {
 		}
 		
 		const matchedRes = await axios.get(
-			`${SQLITE_DB_URL}/get-user-matches/${encodeURIComponent(user.id)}`,
+			`${SQLITE_DB_URL}/get-friend-matches/${encodeURIComponent(user.id)}`,
 		);
 
 		const friends = await axios.get(

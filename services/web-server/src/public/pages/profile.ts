@@ -477,7 +477,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
                         <span class="${isWinner ? winnerClass : ""}">${escapeHTML(match.winner_nickname)}</span>
                     </td>
                     <td class="p-4 whitespace-nowrap">
-                        <span class="${!isWinner ? loserClass : "text-gray-900"}">${isWinner ? escapeHTML(match.opponent_nickname) : escapeHTML(data.username)}</span>
+                        <span class="${!isWinner ? loserClass : "text-gray-900"}">${isWinner ? escapeHTML(match.opponent_nickname) : escapeHTML(data.nickname)}</span>
                     </td>
                     <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.user1_score}-${match.user2_score}</td>
                     <td class="p-4 whitespace-nowrap text-[var(--text-secondary)]">${match.match_date}</td>
