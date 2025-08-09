@@ -1,6 +1,6 @@
 import { loginPage } from "./pages/login.js";
 import { gamePage } from "./pages/game.js";
-import { profilePage } from "./pages/profile.js";
+import { profilePage, onlineStatusInterval } from "./pages/profile.js";
 import { isLogged, clearToken } from "./token.js";
 import { showToast, ToastType } from "./utils/toast.js";
 import { connectSocket, disconnectSocket } from "./utils/online-status.js";
@@ -72,6 +72,7 @@ window.addEventListener("popstate", router);
 
 document.getElementById("logout-btn")!.addEventListener("click", async (e) => {
 		disconnectSocket();
+		clearInterval(onlineStatusInterval);
 		localStorage.setItem("logout", Date.now().toString());
 		clearToken();
 		showToast("Logged out!", ToastType.SUCCESS);
