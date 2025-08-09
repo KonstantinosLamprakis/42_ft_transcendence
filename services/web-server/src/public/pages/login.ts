@@ -673,6 +673,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 	};
 
 	// Initialize other components
+	// TODO(KL): comment this to disable google login
 	initializeGoogleSignIn();
 	showForm(signInForm, showSignInBtn);
 };
