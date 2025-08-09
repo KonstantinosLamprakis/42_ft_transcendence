@@ -2,7 +2,6 @@ import { WEBSOCKET_API_URL } from "../types.js";
 import { getToken, fetchUser } from "../token.js";
 
 let socket: WebSocket | null = null;
-let MAX_RETRIES = 5;
 let retryCount = 0;
 
 export async function connectSocket() {
@@ -28,10 +27,6 @@ export async function connectSocket() {
 	};
 
 	socket.onclose = () => {
-		if (retryCount < MAX_RETRIES) {
-			retryCount++;
-			setTimeout(connectSocket, 2000);
-		}
 		socket = null;
 	};
 
