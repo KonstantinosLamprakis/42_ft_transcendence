@@ -1,0 +1,2119 @@
+docker system prune -f
+Deleted Containers:
+9c7c505cb21d53b7d669efc09fa8ce6c9cb2d1e5195ac29e5c9ddf76f245fc42
+e33d2a7e803a4656fc77e49411a520f3397d1ef0d9e515258a1ea535800bf6ae
+81901cc918217755e29cafc887f88994d85c88e35cdc00ce889dd390bc6d9e6d
+d70bd4746b8967454d31f4725487996a9d775ad549ea3200cf0422505ed9ab6b
+b36902147c55dd24e2390ee0f662ce865adb7fea63572b303f3a48bc129d8bd6
+93dd8f3fd83dcf3bb5219d13d50c3528e0440d117c30a07cc1945a26f13ae94a
+
+Deleted Networks:
+transcendence_default
+
+Total reclaimed space: 0B
+# docker volume prune -f use this wisely, it maybe will delete the persisted data
+docker network prune -f
+docker image prune -f
+Total reclaimed space: 0B
+mkdir -p services/web-server/certs
+Certs already exist in services/web-server/certs, skipping.
+services/auth/.env already exists, skipping.
+cd /Users/rchavez/Desktop/42_ft_transcendence/ && docker-compose up --build
+Attaching to 42_ft_transcendence_api-rest-gateway_1, 42_ft_transcendence_online-status_1, 42_ft_transcendence_pong-game_1, 42_ft_transcendence_web-server_1, 42_ft_transcendence_auth_1, 42_ft_transcendence_sqlite-db_1
+[36mapi-rest-gateway_1  |[0m (node:1) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/dist/server.js is not specified and it doesn't parse as CommonJS.
+[36mapi-rest-gateway_1  |[0m Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+[36mapi-rest-gateway_1  |[0m To eliminate this warning, add "type": "module" to /app/package.json.
+[36mapi-rest-gateway_1  |[0m (Use `node --trace-warnings ...` to show where the warning was created)
+[35mpong-game_1         |[0m (node:1) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/dist/server.js is not specified and it doesn't parse as CommonJS.
+[35mpong-game_1         |[0m Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+[35mpong-game_1         |[0m To eliminate this warning, add "type": "module" to /app/package.json.
+[35mpong-game_1         |[0m (Use `node --trace-warnings ...` to show where the warning was created)
+[34msqlite-db_1         |[0m (node:1) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/dist/server.js is not specified and it doesn't parse as CommonJS.
+[34msqlite-db_1         |[0m Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+[34msqlite-db_1         |[0m To eliminate this warning, add "type": "module" to /app/package.json.
+[34msqlite-db_1         |[0m (Use `node --trace-warnings ...` to show where the warning was created)
+[33mauth_1              |[0m (node:1) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/dist/server.js is not specified and it doesn't parse as CommonJS.
+[33mauth_1              |[0m Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+[33mauth_1              |[0m To eliminate this warning, add "type": "module" to /app/package.json.
+[33mauth_1              |[0m (Use `node --trace-warnings ...` to show where the warning was created)
+[32monline-status_1     |[0m {"level":30,"time":1754729326561,"pid":1,"hostname":"3f13f56324f6","msg":"Server listening at http://127.0.0.1:6000"}
+[32monline-status_1     |[0m {"level":30,"time":1754729326562,"pid":1,"hostname":"3f13f56324f6","msg":"Server listening at http://172.21.0.3:6000"}
+[32monline-status_1     |[0m {"level":30,"time":1754729326562,"pid":1,"hostname":"3f13f56324f6","msg":"online-status service listening at http://127.0.0.1:6000"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729326836,"pid":1,"hostname":"626c1c60d962","msg":"Server listening at http://127.0.0.1:4000"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729326837,"pid":1,"hostname":"626c1c60d962","msg":"Server listening at http://172.21.0.6:4000"}
+[36;1mweb-server_1        |[0m HTTPS server running at https://127.0.0.1
+[36;1mweb-server_1        |[0m HTTP redirect server running at http://127.0.0.1
+[33mauth_1              |[0m {"level":30,"time":1754729327034,"pid":1,"hostname":"246798d980fe","msg":"Server listening at http://127.0.0.1:5000"}
+[33mauth_1              |[0m Auth service running at http://127.0.0.1:5000
+[33mauth_1              |[0m {"level":30,"time":1754729327034,"pid":1,"hostname":"246798d980fe","msg":"Server listening at http://172.21.0.7:5000"}
+[33mauth_1              |[0m {"level":30,"time":1754729387459,"pid":1,"hostname":"246798d980fe","reqId":"req-1","req":{"method":"POST","url":"/google-login","host":"auth:5000","remoteAddress":"172.21.0.2","remotePort":50838},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387583,"pid":1,"hostname":"626c1c60d962","reqId":"req-1","req":{"method":"GET","url":"/get-user-by-username/rodalcham","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51694},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387587,"pid":1,"hostname":"626c1c60d962","reqId":"req-1","res":{"statusCode":200},"responseTime":3.611025999998674,"msg":"request completed"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387591,"pid":1,"hostname":"626c1c60d962","reqId":"req-2","req":{"method":"POST","url":"/add-user","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51694},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387596,"pid":1,"hostname":"626c1c60d962","reqId":"req-2","res":{"statusCode":200},"responseTime":5.292737999930978,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729387600,"pid":1,"hostname":"246798d980fe","reqId":"req-1","res":{"statusCode":200},"responseTime":139.55645600007847,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729387779,"pid":1,"hostname":"246798d980fe","reqId":"req-2","req":{"method":"GET","url":"/validate-token","host":"auth:5000","remoteAddress":"172.21.0.2","remotePort":50844},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387781,"pid":1,"hostname":"626c1c60d962","reqId":"req-3","req":{"method":"GET","url":"/get-user-by-username/rodalcham","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51694},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387781,"pid":1,"hostname":"626c1c60d962","reqId":"req-3","res":{"statusCode":200},"responseTime":0.6045490000396967,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729387783,"pid":1,"hostname":"246798d980fe","reqId":"req-2","res":{"statusCode":200},"responseTime":4.175498999888077,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729387786,"pid":1,"hostname":"246798d980fe","reqId":"req-3","req":{"method":"GET","url":"/me","host":"auth:5000","remoteAddress":"172.21.0.2","remotePort":50846},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387788,"pid":1,"hostname":"626c1c60d962","reqId":"req-4","req":{"method":"GET","url":"/get-user-by-username/rodalcham","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51694},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387789,"pid":1,"hostname":"626c1c60d962","reqId":"req-4","res":{"statusCode":200},"responseTime":0.5534129999577999,"msg":"request completed"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387791,"pid":1,"hostname":"626c1c60d962","reqId":"req-5","req":{"method":"GET","url":"/get-user-matches/1","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51694},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387792,"pid":1,"hostname":"626c1c60d962","reqId":"req-5","res":{"statusCode":200},"responseTime":0.7112730001099408,"msg":"request completed"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387793,"pid":1,"hostname":"626c1c60d962","reqId":"req-6","req":{"method":"GET","url":"/get-friends/1","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51694},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387794,"pid":1,"hostname":"626c1c60d962","reqId":"req-6","res":{"statusCode":200},"responseTime":0.6120939999818802,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729387795,"pid":1,"hostname":"246798d980fe","reqId":"req-3","res":{"statusCode":200},"responseTime":8.482236000010744,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729387815,"pid":1,"hostname":"246798d980fe","reqId":"req-4","req":{"method":"GET","url":"/validate-token","host":"auth:5000","remoteAddress":"172.21.0.2","remotePort":50844},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387816,"pid":1,"hostname":"626c1c60d962","reqId":"req-7","req":{"method":"GET","url":"/get-user-by-username/rodalcham","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51694},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729387817,"pid":1,"hostname":"626c1c60d962","reqId":"req-7","res":{"statusCode":200},"responseTime":0.5351310002151877,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729387818,"pid":1,"hostname":"246798d980fe","reqId":"req-4","res":{"statusCode":200},"responseTime":2.9129380001686513,"msg":"request completed"}
+[32monline-status_1     |[0m {"level":30,"time":1754729387826,"pid":1,"hostname":"3f13f56324f6","reqId":"req-1","req":{"method":"GET","url":"/online-status?userId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvZGFsY2hhbSIsImlkIjoxLCJpYXQiOjE3NTQ3MjkzODd9.NXUiY3VSQPWqjZql3E7Pm8Oyxx6ASJCKHMl1hiAc29c","host":"online-status:6000","remoteAddress":"172.21.0.2","remotePort":47772},"msg":"incoming request"}
+[33mauth_1              |[0m {"level":30,"time":1754729498246,"pid":1,"hostname":"246798d980fe","reqId":"req-5","req":{"method":"GET","url":"/validate-token","host":"auth:5000","remoteAddress":"172.21.0.2","remotePort":50858},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729498248,"pid":1,"hostname":"626c1c60d962","reqId":"req-8","req":{"method":"GET","url":"/get-user-by-username/rodalcham","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51712},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729498249,"pid":1,"hostname":"626c1c60d962","reqId":"req-8","res":{"statusCode":200},"responseTime":0.5940799999516457,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729498249,"pid":1,"hostname":"246798d980fe","reqId":"req-5","res":{"statusCode":200},"responseTime":3.599267000099644,"msg":"request completed"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729498275,"pid":1,"hostname":"626c1c60d962","reqId":"req-9","req":{"method":"GET","url":"/get-user-and-nickname-by-id/1","host":"sqlite-db:4000","remoteAddress":"172.21.0.4","remotePort":48428},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729498276,"pid":1,"hostname":"626c1c60d962","reqId":"req-9","res":{"statusCode":200},"responseTime":0.9413280000444502,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729507685,"pid":1,"hostname":"246798d980fe","reqId":"req-6","req":{"method":"GET","url":"/validate-token","host":"auth:5000","remoteAddress":"172.21.0.2","remotePort":50870},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729507686,"pid":1,"hostname":"626c1c60d962","reqId":"req-a","req":{"method":"GET","url":"/get-user-by-username/rodalcham","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51724},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729507687,"pid":1,"hostname":"626c1c60d962","reqId":"req-a","res":{"statusCode":200},"responseTime":0.5323310000821948,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729507688,"pid":1,"hostname":"246798d980fe","reqId":"req-6","res":{"statusCode":200},"responseTime":3.0071449999231845,"msg":"request completed"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729508268,"pid":1,"hostname":"626c1c60d962","reqId":"req-b","req":{"method":"POST","url":"/add-match","host":"sqlite-db:4000","remoteAddress":"172.21.0.4","remotePort":48440},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729508270,"pid":1,"hostname":"626c1c60d962","reqId":"req-b","res":{"statusCode":400},"responseTime":1.2009369998704642,"msg":"request completed"}
+[35mpong-game_1         |[0m 
+[35mpong-game_1         |[0m node:internal/process/promises:391
+[35mpong-game_1         |[0m     triggerUncaughtException(err, true /* fromPromise */);
+[35mpong-game_1         |[0m     ^
+[35mpong-game_1         |[0m AxiosError: Request failed with status code 400
+[35mpong-game_1         |[0m     at settle (file:///app/node_modules/axios/lib/core/settle.js:19:12)
+[35mpong-game_1         |[0m     at IncomingMessage.handleStreamEnd (file:///app/node_modules/axios/lib/adapters/http.js:599:11)
+[35mpong-game_1         |[0m     at IncomingMessage.emit (node:events:536:35)
+[35mpong-game_1         |[0m     at endReadableNT (node:internal/streams/readable:1698:12)
+[35mpong-game_1         |[0m     at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+[35mpong-game_1         |[0m     at Axios.request (file:///app/node_modules/axios/lib/core/Axios.js:45:41)
+[35mpong-game_1         |[0m     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[35mpong-game_1         |[0m     at async Game.endGame (file:///app/dist/game.js:178:25) {
+[35mpong-game_1         |[0m   code: 'ERR_BAD_REQUEST',
+[35mpong-game_1         |[0m   config: {
+[35mpong-game_1         |[0m     transitional: {
+[35mpong-game_1         |[0m       silentJSONParsing: true,
+[35mpong-game_1         |[0m       forcedJSONParsing: true,
+[35mpong-game_1         |[0m       clarifyTimeoutError: false
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     adapter: [ 'xhr', 'http', 'fetch' ],
+[35mpong-game_1         |[0m     transformRequest: [ [Function: transformRequest] ],
+[35mpong-game_1         |[0m     transformResponse: [ [Function: transformResponse] ],
+[35mpong-game_1         |[0m     timeout: 0,
+[35mpong-game_1         |[0m     xsrfCookieName: 'XSRF-TOKEN',
+[35mpong-game_1         |[0m     xsrfHeaderName: 'X-XSRF-TOKEN',
+[35mpong-game_1         |[0m     maxContentLength: -1,
+[35mpong-game_1         |[0m     maxBodyLength: -1,
+[35mpong-game_1         |[0m     env: {
+[35mpong-game_1         |[0m       FormData: [Function: FormData] [FormData] {
+[35mpong-game_1         |[0m         LINE_BREAK: '\r\n',
+[35mpong-game_1         |[0m         DEFAULT_CONTENT_TYPE: 'application/octet-stream'
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       Blob: [class Blob]
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     validateStatus: [Function: validateStatus],
+[35mpong-game_1         |[0m     headers: Object [AxiosHeaders] {
+[35mpong-game_1         |[0m       Accept: 'application/json, text/plain, */*',
+[35mpong-game_1         |[0m       'Content-Type': 'application/json',
+[35mpong-game_1         |[0m       'User-Agent': 'axios/1.11.0',
+[35mpong-game_1         |[0m       'Content-Length': '108',
+[35mpong-game_1         |[0m       'Accept-Encoding': 'gzip, compress, deflate, br'
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     method: 'post',
+[35mpong-game_1         |[0m     url: 'http://sqlite-db:4000/add-match',
+[35mpong-game_1         |[0m     data: '{"user1_id":"1","user2_id":null,"user1_score":0,"user2_score":11,"winner_id":null,"match_date":"2025-08-09"}',
+[35mpong-game_1         |[0m     allowAbsoluteUrls: true
+[35mpong-game_1         |[0m   },
+[35mpong-game_1         |[0m   request: <ref *3> ClientRequest {
+[35mpong-game_1         |[0m     _events: [Object: null prototype] {
+[35mpong-game_1         |[0m       abort: [Function (anonymous)],
+[35mpong-game_1         |[0m       aborted: [Function (anonymous)],
+[35mpong-game_1         |[0m       connect: [Function (anonymous)],
+[35mpong-game_1         |[0m       error: [Function (anonymous)],
+[35mpong-game_1         |[0m       socket: [Function (anonymous)],
+[35mpong-game_1         |[0m       timeout: [Function (anonymous)],
+[35mpong-game_1         |[0m       finish: [Function: requestOnFinish]
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     _eventsCount: 7,
+[35mpong-game_1         |[0m     _maxListeners: undefined,
+[35mpong-game_1         |[0m     outputData: [],
+[35mpong-game_1         |[0m     outputSize: 0,
+[35mpong-game_1         |[0m     writable: true,
+[35mpong-game_1         |[0m     destroyed: true,
+[35mpong-game_1         |[0m     _last: false,
+[35mpong-game_1         |[0m     chunkedEncoding: false,
+[35mpong-game_1         |[0m     shouldKeepAlive: true,
+[35mpong-game_1         |[0m     maxRequestsOnConnectionReached: false,
+[35mpong-game_1         |[0m     _defaultKeepAlive: true,
+[35mpong-game_1         |[0m     useChunkedEncodingByDefault: true,
+[35mpong-game_1         |[0m     sendDate: false,
+[35mpong-game_1         |[0m     _removedConnection: false,
+[35mpong-game_1         |[0m     _removedContLen: false,
+[35mpong-game_1         |[0m     _removedTE: false,
+[35mpong-game_1         |[0m     strictContentLength: false,
+[35mpong-game_1         |[0m     _contentLength: '108',
+[35mpong-game_1         |[0m     _hasBody: true,
+[35mpong-game_1         |[0m     _trailer: '',
+[35mpong-game_1         |[0m     finished: true,
+[35mpong-game_1         |[0m     _headerSent: true,
+[35mpong-game_1         |[0m     _closed: true,
+[35mpong-game_1         |[0m     socket: <ref *1> Socket {
+[35mpong-game_1         |[0m       connecting: false,
+[35mpong-game_1         |[0m       _hadError: false,
+[35mpong-game_1         |[0m       _parent: null,
+[35mpong-game_1         |[0m       _host: 'sqlite-db',
+[35mpong-game_1         |[0m       _closeAfterHandlingError: false,
+[35mpong-game_1         |[0m       _events: {
+[35mpong-game_1         |[0m         close: [Function: onClose],
+[35mpong-game_1         |[0m         error: [Function: bound onceWrapper] {
+[35mpong-game_1         |[0m           listener: [Function: freeSocketErrorListener]
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         prefinish: undefined,
+[35mpong-game_1         |[0m         finish: undefined,
+[35mpong-game_1         |[0m         drain: undefined,
+[35mpong-game_1         |[0m         data: undefined,
+[35mpong-game_1         |[0m         end: [Function: onReadableStreamEnd],
+[35mpong-game_1         |[0m         readable: undefined,
+[35mpong-game_1         |[0m         connect: undefined,
+[35mpong-game_1         |[0m         free: [Function: onFree],
+[35mpong-game_1         |[0m         timeout: [Function: onTimeout],
+[35mpong-game_1         |[0m         agentRemove: [Function: onRemove]
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _readableState: ReadableState {
+[35mpong-game_1         |[0m         highWaterMark: 16384,
+[35mpong-game_1         |[0m         buffer: [],
+[35mpong-game_1         |[0m         bufferIndex: 0,
+[35mpong-game_1         |[0m         length: 0,
+[35mpong-game_1         |[0m         pipes: [],
+[35mpong-game_1         |[0m         awaitDrainWriters: null,
+[35mpong-game_1         |[0m         [Symbol(kState)]: 60303620
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _writableState: WritableState {
+[35mpong-game_1         |[0m         highWaterMark: 16384,
+[35mpong-game_1         |[0m         length: 0,
+[35mpong-game_1         |[0m         corked: 0,
+[35mpong-game_1         |[0m         onwrite: [Function: bound onwrite],
+[35mpong-game_1         |[0m         writelen: 0,
+[35mpong-game_1         |[0m         bufferedIndex: 0,
+[35mpong-game_1         |[0m         pendingcb: 0,
+[35mpong-game_1         |[0m         [Symbol(kState)]: 17563908,
+[35mpong-game_1         |[0m         [Symbol(kBufferedValue)]: null,
+[35mpong-game_1         |[0m         [Symbol(kWriteCbValue)]: null
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       allowHalfOpen: false,
+[35mpong-game_1         |[0m       _maxListeners: undefined,
+[35mpong-game_1         |[0m       _eventsCount: 6,
+[35mpong-game_1         |[0m       _sockname: null,
+[35mpong-game_1         |[0m       _pendingData: null,
+[35mpong-game_1         |[0m       _pendingEncoding: '',
+[35mpong-game_1         |[0m       server: null,
+[35mpong-game_1         |[0m       _server: null,
+[35mpong-game_1         |[0m       timeout: 5000,
+[35mpong-game_1         |[0m       parser: null,
+[35mpong-game_1         |[0m       _httpMessage: null,
+[35mpong-game_1         |[0m       [Symbol(async_id_symbol)]: -1,
+[35mpong-game_1         |[0m       [Symbol(kHandle)]: TCP {
+[35mpong-game_1         |[0m         reading: true,
+[35mpong-game_1         |[0m         onconnection: null,
+[35mpong-game_1         |[0m         [Symbol(owner_symbol)]: [Circular *1]
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       [Symbol(lastWriteQueueSize)]: 0,
+[35mpong-game_1         |[0m       [Symbol(timeout)]: <ref *2> Timeout {
+[35mpong-game_1         |[0m         _idleTimeout: 5000,
+[35mpong-game_1         |[0m         _idlePrev: TimersList {
+[35mpong-game_1         |[0m           _idleNext: [Circular *2],
+[35mpong-game_1         |[0m           _idlePrev: [Circular *2],
+[35mpong-game_1         |[0m           expiry: 187266,
+[35mpong-game_1         |[0m           id: -9007199254740966,
+[35mpong-game_1         |[0m           msecs: 5000,
+[35mpong-game_1         |[0m           priorityQueuePosition: 1
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _idleNext: TimersList {
+[35mpong-game_1         |[0m           _idleNext: [Circular *2],
+[35mpong-game_1         |[0m           _idlePrev: [Circular *2],
+[35mpong-game_1         |[0m           expiry: 187266,
+[35mpong-game_1         |[0m           id: -9007199254740966,
+[35mpong-game_1         |[0m           msecs: 5000,
+[35mpong-game_1         |[0m           priorityQueuePosition: 1
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _idleStart: 182270,
+[35mpong-game_1         |[0m         _onTimeout: [Function: bound ],
+[35mpong-game_1         |[0m         _timerArgs: undefined,
+[35mpong-game_1         |[0m         _repeat: null,
+[35mpong-game_1         |[0m         _destroyed: false,
+[35mpong-game_1         |[0m         [Symbol(refed)]: false,
+[35mpong-game_1         |[0m         [Symbol(kHasPrimitive)]: false,
+[35mpong-game_1         |[0m         [Symbol(asyncId)]: 447,
+[35mpong-game_1         |[0m         [Symbol(triggerId)]: 445
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       [Symbol(kBuffer)]: null,
+[35mpong-game_1         |[0m       [Symbol(kBufferCb)]: null,
+[35mpong-game_1         |[0m       [Symbol(kBufferGen)]: null,
+[35mpong-game_1         |[0m       [Symbol(shapeMode)]: true,
+[35mpong-game_1         |[0m       [Symbol(kCapture)]: false,
+[35mpong-game_1         |[0m       [Symbol(kSetNoDelay)]: true,
+[35mpong-game_1         |[0m       [Symbol(kSetKeepAlive)]: true,
+[35mpong-game_1         |[0m       [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[35mpong-game_1         |[0m       [Symbol(kBytesRead)]: 0,
+[35mpong-game_1         |[0m       [Symbol(kBytesWritten)]: 0
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     _header: 'POST /add-match HTTP/1.1\r\n' +
+[35mpong-game_1         |[0m       'Accept: application/json, text/plain, */*\r\n' +
+[35mpong-game_1         |[0m       'Content-Type: application/json\r\n' +
+[35mpong-game_1         |[0m       'User-Agent: axios/1.11.0\r\n' +
+[35mpong-game_1         |[0m       'Content-Length: 108\r\n' +
+[35mpong-game_1         |[0m       'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+[35mpong-game_1         |[0m       'Host: sqlite-db:4000\r\n' +
+[35mpong-game_1         |[0m       'Connection: keep-alive\r\n' +
+[35mpong-game_1         |[0m       '\r\n',
+[35mpong-game_1         |[0m     _keepAliveTimeout: 0,
+[35mpong-game_1         |[0m     _onPendingData: [Function: nop],
+[35mpong-game_1         |[0m     agent: Agent {
+[35mpong-game_1         |[0m       _events: [Object: null prototype] {
+[35mpong-game_1         |[0m         free: [Function (anonymous)],
+[35mpong-game_1         |[0m         newListener: [Function: maybeEnableKeylog]
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _eventsCount: 2,
+[35mpong-game_1         |[0m       _maxListeners: undefined,
+[35mpong-game_1         |[0m       defaultPort: 80,
+[35mpong-game_1         |[0m       protocol: 'http:',
+[35mpong-game_1         |[0m       options: [Object: null prototype] {
+[35mpong-game_1         |[0m         keepAlive: true,
+[35mpong-game_1         |[0m         scheduling: 'lifo',
+[35mpong-game_1         |[0m         timeout: 5000,
+[35mpong-game_1         |[0m         noDelay: true,
+[35mpong-game_1         |[0m         path: null
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       requests: [Object: null prototype] {},
+[35mpong-game_1         |[0m       sockets: [Object: null prototype] {},
+[35mpong-game_1         |[0m       freeSockets: [Object: null prototype] {
+[35mpong-game_1         |[0m         'sqlite-db:4000:': [
+[35mpong-game_1         |[0m           <ref *1> Socket {
+[35mpong-game_1         |[0m             connecting: false,
+[35mpong-game_1         |[0m             _hadError: false,
+[35mpong-game_1         |[0m             _parent: null,
+[35mpong-game_1         |[0m             _host: 'sqlite-db',
+[35mpong-game_1         |[0m             _closeAfterHandlingError: false,
+[35mpong-game_1         |[0m             _events: [Object],
+[35mpong-game_1         |[0m             _readableState: [ReadableState],
+[35mpong-game_1         |[0m             _writableState: [WritableState],
+[35mpong-game_1         |[0m             allowHalfOpen: false,
+[35mpong-game_1         |[0m             _maxListeners: undefined,
+[35mpong-game_1         |[0m             _eventsCount: 6,
+[35mpong-game_1         |[0m             _sockname: null,
+[35mpong-game_1         |[0m             _pendingData: null,
+[35mpong-game_1         |[0m             _pendingEncoding: '',
+[35mpong-game_1         |[0m             server: null,
+[35mpong-game_1         |[0m             _server: null,
+[35mpong-game_1         |[0m             timeout: 5000,
+[35mpong-game_1         |[0m             parser: null,
+[35mpong-game_1         |[0m             _httpMessage: null,
+[35mpong-game_1         |[0m             [Symbol(async_id_symbol)]: -1,
+[35mpong-game_1         |[0m             [Symbol(kHandle)]: [TCP],
+[35mpong-game_1         |[0m             [Symbol(lastWriteQueueSize)]: 0,
+[35mpong-game_1         |[0m             [Symbol(timeout)]: [Timeout],
+[35mpong-game_1         |[0m             [Symbol(kBuffer)]: null,
+[35mpong-game_1         |[0m             [Symbol(kBufferCb)]: null,
+[35mpong-game_1         |[0m             [Symbol(kBufferGen)]: null,
+[35mpong-game_1         |[0m             [Symbol(shapeMode)]: true,
+[35mpong-game_1         |[0m             [Symbol(kCapture)]: false,
+[35mpong-game_1         |[0m             [Symbol(kSetNoDelay)]: true,
+[35mpong-game_1         |[0m             [Symbol(kSetKeepAlive)]: true,
+[35mpong-game_1         |[0m             [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[35mpong-game_1         |[0m             [Symbol(kBytesRead)]: 0,
+[35mpong-game_1         |[0m             [Symbol(kBytesWritten)]: 0
+[35mpong-game_1         |[0m           }
+[35mpong-game_1         |[0m         ]
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       keepAliveMsecs: 1000,
+[35mpong-game_1         |[0m       keepAlive: true,
+[35mpong-game_1         |[0m       maxSockets: Infinity,
+[35mpong-game_1         |[0m       maxFreeSockets: 256,
+[35mpong-game_1         |[0m       scheduling: 'lifo',
+[35mpong-game_1         |[0m       maxTotalSockets: Infinity,
+[35mpong-game_1         |[0m       totalSocketCount: 1,
+[35mpong-game_1         |[0m       [Symbol(shapeMode)]: false,
+[35mpong-game_1         |[0m       [Symbol(kCapture)]: false
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     socketPath: undefined,
+[35mpong-game_1         |[0m     method: 'POST',
+[35mpong-game_1         |[0m     maxHeaderSize: undefined,
+[35mpong-game_1         |[0m     insecureHTTPParser: undefined,
+[35mpong-game_1         |[0m     joinDuplicateHeaders: undefined,
+[35mpong-game_1         |[0m     path: '/add-match',
+[35mpong-game_1         |[0m     _ended: true,
+[35mpong-game_1         |[0m     res: IncomingMessage {
+[35mpong-game_1         |[0m       _events: {
+[35mpong-game_1         |[0m         close: undefined,
+[35mpong-game_1         |[0m         error: [Function: handleStreamError],
+[35mpong-game_1         |[0m         data: [Function: handleStreamData],
+[35mpong-game_1         |[0m         end: [ [Function: responseOnEnd], [Function: handleStreamEnd] ],
+[35mpong-game_1         |[0m         readable: undefined,
+[35mpong-game_1         |[0m         finish: undefined,
+[35mpong-game_1         |[0m         aborted: [Function: handlerStreamAborted]
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _readableState: ReadableState {
+[35mpong-game_1         |[0m         highWaterMark: 16384,
+[35mpong-game_1         |[0m         buffer: [],
+[35mpong-game_1         |[0m         bufferIndex: 0,
+[35mpong-game_1         |[0m         length: 0,
+[35mpong-game_1         |[0m         pipes: [],
+[35mpong-game_1         |[0m         awaitDrainWriters: null,
+[35mpong-game_1         |[0m         [Symbol(kState)]: 194779004
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _maxListeners: undefined,
+[35mpong-game_1         |[0m       socket: null,
+[35mpong-game_1         |[0m       httpVersionMajor: 1,
+[35mpong-game_1         |[0m       httpVersionMinor: 1,
+[35mpong-game_1         |[0m       httpVersion: '1.1',
+[35mpong-game_1         |[0m       complete: true,
+[35mpong-game_1         |[0m       rawHeaders: [
+[35mpong-game_1         |[0m         'content-type',
+[35mpong-game_1         |[0m         'application/json; charset=utf-8',
+[35mpong-game_1         |[0m         'content-length',
+[35mpong-game_1         |[0m         '56',
+[35mpong-game_1         |[0m         'Date',
+[35mpong-game_1         |[0m         'Sat, 09 Aug 2025 08:51:48 GMT',
+[35mpong-game_1         |[0m         'Connection',
+[35mpong-game_1         |[0m         'keep-alive',
+[35mpong-game_1         |[0m         'Keep-Alive',
+[35mpong-game_1         |[0m         'timeout=72'
+[35mpong-game_1         |[0m       ],
+[35mpong-game_1         |[0m       rawTrailers: [],
+[35mpong-game_1         |[0m       joinDuplicateHeaders: undefined,
+[35mpong-game_1         |[0m       aborted: false,
+[35mpong-game_1         |[0m       upgrade: false,
+[35mpong-game_1         |[0m       url: '',
+[35mpong-game_1         |[0m       method: null,
+[35mpong-game_1         |[0m       statusCode: 400,
+[35mpong-game_1         |[0m       statusMessage: 'Bad Request',
+[35mpong-game_1         |[0m       client: <ref *1> Socket {
+[35mpong-game_1         |[0m         connecting: false,
+[35mpong-game_1         |[0m         _hadError: false,
+[35mpong-game_1         |[0m         _parent: null,
+[35mpong-game_1         |[0m         _host: 'sqlite-db',
+[35mpong-game_1         |[0m         _closeAfterHandlingError: false,
+[35mpong-game_1         |[0m         _events: {
+[35mpong-game_1         |[0m           close: [Function: onClose],
+[35mpong-game_1         |[0m           error: [Function: bound onceWrapper] {
+[35mpong-game_1         |[0m             listener: [Function: freeSocketErrorListener]
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           prefinish: undefined,
+[35mpong-game_1         |[0m           finish: undefined,
+[35mpong-game_1         |[0m           drain: undefined,
+[35mpong-game_1         |[0m           data: undefined,
+[35mpong-game_1         |[0m           end: [Function: onReadableStreamEnd],
+[35mpong-game_1         |[0m           readable: undefined,
+[35mpong-game_1         |[0m           connect: undefined,
+[35mpong-game_1         |[0m           free: [Function: onFree],
+[35mpong-game_1         |[0m           timeout: [Function: onTimeout],
+[35mpong-game_1         |[0m           agentRemove: [Function: onRemove]
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _readableState: ReadableState {
+[35mpong-game_1         |[0m           highWaterMark: 16384,
+[35mpong-game_1         |[0m           buffer: [],
+[35mpong-game_1         |[0m           bufferIndex: 0,
+[35mpong-game_1         |[0m           length: 0,
+[35mpong-game_1         |[0m           pipes: [],
+[35mpong-game_1         |[0m           awaitDrainWriters: null,
+[35mpong-game_1         |[0m           [Symbol(kState)]: 60303620
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _writableState: WritableState {
+[35mpong-game_1         |[0m           highWaterMark: 16384,
+[35mpong-game_1         |[0m           length: 0,
+[35mpong-game_1         |[0m           corked: 0,
+[35mpong-game_1         |[0m           onwrite: [Function: bound onwrite],
+[35mpong-game_1         |[0m           writelen: 0,
+[35mpong-game_1         |[0m           bufferedIndex: 0,
+[35mpong-game_1         |[0m           pendingcb: 0,
+[35mpong-game_1         |[0m           [Symbol(kState)]: 17563908,
+[35mpong-game_1         |[0m           [Symbol(kBufferedValue)]: null,
+[35mpong-game_1         |[0m           [Symbol(kWriteCbValue)]: null
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         allowHalfOpen: false,
+[35mpong-game_1         |[0m         _maxListeners: undefined,
+[35mpong-game_1         |[0m         _eventsCount: 6,
+[35mpong-game_1         |[0m         _sockname: null,
+[35mpong-game_1         |[0m         _pendingData: null,
+[35mpong-game_1         |[0m         _pendingEncoding: '',
+[35mpong-game_1         |[0m         server: null,
+[35mpong-game_1         |[0m         _server: null,
+[35mpong-game_1         |[0m         timeout: 5000,
+[35mpong-game_1         |[0m         parser: null,
+[35mpong-game_1         |[0m         _httpMessage: null,
+[35mpong-game_1         |[0m         [Symbol(async_id_symbol)]: -1,
+[35mpong-game_1         |[0m         [Symbol(kHandle)]: TCP {
+[35mpong-game_1         |[0m           reading: true,
+[35mpong-game_1         |[0m           onconnection: null,
+[35mpong-game_1         |[0m           [Symbol(owner_symbol)]: [Circular *1]
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         [Symbol(lastWriteQueueSize)]: 0,
+[35mpong-game_1         |[0m         [Symbol(timeout)]: <ref *2> Timeout {
+[35mpong-game_1         |[0m           _idleTimeout: 5000,
+[35mpong-game_1         |[0m           _idlePrev: TimersList {
+[35mpong-game_1         |[0m             _idleNext: [Circular *2],
+[35mpong-game_1         |[0m             _idlePrev: [Circular *2],
+[35mpong-game_1         |[0m             expiry: 187266,
+[35mpong-game_1         |[0m             id: -9007199254740966,
+[35mpong-game_1         |[0m             msecs: 5000,
+[35mpong-game_1         |[0m             priorityQueuePosition: 1
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           _idleNext: TimersList {
+[35mpong-game_1         |[0m             _idleNext: [Circular *2],
+[35mpong-game_1         |[0m             _idlePrev: [Circular *2],
+[35mpong-game_1         |[0m             expiry: 187266,
+[35mpong-game_1         |[0m             id: -9007199254740966,
+[35mpong-game_1         |[0m             msecs: 5000,
+[35mpong-game_1         |[0m             priorityQueuePosition: 1
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           _idleStart: 182270,
+[35mpong-game_1         |[0m           _onTimeout: [Function: bound ],
+[35mpong-game_1         |[0m           _timerArgs: undefined,
+[35mpong-game_1         |[0m           _repeat: null,
+[35mpong-game_1         |[0m           _destroyed: false,
+[35mpong-game_1         |[0m           [Symbol(refed)]: false,
+[35mpong-game_1         |[0m           [Symbol(kHasPrimitive)]: false,
+[35mpong-game_1         |[0m           [Symbol(asyncId)]: 447,
+[35mpong-game_1         |[0m           [Symbol(triggerId)]: 445
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         [Symbol(kBuffer)]: null,
+[35mpong-game_1         |[0m         [Symbol(kBufferCb)]: null,
+[35mpong-game_1         |[0m         [Symbol(kBufferGen)]: null,
+[35mpong-game_1         |[0m         [Symbol(shapeMode)]: true,
+[35mpong-game_1         |[0m         [Symbol(kCapture)]: false,
+[35mpong-game_1         |[0m         [Symbol(kSetNoDelay)]: true,
+[35mpong-game_1         |[0m         [Symbol(kSetKeepAlive)]: true,
+[35mpong-game_1         |[0m         [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[35mpong-game_1         |[0m         [Symbol(kBytesRead)]: 0,
+[35mpong-game_1         |[0m         [Symbol(kBytesWritten)]: 0
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _consuming: false,
+[35mpong-game_1         |[0m       _dumped: false,
+[35mpong-game_1         |[0m       req: [Circular *3],
+[35mpong-game_1         |[0m       _eventsCount: 4,
+[35mpong-game_1         |[0m       responseUrl: 'http://sqlite-db:4000/add-match',
+[35mpong-game_1         |[0m       redirects: [],
+[35mpong-game_1         |[0m       [Symbol(shapeMode)]: true,
+[35mpong-game_1         |[0m       [Symbol(kCapture)]: false,
+[35mpong-game_1         |[0m       [Symbol(kHeaders)]: {
+[35mpong-game_1         |[0m         'content-type': 'application/json; charset=utf-8',
+[35mpong-game_1         |[0m         'content-length': '56',
+[35mpong-game_1         |[0m         date: 'Sat, 09 Aug 2025 08:51:48 GMT',
+[35mpong-game_1         |[0m         connection: 'keep-alive',
+[35mpong-game_1         |[0m         'keep-alive': 'timeout=72'
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       [Symbol(kHeadersCount)]: 10,
+[35mpong-game_1         |[0m       [Symbol(kTrailers)]: null,
+[35mpong-game_1         |[0m       [Symbol(kTrailersCount)]: 0
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     aborted: false,
+[35mpong-game_1         |[0m     timeoutCb: null,
+[35mpong-game_1         |[0m     upgradeOrConnect: false,
+[35mpong-game_1         |[0m     parser: null,
+[35mpong-game_1         |[0m     maxHeadersCount: null,
+[35mpong-game_1         |[0m     reusedSocket: false,
+[35mpong-game_1         |[0m     host: 'sqlite-db',
+[35mpong-game_1         |[0m     protocol: 'http:',
+[35mpong-game_1         |[0m     _redirectable: Writable {
+[35mpong-game_1         |[0m       _events: {
+[35mpong-game_1         |[0m         close: undefined,
+[35mpong-game_1         |[0m         error: [Function: handleRequestError],
+[35mpong-game_1         |[0m         prefinish: undefined,
+[35mpong-game_1         |[0m         finish: undefined,
+[35mpong-game_1         |[0m         drain: undefined,
+[35mpong-game_1         |[0m         response: [Function: handleResponse],
+[35mpong-game_1         |[0m         socket: [Function: handleRequestSocket]
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _writableState: WritableState {
+[35mpong-game_1         |[0m         highWaterMark: 16384,
+[35mpong-game_1         |[0m         length: 0,
+[35mpong-game_1         |[0m         corked: 0,
+[35mpong-game_1         |[0m         onwrite: [Function: bound onwrite],
+[35mpong-game_1         |[0m         writelen: 0,
+[35mpong-game_1         |[0m         bufferedIndex: 0,
+[35mpong-game_1         |[0m         pendingcb: 0,
+[35mpong-game_1         |[0m         [Symbol(kState)]: 17580812,
+[35mpong-game_1         |[0m         [Symbol(kBufferedValue)]: null
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _maxListeners: undefined,
+[35mpong-game_1         |[0m       _options: {
+[35mpong-game_1         |[0m         maxRedirects: 21,
+[35mpong-game_1         |[0m         maxBodyLength: Infinity,
+[35mpong-game_1         |[0m         protocol: 'http:',
+[35mpong-game_1         |[0m         path: '/add-match',
+[35mpong-game_1         |[0m         method: 'POST',
+[35mpong-game_1         |[0m         headers: [Object: null prototype] {
+[35mpong-game_1         |[0m           Accept: 'application/json, text/plain, */*',
+[35mpong-game_1         |[0m           'Content-Type': 'application/json',
+[35mpong-game_1         |[0m           'User-Agent': 'axios/1.11.0',
+[35mpong-game_1         |[0m           'Content-Length': '108',
+[35mpong-game_1         |[0m           'Accept-Encoding': 'gzip, compress, deflate, br'
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         agents: { http: undefined, https: undefined },
+[35mpong-game_1         |[0m         auth: undefined,
+[35mpong-game_1         |[0m         family: undefined,
+[35mpong-game_1         |[0m         beforeRedirect: [Function: dispatchBeforeRedirect],
+[35mpong-game_1         |[0m         beforeRedirects: { proxy: [Function: beforeRedirect] },
+[35mpong-game_1         |[0m         hostname: 'sqlite-db',
+[35mpong-game_1         |[0m         port: '4000',
+[35mpong-game_1         |[0m         agent: undefined,
+[35mpong-game_1         |[0m         nativeProtocols: {
+[35mpong-game_1         |[0m           'http:': {
+[35mpong-game_1         |[0m             _connectionListener: [Function: connectionListener],
+[35mpong-game_1         |[0m             METHODS: [Array],
+[35mpong-game_1         |[0m             STATUS_CODES: [Object],
+[35mpong-game_1         |[0m             Agent: [Function],
+[35mpong-game_1         |[0m             ClientRequest: [Function: ClientRequest],
+[35mpong-game_1         |[0m             IncomingMessage: [Function: IncomingMessage],
+[35mpong-game_1         |[0m             OutgoingMessage: [Function: OutgoingMessage],
+[35mpong-game_1         |[0m             Server: [Function: Server],
+[35mpong-game_1         |[0m             ServerResponse: [Function: ServerResponse],
+[35mpong-game_1         |[0m             createServer: [Function: createServer],
+[35mpong-game_1         |[0m             validateHeaderName: [Function],
+[35mpong-game_1         |[0m             validateHeaderValue: [Function],
+[35mpong-game_1         |[0m             get: [Function: get],
+[35mpong-game_1         |[0m             request: [Function: request],
+[35mpong-game_1         |[0m             setMaxIdleHTTPParsers: [Function: setMaxIdleHTTPParsers],
+[35mpong-game_1         |[0m             maxHeaderSize: [Getter],
+[35mpong-game_1         |[0m             globalAgent: [Getter/Setter]
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           'https:': {
+[35mpong-game_1         |[0m             Agent: [Function: Agent],
+[35mpong-game_1         |[0m             globalAgent: [Agent],
+[35mpong-game_1         |[0m             Server: [Function: Server],
+[35mpong-game_1         |[0m             createServer: [Function: createServer],
+[35mpong-game_1         |[0m             get: [Function: get],
+[35mpong-game_1         |[0m             request: [Function: request]
+[35mpong-game_1         |[0m           }
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         pathname: '/add-match'
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _ended: true,
+[35mpong-game_1         |[0m       _ending: true,
+[35mpong-game_1         |[0m       _redirectCount: 0,
+[35mpong-game_1         |[0m       _redirects: [],
+[35mpong-game_1         |[0m       _requestBodyLength: 108,
+[35mpong-game_1         |[0m       _requestBodyBuffers: [],
+[35mpong-game_1         |[0m       _eventsCount: 3,
+[35mpong-game_1         |[0m       _onNativeResponse: [Function (anonymous)],
+[35mpong-game_1         |[0m       _currentRequest: [Circular *3],
+[35mpong-game_1         |[0m       _currentUrl: 'http://sqlite-db:4000/add-match',
+[35mpong-game_1         |[0m       [Symbol(shapeMode)]: true,
+[35mpong-game_1         |[0m       [Symbol(kCapture)]: false
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     [Symbol(shapeMode)]: false,
+[35mpong-game_1         |[0m     [Symbol(kCapture)]: false,
+[35mpong-game_1         |[0m     [Symbol(kBytesWritten)]: 0,
+[35mpong-game_1         |[0m     [Symbol(kNeedDrain)]: false,
+[35mpong-game_1         |[0m     [Symbol(corked)]: 0,
+[35mpong-game_1         |[0m     [Symbol(kOutHeaders)]: [Object: null prototype] {
+[35mpong-game_1         |[0m       accept: [ 'Accept', 'application/json, text/plain, */*' ],
+[35mpong-game_1         |[0m       'content-type': [ 'Content-Type', 'application/json' ],
+[35mpong-game_1         |[0m       'user-agent': [ 'User-Agent', 'axios/1.11.0' ],
+[35mpong-game_1         |[0m       'content-length': [ 'Content-Length', '108' ],
+[35mpong-game_1         |[0m       'accept-encoding': [ 'Accept-Encoding', 'gzip, compress, deflate, br' ],
+[35mpong-game_1         |[0m       host: [ 'Host', 'sqlite-db:4000' ]
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     [Symbol(errored)]: null,
+[35mpong-game_1         |[0m     [Symbol(kHighWaterMark)]: 16384,
+[35mpong-game_1         |[0m     [Symbol(kRejectNonStandardBodyWrites)]: false,
+[35mpong-game_1         |[0m     [Symbol(kUniqueHeaders)]: null
+[35mpong-game_1         |[0m   },
+[35mpong-game_1         |[0m   response: {
+[35mpong-game_1         |[0m     status: 400,
+[35mpong-game_1         |[0m     statusText: 'Bad Request',
+[35mpong-game_1         |[0m     headers: Object [AxiosHeaders] {
+[35mpong-game_1         |[0m       'content-type': 'application/json; charset=utf-8',
+[35mpong-game_1         |[0m       'content-length': '56',
+[35mpong-game_1         |[0m       date: 'Sat, 09 Aug 2025 08:51:48 GMT',
+[35mpong-game_1         |[0m       connection: 'keep-alive',
+[35mpong-game_1         |[0m       'keep-alive': 'timeout=72'
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     config: {
+[35mpong-game_1         |[0m       transitional: {
+[35mpong-game_1         |[0m         silentJSONParsing: true,
+[35mpong-game_1         |[0m         forcedJSONParsing: true,
+[35mpong-game_1         |[0m         clarifyTimeoutError: false
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       adapter: [ 'xhr', 'http', 'fetch' ],
+[35mpong-game_1         |[0m       transformRequest: [ [Function: transformRequest] ],
+[35mpong-game_1         |[0m       transformResponse: [ [Function: transformResponse] ],
+[35mpong-game_1         |[0m       timeout: 0,
+[35mpong-game_1         |[0m       xsrfCookieName: 'XSRF-TOKEN',
+[35mpong-game_1         |[0m       xsrfHeaderName: 'X-XSRF-TOKEN',
+[35mpong-game_1         |[0m       maxContentLength: -1,
+[35mpong-game_1         |[0m       maxBodyLength: -1,
+[35mpong-game_1         |[0m       env: {
+[35mpong-game_1         |[0m         FormData: [Function: FormData] [FormData] {
+[35mpong-game_1         |[0m           LINE_BREAK: '\r\n',
+[35mpong-game_1         |[0m           DEFAULT_CONTENT_TYPE: 'application/octet-stream'
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         Blob: [class Blob]
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       validateStatus: [Function: validateStatus],
+[35mpong-game_1         |[0m       headers: Object [AxiosHeaders] {
+[35mpong-game_1         |[0m         Accept: 'application/json, text/plain, */*',
+[35mpong-game_1         |[0m         'Content-Type': 'application/json',
+[35mpong-game_1         |[0m         'User-Agent': 'axios/1.11.0',
+[35mpong-game_1         |[0m         'Content-Length': '108',
+[35mpong-game_1         |[0m         'Accept-Encoding': 'gzip, compress, deflate, br'
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       method: 'post',
+[35mpong-game_1         |[0m       url: 'http://sqlite-db:4000/add-match',
+[35mpong-game_1         |[0m       data: '{"user1_id":"1","user2_id":null,"user1_score":0,"user2_score":11,"winner_id":null,"match_date":"2025-08-09"}',
+[35mpong-game_1         |[0m       allowAbsoluteUrls: true
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     request: <ref *3> ClientRequest {
+[35mpong-game_1         |[0m       _events: [Object: null prototype] {
+[35mpong-game_1         |[0m         abort: [Function (anonymous)],
+[35mpong-game_1         |[0m         aborted: [Function (anonymous)],
+[35mpong-game_1         |[0m         connect: [Function (anonymous)],
+[35mpong-game_1         |[0m         error: [Function (anonymous)],
+[35mpong-game_1         |[0m         socket: [Function (anonymous)],
+[35mpong-game_1         |[0m         timeout: [Function (anonymous)],
+[35mpong-game_1         |[0m         finish: [Function: requestOnFinish]
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _eventsCount: 7,
+[35mpong-game_1         |[0m       _maxListeners: undefined,
+[35mpong-game_1         |[0m       outputData: [],
+[35mpong-game_1         |[0m       outputSize: 0,
+[35mpong-game_1         |[0m       writable: true,
+[35mpong-game_1         |[0m       destroyed: true,
+[35mpong-game_1         |[0m       _last: false,
+[35mpong-game_1         |[0m       chunkedEncoding: false,
+[35mpong-game_1         |[0m       shouldKeepAlive: true,
+[35mpong-game_1         |[0m       maxRequestsOnConnectionReached: false,
+[35mpong-game_1         |[0m       _defaultKeepAlive: true,
+[35mpong-game_1         |[0m       useChunkedEncodingByDefault: true,
+[35mpong-game_1         |[0m       sendDate: false,
+[35mpong-game_1         |[0m       _removedConnection: false,
+[35mpong-game_1         |[0m       _removedContLen: false,
+[35mpong-game_1         |[0m       _removedTE: false,
+[35mpong-game_1         |[0m       strictContentLength: false,
+[35mpong-game_1         |[0m       _contentLength: '108',
+[35mpong-game_1         |[0m       _hasBody: true,
+[35mpong-game_1         |[0m       _trailer: '',
+[35mpong-game_1         |[0m       finished: true,
+[35mpong-game_1         |[0m       _headerSent: true,
+[35mpong-game_1         |[0m       _closed: true,
+[35mpong-game_1         |[0m       socket: <ref *1> Socket {
+[35mpong-game_1         |[0m         connecting: false,
+[35mpong-game_1         |[0m         _hadError: false,
+[35mpong-game_1         |[0m         _parent: null,
+[35mpong-game_1         |[0m         _host: 'sqlite-db',
+[35mpong-game_1         |[0m         _closeAfterHandlingError: false,
+[35mpong-game_1         |[0m         _events: {
+[35mpong-game_1         |[0m           close: [Function: onClose],
+[35mpong-game_1         |[0m           error: [Function: bound onceWrapper] {
+[35mpong-game_1         |[0m             listener: [Function: freeSocketErrorListener]
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           prefinish: undefined,
+[35mpong-game_1         |[0m           finish: undefined,
+[35mpong-game_1         |[0m           drain: undefined,
+[35mpong-game_1         |[0m           data: undefined,
+[35mpong-game_1         |[0m           end: [Function: onReadableStreamEnd],
+[35mpong-game_1         |[0m           readable: undefined,
+[35mpong-game_1         |[0m           connect: undefined,
+[35mpong-game_1         |[0m           free: [Function: onFree],
+[35mpong-game_1         |[0m           timeout: [Function: onTimeout],
+[35mpong-game_1         |[0m           agentRemove: [Function: onRemove]
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _readableState: ReadableState {
+[35mpong-game_1         |[0m           highWaterMark: 16384,
+[35mpong-game_1         |[0m           buffer: [],
+[35mpong-game_1         |[0m           bufferIndex: 0,
+[35mpong-game_1         |[0m           length: 0,
+[35mpong-game_1         |[0m           pipes: [],
+[35mpong-game_1         |[0m           awaitDrainWriters: null,
+[35mpong-game_1         |[0m           [Symbol(kState)]: 60303620
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _writableState: WritableState {
+[35mpong-game_1         |[0m           highWaterMark: 16384,
+[35mpong-game_1         |[0m           length: 0,
+[35mpong-game_1         |[0m           corked: 0,
+[35mpong-game_1         |[0m           onwrite: [Function: bound onwrite],
+[35mpong-game_1         |[0m           writelen: 0,
+[35mpong-game_1         |[0m           bufferedIndex: 0,
+[35mpong-game_1         |[0m           pendingcb: 0,
+[35mpong-game_1         |[0m           [Symbol(kState)]: 17563908,
+[35mpong-game_1         |[0m           [Symbol(kBufferedValue)]: null,
+[35mpong-game_1         |[0m           [Symbol(kWriteCbValue)]: null
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         allowHalfOpen: false,
+[35mpong-game_1         |[0m         _maxListeners: undefined,
+[35mpong-game_1         |[0m         _eventsCount: 6,
+[35mpong-game_1         |[0m         _sockname: null,
+[35mpong-game_1         |[0m         _pendingData: null,
+[35mpong-game_1         |[0m         _pendingEncoding: '',
+[35mpong-game_1         |[0m         server: null,
+[35mpong-game_1         |[0m         _server: null,
+[35mpong-game_1         |[0m         timeout: 5000,
+[35mpong-game_1         |[0m         parser: null,
+[35mpong-game_1         |[0m         _httpMessage: null,
+[35mpong-game_1         |[0m         [Symbol(async_id_symbol)]: -1,
+[35mpong-game_1         |[0m         [Symbol(kHandle)]: TCP {
+[35mpong-game_1         |[0m           reading: true,
+[35mpong-game_1         |[0m           onconnection: null,
+[35mpong-game_1         |[0m           [Symbol(owner_symbol)]: [Circular *1]
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         [Symbol(lastWriteQueueSize)]: 0,
+[35mpong-game_1         |[0m         [Symbol(timeout)]: <ref *2> Timeout {
+[35mpong-game_1         |[0m           _idleTimeout: 5000,
+[35mpong-game_1         |[0m           _idlePrev: TimersList {
+[35mpong-game_1         |[0m             _idleNext: [Circular *2],
+[35mpong-game_1         |[0m             _idlePrev: [Circular *2],
+[35mpong-game_1         |[0m             expiry: 187266,
+[35mpong-game_1         |[0m             id: -9007199254740966,
+[35mpong-game_1         |[0m             msecs: 5000,
+[35mpong-game_1         |[0m             priorityQueuePosition: 1
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           _idleNext: TimersList {
+[35mpong-game_1         |[0m             _idleNext: [Circular *2],
+[35mpong-game_1         |[0m             _idlePrev: [Circular *2],
+[35mpong-game_1         |[0m             expiry: 187266,
+[35mpong-game_1         |[0m             id: -9007199254740966,
+[35mpong-game_1         |[0m             msecs: 5000,
+[35mpong-game_1         |[0m             priorityQueuePosition: 1
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           _idleStart: 182270,
+[35mpong-game_1         |[0m           _onTimeout: [Function: bound ],
+[35mpong-game_1         |[0m           _timerArgs: undefined,
+[35mpong-game_1         |[0m           _repeat: null,
+[35mpong-game_1         |[0m           _destroyed: false,
+[35mpong-game_1         |[0m           [Symbol(refed)]: false,
+[35mpong-game_1         |[0m           [Symbol(kHasPrimitive)]: false,
+[35mpong-game_1         |[0m           [Symbol(asyncId)]: 447,
+[35mpong-game_1         |[0m           [Symbol(triggerId)]: 445
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         [Symbol(kBuffer)]: null,
+[35mpong-game_1         |[0m         [Symbol(kBufferCb)]: null,
+[35mpong-game_1         |[0m         [Symbol(kBufferGen)]: null,
+[35mpong-game_1         |[0m         [Symbol(shapeMode)]: true,
+[35mpong-game_1         |[0m         [Symbol(kCapture)]: false,
+[35mpong-game_1         |[0m         [Symbol(kSetNoDelay)]: true,
+[35mpong-game_1         |[0m         [Symbol(kSetKeepAlive)]: true,
+[35mpong-game_1         |[0m         [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[35mpong-game_1         |[0m         [Symbol(kBytesRead)]: 0,
+[35mpong-game_1         |[0m         [Symbol(kBytesWritten)]: 0
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       _header: 'POST /add-match HTTP/1.1\r\n' +
+[35mpong-game_1         |[0m         'Accept: application/json, text/plain, */*\r\n' +
+[35mpong-game_1         |[0m         'Content-Type: application/json\r\n' +
+[35mpong-game_1         |[0m         'User-Agent: axios/1.11.0\r\n' +
+[35mpong-game_1         |[0m         'Content-Length: 108\r\n' +
+[35mpong-game_1         |[0m         'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+[35mpong-game_1         |[0m         'Host: sqlite-db:4000\r\n' +
+[35mpong-game_1         |[0m         'Connection: keep-alive\r\n' +
+[35mpong-game_1         |[0m         '\r\n',
+[35mpong-game_1         |[0m       _keepAliveTimeout: 0,
+[35mpong-game_1         |[0m       _onPendingData: [Function: nop],
+[35mpong-game_1         |[0m       agent: Agent {
+[35mpong-game_1         |[0m         _events: [Object: null prototype] {
+[35mpong-game_1         |[0m           free: [Function (anonymous)],
+[35mpong-game_1         |[0m           newListener: [Function: maybeEnableKeylog]
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _eventsCount: 2,
+[35mpong-game_1         |[0m         _maxListeners: undefined,
+[35mpong-game_1         |[0m         defaultPort: 80,
+[35mpong-game_1         |[0m         protocol: 'http:',
+[35mpong-game_1         |[0m         options: [Object: null prototype] {
+[35mpong-game_1         |[0m           keepAlive: true,
+[35mpong-game_1         |[0m           scheduling: 'lifo',
+[35mpong-game_1         |[0m           timeout: 5000,
+[35mpong-game_1         |[0m           noDelay: true,
+[35mpong-game_1         |[0m           path: null
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         requests: [Object: null prototype] {},
+[35mpong-game_1         |[0m         sockets: [Object: null prototype] {},
+[35mpong-game_1         |[0m         freeSockets: [Object: null prototype] { 'sqlite-db:4000:': [ [Socket] ] },
+[35mpong-game_1         |[0m         keepAliveMsecs: 1000,
+[35mpong-game_1         |[0m         keepAlive: true,
+[35mpong-game_1         |[0m         maxSockets: Infinity,
+[35mpong-game_1         |[0m         maxFreeSockets: 256,
+[35mpong-game_1         |[0m         scheduling: 'lifo',
+[35mpong-game_1         |[0m         maxTotalSockets: Infinity,
+[35mpong-game_1         |[0m         totalSocketCount: 1,
+[35mpong-game_1         |[0m         [Symbol(shapeMode)]: false,
+[35mpong-game_1         |[0m         [Symbol(kCapture)]: false
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       socketPath: undefined,
+[35mpong-game_1         |[0m       method: 'POST',
+[35mpong-game_1         |[0m       maxHeaderSize: undefined,
+[35mpong-game_1         |[0m       insecureHTTPParser: undefined,
+[35mpong-game_1         |[0m       joinDuplicateHeaders: undefined,
+[35mpong-game_1         |[0m       path: '/add-match',
+[35mpong-game_1         |[0m       _ended: true,
+[35mpong-game_1         |[0m       res: IncomingMessage {
+[35mpong-game_1         |[0m         _events: {
+[35mpong-game_1         |[0m           close: undefined,
+[35mpong-game_1         |[0m           error: [Function: handleStreamError],
+[35mpong-game_1         |[0m           data: [Function: handleStreamData],
+[35mpong-game_1         |[0m           end: [ [Function: responseOnEnd], [Function: handleStreamEnd] ],
+[35mpong-game_1         |[0m           readable: undefined,
+[35mpong-game_1         |[0m           finish: undefined,
+[35mpong-game_1         |[0m           aborted: [Function: handlerStreamAborted]
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _readableState: ReadableState {
+[35mpong-game_1         |[0m           highWaterMark: 16384,
+[35mpong-game_1         |[0m           buffer: [],
+[35mpong-game_1         |[0m           bufferIndex: 0,
+[35mpong-game_1         |[0m           length: 0,
+[35mpong-game_1         |[0m           pipes: [],
+[35mpong-game_1         |[0m           awaitDrainWriters: null,
+[35mpong-game_1         |[0m           [Symbol(kState)]: 194779004
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _maxListeners: undefined,
+[35mpong-game_1         |[0m         socket: null,
+[35mpong-game_1         |[0m         httpVersionMajor: 1,
+[35mpong-game_1         |[0m         httpVersionMinor: 1,
+[35mpong-game_1         |[0m         httpVersion: '1.1',
+[35mpong-game_1         |[0m         complete: true,
+[35mpong-game_1         |[0m         rawHeaders: [
+[35mpong-game_1         |[0m           'content-type',
+[35mpong-game_1         |[0m           'application/json; charset=utf-8',
+[35mpong-game_1         |[0m           'content-length',
+[35mpong-game_1         |[0m           '56',
+[35mpong-game_1         |[0m           'Date',
+[35mpong-game_1         |[0m           'Sat, 09 Aug 2025 08:51:48 GMT',
+[35mpong-game_1         |[0m           'Connection',
+[35mpong-game_1         |[0m           'keep-alive',
+[35mpong-game_1         |[0m           'Keep-Alive',
+[35mpong-game_1         |[0m           'timeout=72'
+[35mpong-game_1         |[0m         ],
+[35mpong-game_1         |[0m         rawTrailers: [],
+[35mpong-game_1         |[0m         joinDuplicateHeaders: undefined,
+[35mpong-game_1         |[0m         aborted: false,
+[35mpong-game_1         |[0m         upgrade: false,
+[35mpong-game_1         |[0m         url: '',
+[35mpong-game_1         |[0m         method: null,
+[35mpong-game_1         |[0m         statusCode: 400,
+[35mpong-game_1         |[0m         statusMessage: 'Bad Request',
+[35mpong-game_1         |[0m         client: <ref *1> Socket {
+[35mpong-game_1         |[0m           connecting: false,
+[35mpong-game_1         |[0m           _hadError: false,
+[35mpong-game_1         |[0m           _parent: null,
+[35mpong-game_1         |[0m           _host: 'sqlite-db',
+[35mpong-game_1         |[0m           _closeAfterHandlingError: false,
+[35mpong-game_1         |[0m           _events: {
+[35mpong-game_1         |[0m             close: [Function: onClose],
+[35mpong-game_1         |[0m             error: [Function],
+[35mpong-game_1         |[0m             prefinish: undefined,
+[35mpong-game_1         |[0m             finish: undefined,
+[35mpong-game_1         |[0m             drain: undefined,
+[35mpong-game_1         |[0m             data: undefined,
+[35mpong-game_1         |[0m             end: [Function: onReadableStreamEnd],
+[35mpong-game_1         |[0m             readable: undefined,
+[35mpong-game_1         |[0m             connect: undefined,
+[35mpong-game_1         |[0m             free: [Function: onFree],
+[35mpong-game_1         |[0m             timeout: [Function: onTimeout],
+[35mpong-game_1         |[0m             agentRemove: [Function: onRemove]
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           _readableState: ReadableState {
+[35mpong-game_1         |[0m             highWaterMark: 16384,
+[35mpong-game_1         |[0m             buffer: [],
+[35mpong-game_1         |[0m             bufferIndex: 0,
+[35mpong-game_1         |[0m             length: 0,
+[35mpong-game_1         |[0m             pipes: [],
+[35mpong-game_1         |[0m             awaitDrainWriters: null,
+[35mpong-game_1         |[0m             [Symbol(kState)]: 60303620
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           _writableState: WritableState {
+[35mpong-game_1         |[0m             highWaterMark: 16384,
+[35mpong-game_1         |[0m             length: 0,
+[35mpong-game_1         |[0m             corked: 0,
+[35mpong-game_1         |[0m             onwrite: [Function: bound onwrite],
+[35mpong-game_1         |[0m             writelen: 0,
+[35mpong-game_1         |[0m             bufferedIndex: 0,
+[35mpong-game_1         |[0m             pendingcb: 0,
+[35mpong-game_1         |[0m             [Symbol(kState)]: 17563908,
+[35mpong-game_1         |[0m             [Symbol(kBufferedValue)]: null,
+[35mpong-game_1         |[0m             [Symbol(kWriteCbValue)]: null
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           allowHalfOpen: false,
+[35mpong-game_1         |[0m           _maxListeners: undefined,
+[35mpong-game_1         |[0m           _eventsCount: 6,
+[35mpong-game_1         |[0m           _sockname: null,
+[35mpong-game_1         |[0m           _pendingData: null,
+[35mpong-game_1         |[0m           _pendingEncoding: '',
+[35mpong-game_1         |[0m           server: null,
+[35mpong-game_1         |[0m           _server: null,
+[35mpong-game_1         |[0m           timeout: 5000,
+[35mpong-game_1         |[0m           parser: null,
+[35mpong-game_1         |[0m           _httpMessage: null,
+[35mpong-game_1         |[0m           [Symbol(async_id_symbol)]: -1,
+[35mpong-game_1         |[0m           [Symbol(kHandle)]: TCP {
+[35mpong-game_1         |[0m             reading: true,
+[35mpong-game_1         |[0m             onconnection: null,
+[35mpong-game_1         |[0m             [Symbol(owner_symbol)]: [Circular *1]
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           [Symbol(lastWriteQueueSize)]: 0,
+[35mpong-game_1         |[0m           [Symbol(timeout)]: <ref *2> Timeout {
+[35mpong-game_1         |[0m             _idleTimeout: 5000,
+[35mpong-game_1         |[0m             _idlePrev: [TimersList],
+[35mpong-game_1         |[0m             _idleNext: [TimersList],
+[35mpong-game_1         |[0m             _idleStart: 182270,
+[35mpong-game_1         |[0m             _onTimeout: [Function: bound ],
+[35mpong-game_1         |[0m             _timerArgs: undefined,
+[35mpong-game_1         |[0m             _repeat: null,
+[35mpong-game_1         |[0m             _destroyed: false,
+[35mpong-game_1         |[0m             [Symbol(refed)]: false,
+[35mpong-game_1         |[0m             [Symbol(kHasPrimitive)]: false,
+[35mpong-game_1         |[0m             [Symbol(asyncId)]: 447,
+[35mpong-game_1         |[0m             [Symbol(triggerId)]: 445
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           [Symbol(kBuffer)]: null,
+[35mpong-game_1         |[0m           [Symbol(kBufferCb)]: null,
+[35mpong-game_1         |[0m           [Symbol(kBufferGen)]: null,
+[35mpong-game_1         |[0m           [Symbol(shapeMode)]: true,
+[35mpong-game_1         |[0m           [Symbol(kCapture)]: false,
+[35mpong-game_1         |[0m           [Symbol(kSetNoDelay)]: true,
+[35mpong-game_1         |[0m           [Symbol(kSetKeepAlive)]: true,
+[35mpong-game_1         |[0m           [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[35mpong-game_1         |[0m           [Symbol(kBytesRead)]: 0,
+[35mpong-game_1         |[0m           [Symbol(kBytesWritten)]: 0
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _consuming: false,
+[35mpong-game_1         |[0m         _dumped: false,
+[35mpong-game_1         |[0m         req: [Circular *3],
+[35mpong-game_1         |[0m         _eventsCount: 4,
+[35mpong-game_1         |[0m         responseUrl: 'http://sqlite-db:4000/add-match',
+[35mpong-game_1         |[0m         redirects: [],
+[35mpong-game_1         |[0m         [Symbol(shapeMode)]: true,
+[35mpong-game_1         |[0m         [Symbol(kCapture)]: false,
+[35mpong-game_1         |[0m         [Symbol(kHeaders)]: {
+[35mpong-game_1         |[0m           'content-type': 'application/json; charset=utf-8',
+[35mpong-game_1         |[0m           'content-length': '56',
+[35mpong-game_1         |[0m           date: 'Sat, 09 Aug 2025 08:51:48 GMT',
+[35mpong-game_1         |[0m           connection: 'keep-alive',
+[35mpong-game_1         |[0m           'keep-alive': 'timeout=72'
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         [Symbol(kHeadersCount)]: 10,
+[35mpong-game_1         |[0m         [Symbol(kTrailers)]: null,
+[35mpong-game_1         |[0m         [Symbol(kTrailersCount)]: 0
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       aborted: false,
+[35mpong-game_1         |[0m       timeoutCb: null,
+[35mpong-game_1         |[0m       upgradeOrConnect: false,
+[35mpong-game_1         |[0m       parser: null,
+[35mpong-game_1         |[0m       maxHeadersCount: null,
+[35mpong-game_1         |[0m       reusedSocket: false,
+[35mpong-game_1         |[0m       host: 'sqlite-db',
+[35mpong-game_1         |[0m       protocol: 'http:',
+[35mpong-game_1         |[0m       _redirectable: Writable {
+[35mpong-game_1         |[0m         _events: {
+[35mpong-game_1         |[0m           close: undefined,
+[35mpong-game_1         |[0m           error: [Function: handleRequestError],
+[35mpong-game_1         |[0m           prefinish: undefined,
+[35mpong-game_1         |[0m           finish: undefined,
+[35mpong-game_1         |[0m           drain: undefined,
+[35mpong-game_1         |[0m           response: [Function: handleResponse],
+[35mpong-game_1         |[0m           socket: [Function: handleRequestSocket]
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _writableState: WritableState {
+[35mpong-game_1         |[0m           highWaterMark: 16384,
+[35mpong-game_1         |[0m           length: 0,
+[35mpong-game_1         |[0m           corked: 0,
+[35mpong-game_1         |[0m           onwrite: [Function: bound onwrite],
+[35mpong-game_1         |[0m           writelen: 0,
+[35mpong-game_1         |[0m           bufferedIndex: 0,
+[35mpong-game_1         |[0m           pendingcb: 0,
+[35mpong-game_1         |[0m           [Symbol(kState)]: 17580812,
+[35mpong-game_1         |[0m           [Symbol(kBufferedValue)]: null
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _maxListeners: undefined,
+[35mpong-game_1         |[0m         _options: {
+[35mpong-game_1         |[0m           maxRedirects: 21,
+[35mpong-game_1         |[0m           maxBodyLength: Infinity,
+[35mpong-game_1         |[0m           protocol: 'http:',
+[35mpong-game_1         |[0m           path: '/add-match',
+[35mpong-game_1         |[0m           method: 'POST',
+[35mpong-game_1         |[0m           headers: [Object: null prototype] {
+[35mpong-game_1         |[0m             Accept: 'application/json, text/plain, */*',
+[35mpong-game_1         |[0m             'Content-Type': 'application/json',
+[35mpong-game_1         |[0m             'User-Agent': 'axios/1.11.0',
+[35mpong-game_1         |[0m             'Content-Length': '108',
+[35mpong-game_1         |[0m             'Accept-Encoding': 'gzip, compress, deflate, br'
+[35mpong-game_1         |[0m           },
+[35mpong-game_1         |[0m           agents: { http: undefined, https: undefined },
+[35mpong-game_1         |[0m           auth: undefined,
+[35mpong-game_1         |[0m           family: undefined,
+[35mpong-game_1         |[0m           beforeRedirect: [Function: dispatchBeforeRedirect],
+[35mpong-game_1         |[0m           beforeRedirects: { proxy: [Function: beforeRedirect] },
+[35mpong-game_1         |[0m           hostname: 'sqlite-db',
+[35mpong-game_1         |[0m           port: '4000',
+[35mpong-game_1         |[0m           agent: undefined,
+[35mpong-game_1         |[0m           nativeProtocols: { 'http:': [Object], 'https:': [Object] },
+[35mpong-game_1         |[0m           pathname: '/add-match'
+[35mpong-game_1         |[0m         },
+[35mpong-game_1         |[0m         _ended: true,
+[35mpong-game_1         |[0m         _ending: true,
+[35mpong-game_1         |[0m         _redirectCount: 0,
+[35mpong-game_1         |[0m         _redirects: [],
+[35mpong-game_1         |[0m         _requestBodyLength: 108,
+[35mpong-game_1         |[0m         _requestBodyBuffers: [],
+[35mpong-game_1         |[0m         _eventsCount: 3,
+[35mpong-game_1         |[0m         _onNativeResponse: [Function (anonymous)],
+[35mpong-game_1         |[0m         _currentRequest: [Circular *3],
+[35mpong-game_1         |[0m         _currentUrl: 'http://sqlite-db:4000/add-match',
+[35mpong-game_1         |[0m         [Symbol(shapeMode)]: true,
+[35mpong-game_1         |[0m         [Symbol(kCapture)]: false
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       [Symbol(shapeMode)]: false,
+[35mpong-game_1         |[0m       [Symbol(kCapture)]: false,
+[35mpong-game_1         |[0m       [Symbol(kBytesWritten)]: 0,
+[35mpong-game_1         |[0m       [Symbol(kNeedDrain)]: false,
+[35mpong-game_1         |[0m       [Symbol(corked)]: 0,
+[35mpong-game_1         |[0m       [Symbol(kOutHeaders)]: [Object: null prototype] {
+[35mpong-game_1         |[0m         accept: [ 'Accept', 'application/json, text/plain, */*' ],
+[35mpong-game_1         |[0m         'content-type': [ 'Content-Type', 'application/json' ],
+[35mpong-game_1         |[0m         'user-agent': [ 'User-Agent', 'axios/1.11.0' ],
+[35mpong-game_1         |[0m         'content-length': [ 'Content-Length', '108' ],
+[35mpong-game_1         |[0m         'accept-encoding': [ 'Accept-Encoding', 'gzip, compress, deflate, br' ],
+[35mpong-game_1         |[0m         host: [ 'Host', 'sqlite-db:4000' ]
+[35mpong-game_1         |[0m       },
+[35mpong-game_1         |[0m       [Symbol(errored)]: null,
+[35mpong-game_1         |[0m       [Symbol(kHighWaterMark)]: 16384,
+[35mpong-game_1         |[0m       [Symbol(kRejectNonStandardBodyWrites)]: false,
+[35mpong-game_1         |[0m       [Symbol(kUniqueHeaders)]: null
+[35mpong-game_1         |[0m     },
+[35mpong-game_1         |[0m     data: { error: 'NOT NULL constraint failed: matches.user2_id' }
+[35mpong-game_1         |[0m   },
+[35mpong-game_1         |[0m   status: 400
+[35mpong-game_1         |[0m }
+[35mpong-game_1         |[0m 
+[35mpong-game_1         |[0m Node.js v20.19.4
+[33;1mpong-game_1         |[0m (node:1) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/dist/server.js is not specified and it doesn't parse as CommonJS.
+[33;1mpong-game_1         |[0m Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+[33;1mpong-game_1         |[0m To eliminate this warning, add "type": "module" to /app/package.json.
+[33;1mpong-game_1         |[0m (Use `node --trace-warnings ...` to show where the warning was created)
+[33mauth_1              |[0m {"level":30,"time":1754729508972,"pid":1,"hostname":"246798d980fe","reqId":"req-7","req":{"method":"GET","url":"/validate-token","host":"auth:5000","remoteAddress":"172.21.0.2","remotePort":50870},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729508974,"pid":1,"hostname":"626c1c60d962","reqId":"req-c","req":{"method":"GET","url":"/get-user-by-username/rodalcham","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51724},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729508975,"pid":1,"hostname":"626c1c60d962","reqId":"req-c","res":{"statusCode":200},"responseTime":0.7637520001735538,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729508976,"pid":1,"hostname":"246798d980fe","reqId":"req-7","res":{"statusCode":200},"responseTime":3.238381000002846,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729534136,"pid":1,"hostname":"246798d980fe","reqId":"req-8","req":{"method":"GET","url":"/validate-token","host":"auth:5000","remoteAddress":"172.21.0.2","remotePort":50888},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729534138,"pid":1,"hostname":"626c1c60d962","reqId":"req-d","req":{"method":"GET","url":"/get-user-by-username/rodalcham","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51742},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729534138,"pid":1,"hostname":"626c1c60d962","reqId":"req-d","res":{"statusCode":200},"responseTime":0.4241090000141412,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729534139,"pid":1,"hostname":"246798d980fe","reqId":"req-8","res":{"statusCode":200},"responseTime":2.6004629998933524,"msg":"request completed"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729534496,"pid":1,"hostname":"626c1c60d962","reqId":"req-e","req":{"method":"POST","url":"/add-match","host":"sqlite-db:4000","remoteAddress":"172.21.0.4","remotePort":48458},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729534497,"pid":1,"hostname":"626c1c60d962","reqId":"req-e","res":{"statusCode":400},"responseTime":0.7412809999659657,"msg":"request completed"}
+[33;1mpong-game_1         |[0m 
+[33;1mpong-game_1         |[0m node:internal/process/promises:391
+[33;1mpong-game_1         |[0m     triggerUncaughtException(err, true /* fromPromise */);
+[33;1mpong-game_1         |[0m     ^
+[33;1mpong-game_1         |[0m AxiosError: Request failed with status code 400
+[33;1mpong-game_1         |[0m     at settle (file:///app/node_modules/axios/lib/core/settle.js:19:12)
+[33;1mpong-game_1         |[0m     at IncomingMessage.handleStreamEnd (file:///app/node_modules/axios/lib/adapters/http.js:599:11)
+[33;1mpong-game_1         |[0m     at IncomingMessage.emit (node:events:536:35)
+[33;1mpong-game_1         |[0m     at endReadableNT (node:internal/streams/readable:1698:12)
+[33;1mpong-game_1         |[0m     at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+[33;1mpong-game_1         |[0m     at Axios.request (file:///app/node_modules/axios/lib/core/Axios.js:45:41)
+[33;1mpong-game_1         |[0m     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[33;1mpong-game_1         |[0m     at async Game.endGame (file:///app/dist/game.js:178:25) {
+[33;1mpong-game_1         |[0m   code: 'ERR_BAD_REQUEST',
+[33;1mpong-game_1         |[0m   config: {
+[33;1mpong-game_1         |[0m     transitional: {
+[33;1mpong-game_1         |[0m       silentJSONParsing: true,
+[33;1mpong-game_1         |[0m       forcedJSONParsing: true,
+[33;1mpong-game_1         |[0m       clarifyTimeoutError: false
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     adapter: [ 'xhr', 'http', 'fetch' ],
+[33;1mpong-game_1         |[0m     transformRequest: [ [Function: transformRequest] ],
+[33;1mpong-game_1         |[0m     transformResponse: [ [Function: transformResponse] ],
+[33;1mpong-game_1         |[0m     timeout: 0,
+[33;1mpong-game_1         |[0m     xsrfCookieName: 'XSRF-TOKEN',
+[33;1mpong-game_1         |[0m     xsrfHeaderName: 'X-XSRF-TOKEN',
+[33;1mpong-game_1         |[0m     maxContentLength: -1,
+[33;1mpong-game_1         |[0m     maxBodyLength: -1,
+[33;1mpong-game_1         |[0m     env: {
+[33;1mpong-game_1         |[0m       FormData: [Function: FormData] [FormData] {
+[33;1mpong-game_1         |[0m         LINE_BREAK: '\r\n',
+[33;1mpong-game_1         |[0m         DEFAULT_CONTENT_TYPE: 'application/octet-stream'
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       Blob: [class Blob]
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     validateStatus: [Function: validateStatus],
+[33;1mpong-game_1         |[0m     headers: Object [AxiosHeaders] {
+[33;1mpong-game_1         |[0m       Accept: 'application/json, text/plain, */*',
+[33;1mpong-game_1         |[0m       'Content-Type': 'application/json',
+[33;1mpong-game_1         |[0m       'User-Agent': 'axios/1.11.0',
+[33;1mpong-game_1         |[0m       'Content-Length': '108',
+[33;1mpong-game_1         |[0m       'Accept-Encoding': 'gzip, compress, deflate, br'
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     method: 'post',
+[33;1mpong-game_1         |[0m     url: 'http://sqlite-db:4000/add-match',
+[33;1mpong-game_1         |[0m     data: '{"user1_id":"1","user2_id":null,"user1_score":0,"user2_score":11,"winner_id":null,"match_date":"2025-08-09"}',
+[33;1mpong-game_1         |[0m     allowAbsoluteUrls: true
+[33;1mpong-game_1         |[0m   },
+[33;1mpong-game_1         |[0m   request: <ref *3> ClientRequest {
+[33;1mpong-game_1         |[0m     _events: [Object: null prototype] {
+[33;1mpong-game_1         |[0m       abort: [Function (anonymous)],
+[33;1mpong-game_1         |[0m       aborted: [Function (anonymous)],
+[33;1mpong-game_1         |[0m       connect: [Function (anonymous)],
+[33;1mpong-game_1         |[0m       error: [Function (anonymous)],
+[33;1mpong-game_1         |[0m       socket: [Function (anonymous)],
+[33;1mpong-game_1         |[0m       timeout: [Function (anonymous)],
+[33;1mpong-game_1         |[0m       finish: [Function: requestOnFinish]
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     _eventsCount: 7,
+[33;1mpong-game_1         |[0m     _maxListeners: undefined,
+[33;1mpong-game_1         |[0m     outputData: [],
+[33;1mpong-game_1         |[0m     outputSize: 0,
+[33;1mpong-game_1         |[0m     writable: true,
+[33;1mpong-game_1         |[0m     destroyed: true,
+[33;1mpong-game_1         |[0m     _last: false,
+[33;1mpong-game_1         |[0m     chunkedEncoding: false,
+[33;1mpong-game_1         |[0m     shouldKeepAlive: true,
+[33;1mpong-game_1         |[0m     maxRequestsOnConnectionReached: false,
+[33;1mpong-game_1         |[0m     _defaultKeepAlive: true,
+[33;1mpong-game_1         |[0m     useChunkedEncodingByDefault: true,
+[33;1mpong-game_1         |[0m     sendDate: false,
+[33;1mpong-game_1         |[0m     _removedConnection: false,
+[33;1mpong-game_1         |[0m     _removedContLen: false,
+[33;1mpong-game_1         |[0m     _removedTE: false,
+[33;1mpong-game_1         |[0m     strictContentLength: false,
+[33;1mpong-game_1         |[0m     _contentLength: '108',
+[33;1mpong-game_1         |[0m     _hasBody: true,
+[33;1mpong-game_1         |[0m     _trailer: '',
+[33;1mpong-game_1         |[0m     finished: true,
+[33;1mpong-game_1         |[0m     _headerSent: true,
+[33;1mpong-game_1         |[0m     _closed: true,
+[33;1mpong-game_1         |[0m     socket: <ref *1> Socket {
+[33;1mpong-game_1         |[0m       connecting: false,
+[33;1mpong-game_1         |[0m       _hadError: false,
+[33;1mpong-game_1         |[0m       _parent: null,
+[33;1mpong-game_1         |[0m       _host: 'sqlite-db',
+[33;1mpong-game_1         |[0m       _closeAfterHandlingError: false,
+[33;1mpong-game_1         |[0m       _events: {
+[33;1mpong-game_1         |[0m         close: [Function: onClose],
+[33;1mpong-game_1         |[0m         error: [Function: bound onceWrapper] {
+[33;1mpong-game_1         |[0m           listener: [Function: freeSocketErrorListener]
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         prefinish: undefined,
+[33;1mpong-game_1         |[0m         finish: undefined,
+[33;1mpong-game_1         |[0m         drain: undefined,
+[33;1mpong-game_1         |[0m         data: undefined,
+[33;1mpong-game_1         |[0m         end: [Function: onReadableStreamEnd],
+[33;1mpong-game_1         |[0m         readable: undefined,
+[33;1mpong-game_1         |[0m         connect: undefined,
+[33;1mpong-game_1         |[0m         free: [Function: onFree],
+[33;1mpong-game_1         |[0m         timeout: [Function: onTimeout],
+[33;1mpong-game_1         |[0m         agentRemove: [Function: onRemove]
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _readableState: ReadableState {
+[33;1mpong-game_1         |[0m         highWaterMark: 16384,
+[33;1mpong-game_1         |[0m         buffer: [],
+[33;1mpong-game_1         |[0m         bufferIndex: 0,
+[33;1mpong-game_1         |[0m         length: 0,
+[33;1mpong-game_1         |[0m         pipes: [],
+[33;1mpong-game_1         |[0m         awaitDrainWriters: null,
+[33;1mpong-game_1         |[0m         [Symbol(kState)]: 60303620
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _writableState: WritableState {
+[33;1mpong-game_1         |[0m         highWaterMark: 16384,
+[33;1mpong-game_1         |[0m         length: 0,
+[33;1mpong-game_1         |[0m         corked: 0,
+[33;1mpong-game_1         |[0m         onwrite: [Function: bound onwrite],
+[33;1mpong-game_1         |[0m         writelen: 0,
+[33;1mpong-game_1         |[0m         bufferedIndex: 0,
+[33;1mpong-game_1         |[0m         pendingcb: 0,
+[33;1mpong-game_1         |[0m         [Symbol(kState)]: 17563908,
+[33;1mpong-game_1         |[0m         [Symbol(kBufferedValue)]: null,
+[33;1mpong-game_1         |[0m         [Symbol(kWriteCbValue)]: null
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       allowHalfOpen: false,
+[33;1mpong-game_1         |[0m       _maxListeners: undefined,
+[33;1mpong-game_1         |[0m       _eventsCount: 6,
+[33;1mpong-game_1         |[0m       _sockname: null,
+[33;1mpong-game_1         |[0m       _pendingData: null,
+[33;1mpong-game_1         |[0m       _pendingEncoding: '',
+[33;1mpong-game_1         |[0m       server: null,
+[33;1mpong-game_1         |[0m       _server: null,
+[33;1mpong-game_1         |[0m       timeout: 5000,
+[33;1mpong-game_1         |[0m       parser: null,
+[33;1mpong-game_1         |[0m       _httpMessage: null,
+[33;1mpong-game_1         |[0m       [Symbol(async_id_symbol)]: -1,
+[33;1mpong-game_1         |[0m       [Symbol(kHandle)]: TCP {
+[33;1mpong-game_1         |[0m         reading: true,
+[33;1mpong-game_1         |[0m         onconnection: null,
+[33;1mpong-game_1         |[0m         [Symbol(owner_symbol)]: [Circular *1]
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       [Symbol(lastWriteQueueSize)]: 0,
+[33;1mpong-game_1         |[0m       [Symbol(timeout)]: <ref *2> Timeout {
+[33;1mpong-game_1         |[0m         _idleTimeout: 5000,
+[33;1mpong-game_1         |[0m         _idlePrev: TimersList {
+[33;1mpong-game_1         |[0m           _idleNext: [Circular *2],
+[33;1mpong-game_1         |[0m           _idlePrev: [Circular *2],
+[33;1mpong-game_1         |[0m           expiry: 30875,
+[33;1mpong-game_1         |[0m           id: -9007199254740974,
+[33;1mpong-game_1         |[0m           msecs: 5000,
+[33;1mpong-game_1         |[0m           priorityQueuePosition: 2
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _idleNext: TimersList {
+[33;1mpong-game_1         |[0m           _idleNext: [Circular *2],
+[33;1mpong-game_1         |[0m           _idlePrev: [Circular *2],
+[33;1mpong-game_1         |[0m           expiry: 30875,
+[33;1mpong-game_1         |[0m           id: -9007199254740974,
+[33;1mpong-game_1         |[0m           msecs: 5000,
+[33;1mpong-game_1         |[0m           priorityQueuePosition: 2
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _idleStart: 25882,
+[33;1mpong-game_1         |[0m         _onTimeout: [Function: bound ],
+[33;1mpong-game_1         |[0m         _timerArgs: undefined,
+[33;1mpong-game_1         |[0m         _repeat: null,
+[33;1mpong-game_1         |[0m         _destroyed: false,
+[33;1mpong-game_1         |[0m         [Symbol(refed)]: false,
+[33;1mpong-game_1         |[0m         [Symbol(kHasPrimitive)]: false,
+[33;1mpong-game_1         |[0m         [Symbol(asyncId)]: 411,
+[33;1mpong-game_1         |[0m         [Symbol(triggerId)]: 409
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       [Symbol(kBuffer)]: null,
+[33;1mpong-game_1         |[0m       [Symbol(kBufferCb)]: null,
+[33;1mpong-game_1         |[0m       [Symbol(kBufferGen)]: null,
+[33;1mpong-game_1         |[0m       [Symbol(shapeMode)]: true,
+[33;1mpong-game_1         |[0m       [Symbol(kCapture)]: false,
+[33;1mpong-game_1         |[0m       [Symbol(kSetNoDelay)]: true,
+[33;1mpong-game_1         |[0m       [Symbol(kSetKeepAlive)]: true,
+[33;1mpong-game_1         |[0m       [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[33;1mpong-game_1         |[0m       [Symbol(kBytesRead)]: 0,
+[33;1mpong-game_1         |[0m       [Symbol(kBytesWritten)]: 0
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     _header: 'POST /add-match HTTP/1.1\r\n' +
+[33;1mpong-game_1         |[0m       'Accept: application/json, text/plain, */*\r\n' +
+[33;1mpong-game_1         |[0m       'Content-Type: application/json\r\n' +
+[33;1mpong-game_1         |[0m       'User-Agent: axios/1.11.0\r\n' +
+[33;1mpong-game_1         |[0m       'Content-Length: 108\r\n' +
+[33;1mpong-game_1         |[0m       'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+[33;1mpong-game_1         |[0m       'Host: sqlite-db:4000\r\n' +
+[33;1mpong-game_1         |[0m       'Connection: keep-alive\r\n' +
+[33;1mpong-game_1         |[0m       '\r\n',
+[33;1mpong-game_1         |[0m     _keepAliveTimeout: 0,
+[33;1mpong-game_1         |[0m     _onPendingData: [Function: nop],
+[33;1mpong-game_1         |[0m     agent: Agent {
+[33;1mpong-game_1         |[0m       _events: [Object: null prototype] {
+[33;1mpong-game_1         |[0m         free: [Function (anonymous)],
+[33;1mpong-game_1         |[0m         newListener: [Function: maybeEnableKeylog]
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _eventsCount: 2,
+[33;1mpong-game_1         |[0m       _maxListeners: undefined,
+[33;1mpong-game_1         |[0m       defaultPort: 80,
+[33;1mpong-game_1         |[0m       protocol: 'http:',
+[33;1mpong-game_1         |[0m       options: [Object: null prototype] {
+[33;1mpong-game_1         |[0m         keepAlive: true,
+[33;1mpong-game_1         |[0m         scheduling: 'lifo',
+[33;1mpong-game_1         |[0m         timeout: 5000,
+[33;1mpong-game_1         |[0m         noDelay: true,
+[33;1mpong-game_1         |[0m         path: null
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       requests: [Object: null prototype] {},
+[33;1mpong-game_1         |[0m       sockets: [Object: null prototype] {},
+[33;1mpong-game_1         |[0m       freeSockets: [Object: null prototype] {
+[33;1mpong-game_1         |[0m         'sqlite-db:4000:': [
+[33;1mpong-game_1         |[0m           <ref *1> Socket {
+[33;1mpong-game_1         |[0m             connecting: false,
+[33;1mpong-game_1         |[0m             _hadError: false,
+[33;1mpong-game_1         |[0m             _parent: null,
+[33;1mpong-game_1         |[0m             _host: 'sqlite-db',
+[33;1mpong-game_1         |[0m             _closeAfterHandlingError: false,
+[33;1mpong-game_1         |[0m             _events: [Object],
+[33;1mpong-game_1         |[0m             _readableState: [ReadableState],
+[33;1mpong-game_1         |[0m             _writableState: [WritableState],
+[33;1mpong-game_1         |[0m             allowHalfOpen: false,
+[33;1mpong-game_1         |[0m             _maxListeners: undefined,
+[33;1mpong-game_1         |[0m             _eventsCount: 6,
+[33;1mpong-game_1         |[0m             _sockname: null,
+[33;1mpong-game_1         |[0m             _pendingData: null,
+[33;1mpong-game_1         |[0m             _pendingEncoding: '',
+[33;1mpong-game_1         |[0m             server: null,
+[33;1mpong-game_1         |[0m             _server: null,
+[33;1mpong-game_1         |[0m             timeout: 5000,
+[33;1mpong-game_1         |[0m             parser: null,
+[33;1mpong-game_1         |[0m             _httpMessage: null,
+[33;1mpong-game_1         |[0m             [Symbol(async_id_symbol)]: -1,
+[33;1mpong-game_1         |[0m             [Symbol(kHandle)]: [TCP],
+[33;1mpong-game_1         |[0m             [Symbol(lastWriteQueueSize)]: 0,
+[33;1mpong-game_1         |[0m             [Symbol(timeout)]: [Timeout],
+[33;1mpong-game_1         |[0m             [Symbol(kBuffer)]: null,
+[33;1mpong-game_1         |[0m             [Symbol(kBufferCb)]: null,
+[33;1mpong-game_1         |[0m             [Symbol(kBufferGen)]: null,
+[33;1mpong-game_1         |[0m             [Symbol(shapeMode)]: true,
+[33;1mpong-game_1         |[0m             [Symbol(kCapture)]: false,
+[33;1mpong-game_1         |[0m             [Symbol(kSetNoDelay)]: true,
+[33;1mpong-game_1         |[0m             [Symbol(kSetKeepAlive)]: true,
+[33;1mpong-game_1         |[0m             [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[33;1mpong-game_1         |[0m             [Symbol(kBytesRead)]: 0,
+[33;1mpong-game_1         |[0m             [Symbol(kBytesWritten)]: 0
+[33;1mpong-game_1         |[0m           }
+[33;1mpong-game_1         |[0m         ]
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       keepAliveMsecs: 1000,
+[33;1mpong-game_1         |[0m       keepAlive: true,
+[33;1mpong-game_1         |[0m       maxSockets: Infinity,
+[33;1mpong-game_1         |[0m       maxFreeSockets: 256,
+[33;1mpong-game_1         |[0m       scheduling: 'lifo',
+[33;1mpong-game_1         |[0m       maxTotalSockets: Infinity,
+[33;1mpong-game_1         |[0m       totalSocketCount: 1,
+[33;1mpong-game_1         |[0m       [Symbol(shapeMode)]: false,
+[33;1mpong-game_1         |[0m       [Symbol(kCapture)]: false
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     socketPath: undefined,
+[33;1mpong-game_1         |[0m     method: 'POST',
+[33;1mpong-game_1         |[0m     maxHeaderSize: undefined,
+[33;1mpong-game_1         |[0m     insecureHTTPParser: undefined,
+[33;1mpong-game_1         |[0m     joinDuplicateHeaders: undefined,
+[33;1mpong-game_1         |[0m     path: '/add-match',
+[33;1mpong-game_1         |[0m     _ended: true,
+[33;1mpong-game_1         |[0m     res: IncomingMessage {
+[33;1mpong-game_1         |[0m       _events: {
+[33;1mpong-game_1         |[0m         close: undefined,
+[33;1mpong-game_1         |[0m         error: [Function: handleStreamError],
+[33;1mpong-game_1         |[0m         data: [Function: handleStreamData],
+[33;1mpong-game_1         |[0m         end: [ [Function: responseOnEnd], [Function: handleStreamEnd] ],
+[33;1mpong-game_1         |[0m         readable: undefined,
+[33;1mpong-game_1         |[0m         finish: undefined,
+[33;1mpong-game_1         |[0m         aborted: [Function: handlerStreamAborted]
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _readableState: ReadableState {
+[33;1mpong-game_1         |[0m         highWaterMark: 16384,
+[33;1mpong-game_1         |[0m         buffer: [],
+[33;1mpong-game_1         |[0m         bufferIndex: 0,
+[33;1mpong-game_1         |[0m         length: 0,
+[33;1mpong-game_1         |[0m         pipes: [],
+[33;1mpong-game_1         |[0m         awaitDrainWriters: null,
+[33;1mpong-game_1         |[0m         [Symbol(kState)]: 194779004
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _maxListeners: undefined,
+[33;1mpong-game_1         |[0m       socket: null,
+[33;1mpong-game_1         |[0m       httpVersionMajor: 1,
+[33;1mpong-game_1         |[0m       httpVersionMinor: 1,
+[33;1mpong-game_1         |[0m       httpVersion: '1.1',
+[33;1mpong-game_1         |[0m       complete: true,
+[33;1mpong-game_1         |[0m       rawHeaders: [
+[33;1mpong-game_1         |[0m         'content-type',
+[33;1mpong-game_1         |[0m         'application/json; charset=utf-8',
+[33;1mpong-game_1         |[0m         'content-length',
+[33;1mpong-game_1         |[0m         '56',
+[33;1mpong-game_1         |[0m         'Date',
+[33;1mpong-game_1         |[0m         'Sat, 09 Aug 2025 08:52:14 GMT',
+[33;1mpong-game_1         |[0m         'Connection',
+[33;1mpong-game_1         |[0m         'keep-alive',
+[33;1mpong-game_1         |[0m         'Keep-Alive',
+[33;1mpong-game_1         |[0m         'timeout=72'
+[33;1mpong-game_1         |[0m       ],
+[33;1mpong-game_1         |[0m       rawTrailers: [],
+[33;1mpong-game_1         |[0m       joinDuplicateHeaders: undefined,
+[33;1mpong-game_1         |[0m       aborted: false,
+[33;1mpong-game_1         |[0m       upgrade: false,
+[33;1mpong-game_1         |[0m       url: '',
+[33;1mpong-game_1         |[0m       method: null,
+[33;1mpong-game_1         |[0m       statusCode: 400,
+[33;1mpong-game_1         |[0m       statusMessage: 'Bad Request',
+[33;1mpong-game_1         |[0m       client: <ref *1> Socket {
+[33;1mpong-game_1         |[0m         connecting: false,
+[33;1mpong-game_1         |[0m         _hadError: false,
+[33;1mpong-game_1         |[0m         _parent: null,
+[33;1mpong-game_1         |[0m         _host: 'sqlite-db',
+[33;1mpong-game_1         |[0m         _closeAfterHandlingError: false,
+[33;1mpong-game_1         |[0m         _events: {
+[33;1mpong-game_1         |[0m           close: [Function: onClose],
+[33;1mpong-game_1         |[0m           error: [Function: bound onceWrapper] {
+[33;1mpong-game_1         |[0m             listener: [Function: freeSocketErrorListener]
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           prefinish: undefined,
+[33;1mpong-game_1         |[0m           finish: undefined,
+[33;1mpong-game_1         |[0m           drain: undefined,
+[33;1mpong-game_1         |[0m           data: undefined,
+[33;1mpong-game_1         |[0m           end: [Function: onReadableStreamEnd],
+[33;1mpong-game_1         |[0m           readable: undefined,
+[33;1mpong-game_1         |[0m           connect: undefined,
+[33;1mpong-game_1         |[0m           free: [Function: onFree],
+[33;1mpong-game_1         |[0m           timeout: [Function: onTimeout],
+[33;1mpong-game_1         |[0m           agentRemove: [Function: onRemove]
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _readableState: ReadableState {
+[33;1mpong-game_1         |[0m           highWaterMark: 16384,
+[33;1mpong-game_1         |[0m           buffer: [],
+[33;1mpong-game_1         |[0m           bufferIndex: 0,
+[33;1mpong-game_1         |[0m           length: 0,
+[33;1mpong-game_1         |[0m           pipes: [],
+[33;1mpong-game_1         |[0m           awaitDrainWriters: null,
+[33;1mpong-game_1         |[0m           [Symbol(kState)]: 60303620
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _writableState: WritableState {
+[33;1mpong-game_1         |[0m           highWaterMark: 16384,
+[33;1mpong-game_1         |[0m           length: 0,
+[33;1mpong-game_1         |[0m           corked: 0,
+[33;1mpong-game_1         |[0m           onwrite: [Function: bound onwrite],
+[33;1mpong-game_1         |[0m           writelen: 0,
+[33;1mpong-game_1         |[0m           bufferedIndex: 0,
+[33;1mpong-game_1         |[0m           pendingcb: 0,
+[33;1mpong-game_1         |[0m           [Symbol(kState)]: 17563908,
+[33;1mpong-game_1         |[0m           [Symbol(kBufferedValue)]: null,
+[33;1mpong-game_1         |[0m           [Symbol(kWriteCbValue)]: null
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         allowHalfOpen: false,
+[33;1mpong-game_1         |[0m         _maxListeners: undefined,
+[33;1mpong-game_1         |[0m         _eventsCount: 6,
+[33;1mpong-game_1         |[0m         _sockname: null,
+[33;1mpong-game_1         |[0m         _pendingData: null,
+[33;1mpong-game_1         |[0m         _pendingEncoding: '',
+[33;1mpong-game_1         |[0m         server: null,
+[33;1mpong-game_1         |[0m         _server: null,
+[33;1mpong-game_1         |[0m         timeout: 5000,
+[33;1mpong-game_1         |[0m         parser: null,
+[33;1mpong-game_1         |[0m         _httpMessage: null,
+[33;1mpong-game_1         |[0m         [Symbol(async_id_symbol)]: -1,
+[33;1mpong-game_1         |[0m         [Symbol(kHandle)]: TCP {
+[33;1mpong-game_1         |[0m           reading: true,
+[33;1mpong-game_1         |[0m           onconnection: null,
+[33;1mpong-game_1         |[0m           [Symbol(owner_symbol)]: [Circular *1]
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         [Symbol(lastWriteQueueSize)]: 0,
+[33;1mpong-game_1         |[0m         [Symbol(timeout)]: <ref *2> Timeout {
+[33;1mpong-game_1         |[0m           _idleTimeout: 5000,
+[33;1mpong-game_1         |[0m           _idlePrev: TimersList {
+[33;1mpong-game_1         |[0m             _idleNext: [Circular *2],
+[33;1mpong-game_1         |[0m             _idlePrev: [Circular *2],
+[33;1mpong-game_1         |[0m             expiry: 30875,
+[33;1mpong-game_1         |[0m             id: -9007199254740974,
+[33;1mpong-game_1         |[0m             msecs: 5000,
+[33;1mpong-game_1         |[0m             priorityQueuePosition: 2
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           _idleNext: TimersList {
+[33;1mpong-game_1         |[0m             _idleNext: [Circular *2],
+[33;1mpong-game_1         |[0m             _idlePrev: [Circular *2],
+[33;1mpong-game_1         |[0m             expiry: 30875,
+[33;1mpong-game_1         |[0m             id: -9007199254740974,
+[33;1mpong-game_1         |[0m             msecs: 5000,
+[33;1mpong-game_1         |[0m             priorityQueuePosition: 2
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           _idleStart: 25882,
+[33;1mpong-game_1         |[0m           _onTimeout: [Function: bound ],
+[33;1mpong-game_1         |[0m           _timerArgs: undefined,
+[33;1mpong-game_1         |[0m           _repeat: null,
+[33;1mpong-game_1         |[0m           _destroyed: false,
+[33;1mpong-game_1         |[0m           [Symbol(refed)]: false,
+[33;1mpong-game_1         |[0m           [Symbol(kHasPrimitive)]: false,
+[33;1mpong-game_1         |[0m           [Symbol(asyncId)]: 411,
+[33;1mpong-game_1         |[0m           [Symbol(triggerId)]: 409
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         [Symbol(kBuffer)]: null,
+[33;1mpong-game_1         |[0m         [Symbol(kBufferCb)]: null,
+[33;1mpong-game_1         |[0m         [Symbol(kBufferGen)]: null,
+[33;1mpong-game_1         |[0m         [Symbol(shapeMode)]: true,
+[33;1mpong-game_1         |[0m         [Symbol(kCapture)]: false,
+[33;1mpong-game_1         |[0m         [Symbol(kSetNoDelay)]: true,
+[33;1mpong-game_1         |[0m         [Symbol(kSetKeepAlive)]: true,
+[33;1mpong-game_1         |[0m         [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[33;1mpong-game_1         |[0m         [Symbol(kBytesRead)]: 0,
+[33;1mpong-game_1         |[0m         [Symbol(kBytesWritten)]: 0
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _consuming: false,
+[33;1mpong-game_1         |[0m       _dumped: false,
+[33;1mpong-game_1         |[0m       req: [Circular *3],
+[33;1mpong-game_1         |[0m       _eventsCount: 4,
+[33;1mpong-game_1         |[0m       responseUrl: 'http://sqlite-db:4000/add-match',
+[33;1mpong-game_1         |[0m       redirects: [],
+[33;1mpong-game_1         |[0m       [Symbol(shapeMode)]: true,
+[33;1mpong-game_1         |[0m       [Symbol(kCapture)]: false,
+[33;1mpong-game_1         |[0m       [Symbol(kHeaders)]: {
+[33;1mpong-game_1         |[0m         'content-type': 'application/json; charset=utf-8',
+[33;1mpong-game_1         |[0m         'content-length': '56',
+[33;1mpong-game_1         |[0m         date: 'Sat, 09 Aug 2025 08:52:14 GMT',
+[33;1mpong-game_1         |[0m         connection: 'keep-alive',
+[33;1mpong-game_1         |[0m         'keep-alive': 'timeout=72'
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       [Symbol(kHeadersCount)]: 10,
+[33;1mpong-game_1         |[0m       [Symbol(kTrailers)]: null,
+[33;1mpong-game_1         |[0m       [Symbol(kTrailersCount)]: 0
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     aborted: false,
+[33;1mpong-game_1         |[0m     timeoutCb: null,
+[33;1mpong-game_1         |[0m     upgradeOrConnect: false,
+[33;1mpong-game_1         |[0m     parser: null,
+[33;1mpong-game_1         |[0m     maxHeadersCount: null,
+[33;1mpong-game_1         |[0m     reusedSocket: false,
+[33;1mpong-game_1         |[0m     host: 'sqlite-db',
+[33;1mpong-game_1         |[0m     protocol: 'http:',
+[33;1mpong-game_1         |[0m     _redirectable: Writable {
+[33;1mpong-game_1         |[0m       _events: {
+[33;1mpong-game_1         |[0m         close: undefined,
+[33;1mpong-game_1         |[0m         error: [Function: handleRequestError],
+[33;1mpong-game_1         |[0m         prefinish: undefined,
+[33;1mpong-game_1         |[0m         finish: undefined,
+[33;1mpong-game_1         |[0m         drain: undefined,
+[33;1mpong-game_1         |[0m         response: [Function: handleResponse],
+[33;1mpong-game_1         |[0m         socket: [Function: handleRequestSocket]
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _writableState: WritableState {
+[33;1mpong-game_1         |[0m         highWaterMark: 16384,
+[33;1mpong-game_1         |[0m         length: 0,
+[33;1mpong-game_1         |[0m         corked: 0,
+[33;1mpong-game_1         |[0m         onwrite: [Function: bound onwrite],
+[33;1mpong-game_1         |[0m         writelen: 0,
+[33;1mpong-game_1         |[0m         bufferedIndex: 0,
+[33;1mpong-game_1         |[0m         pendingcb: 0,
+[33;1mpong-game_1         |[0m         [Symbol(kState)]: 17580812,
+[33;1mpong-game_1         |[0m         [Symbol(kBufferedValue)]: null
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _maxListeners: undefined,
+[33;1mpong-game_1         |[0m       _options: {
+[33;1mpong-game_1         |[0m         maxRedirects: 21,
+[33;1mpong-game_1         |[0m         maxBodyLength: Infinity,
+[33;1mpong-game_1         |[0m         protocol: 'http:',
+[33;1mpong-game_1         |[0m         path: '/add-match',
+[33;1mpong-game_1         |[0m         method: 'POST',
+[33;1mpong-game_1         |[0m         headers: [Object: null prototype] {
+[33;1mpong-game_1         |[0m           Accept: 'application/json, text/plain, */*',
+[33;1mpong-game_1         |[0m           'Content-Type': 'application/json',
+[33;1mpong-game_1         |[0m           'User-Agent': 'axios/1.11.0',
+[33;1mpong-game_1         |[0m           'Content-Length': '108',
+[33;1mpong-game_1         |[0m           'Accept-Encoding': 'gzip, compress, deflate, br'
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         agents: { http: undefined, https: undefined },
+[33;1mpong-game_1         |[0m         auth: undefined,
+[33;1mpong-game_1         |[0m         family: undefined,
+[33;1mpong-game_1         |[0m         beforeRedirect: [Function: dispatchBeforeRedirect],
+[33;1mpong-game_1         |[0m         beforeRedirects: { proxy: [Function: beforeRedirect] },
+[33;1mpong-game_1         |[0m         hostname: 'sqlite-db',
+[33;1mpong-game_1         |[0m         port: '4000',
+[33;1mpong-game_1         |[0m         agent: undefined,
+[33;1mpong-game_1         |[0m         nativeProtocols: {
+[33;1mpong-game_1         |[0m           'http:': {
+[33;1mpong-game_1         |[0m             _connectionListener: [Function: connectionListener],
+[33;1mpong-game_1         |[0m             METHODS: [Array],
+[33;1mpong-game_1         |[0m             STATUS_CODES: [Object],
+[33;1mpong-game_1         |[0m             Agent: [Function],
+[33;1mpong-game_1         |[0m             ClientRequest: [Function: ClientRequest],
+[33;1mpong-game_1         |[0m             IncomingMessage: [Function: IncomingMessage],
+[33;1mpong-game_1         |[0m             OutgoingMessage: [Function: OutgoingMessage],
+[33;1mpong-game_1         |[0m             Server: [Function: Server],
+[33;1mpong-game_1         |[0m             ServerResponse: [Function: ServerResponse],
+[33;1mpong-game_1         |[0m             createServer: [Function: createServer],
+[33;1mpong-game_1         |[0m             validateHeaderName: [Function],
+[33;1mpong-game_1         |[0m             validateHeaderValue: [Function],
+[33;1mpong-game_1         |[0m             get: [Function: get],
+[33;1mpong-game_1         |[0m             request: [Function: request],
+[33;1mpong-game_1         |[0m             setMaxIdleHTTPParsers: [Function: setMaxIdleHTTPParsers],
+[33;1mpong-game_1         |[0m             maxHeaderSize: [Getter],
+[33;1mpong-game_1         |[0m             globalAgent: [Getter/Setter]
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           'https:': {
+[33;1mpong-game_1         |[0m             Agent: [Function: Agent],
+[33;1mpong-game_1         |[0m             globalAgent: [Agent],
+[33;1mpong-game_1         |[0m             Server: [Function: Server],
+[33;1mpong-game_1         |[0m             createServer: [Function: createServer],
+[33;1mpong-game_1         |[0m             get: [Function: get],
+[33;1mpong-game_1         |[0m             request: [Function: request]
+[33;1mpong-game_1         |[0m           }
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         pathname: '/add-match'
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _ended: true,
+[33;1mpong-game_1         |[0m       _ending: true,
+[33;1mpong-game_1         |[0m       _redirectCount: 0,
+[33;1mpong-game_1         |[0m       _redirects: [],
+[33;1mpong-game_1         |[0m       _requestBodyLength: 108,
+[33;1mpong-game_1         |[0m       _requestBodyBuffers: [],
+[33;1mpong-game_1         |[0m       _eventsCount: 3,
+[33;1mpong-game_1         |[0m       _onNativeResponse: [Function (anonymous)],
+[33;1mpong-game_1         |[0m       _currentRequest: [Circular *3],
+[33;1mpong-game_1         |[0m       _currentUrl: 'http://sqlite-db:4000/add-match',
+[33;1mpong-game_1         |[0m       [Symbol(shapeMode)]: true,
+[33;1mpong-game_1         |[0m       [Symbol(kCapture)]: false
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     [Symbol(shapeMode)]: false,
+[33;1mpong-game_1         |[0m     [Symbol(kCapture)]: false,
+[33;1mpong-game_1         |[0m     [Symbol(kBytesWritten)]: 0,
+[33;1mpong-game_1         |[0m     [Symbol(kNeedDrain)]: false,
+[33;1mpong-game_1         |[0m     [Symbol(corked)]: 0,
+[33;1mpong-game_1         |[0m     [Symbol(kOutHeaders)]: [Object: null prototype] {
+[33;1mpong-game_1         |[0m       accept: [ 'Accept', 'application/json, text/plain, */*' ],
+[33;1mpong-game_1         |[0m       'content-type': [ 'Content-Type', 'application/json' ],
+[33;1mpong-game_1         |[0m       'user-agent': [ 'User-Agent', 'axios/1.11.0' ],
+[33;1mpong-game_1         |[0m       'content-length': [ 'Content-Length', '108' ],
+[33;1mpong-game_1         |[0m       'accept-encoding': [ 'Accept-Encoding', 'gzip, compress, deflate, br' ],
+[33;1mpong-game_1         |[0m       host: [ 'Host', 'sqlite-db:4000' ]
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     [Symbol(errored)]: null,
+[33;1mpong-game_1         |[0m     [Symbol(kHighWaterMark)]: 16384,
+[33;1mpong-game_1         |[0m     [Symbol(kRejectNonStandardBodyWrites)]: false,
+[33;1mpong-game_1         |[0m     [Symbol(kUniqueHeaders)]: null
+[33;1mpong-game_1         |[0m   },
+[33;1mpong-game_1         |[0m   response: {
+[33;1mpong-game_1         |[0m     status: 400,
+[33;1mpong-game_1         |[0m     statusText: 'Bad Request',
+[33;1mpong-game_1         |[0m     headers: Object [AxiosHeaders] {
+[33;1mpong-game_1         |[0m       'content-type': 'application/json; charset=utf-8',
+[33;1mpong-game_1         |[0m       'content-length': '56',
+[33;1mpong-game_1         |[0m       date: 'Sat, 09 Aug 2025 08:52:14 GMT',
+[33;1mpong-game_1         |[0m       connection: 'keep-alive',
+[33;1mpong-game_1         |[0m       'keep-alive': 'timeout=72'
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     config: {
+[33;1mpong-game_1         |[0m       transitional: {
+[33;1mpong-game_1         |[0m         silentJSONParsing: true,
+[33;1mpong-game_1         |[0m         forcedJSONParsing: true,
+[33;1mpong-game_1         |[0m         clarifyTimeoutError: false
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       adapter: [ 'xhr', 'http', 'fetch' ],
+[33;1mpong-game_1         |[0m       transformRequest: [ [Function: transformRequest] ],
+[33;1mpong-game_1         |[0m       transformResponse: [ [Function: transformResponse] ],
+[33;1mpong-game_1         |[0m       timeout: 0,
+[33;1mpong-game_1         |[0m       xsrfCookieName: 'XSRF-TOKEN',
+[33;1mpong-game_1         |[0m       xsrfHeaderName: 'X-XSRF-TOKEN',
+[33;1mpong-game_1         |[0m       maxContentLength: -1,
+[33;1mpong-game_1         |[0m       maxBodyLength: -1,
+[33;1mpong-game_1         |[0m       env: {
+[33;1mpong-game_1         |[0m         FormData: [Function: FormData] [FormData] {
+[33;1mpong-game_1         |[0m           LINE_BREAK: '\r\n',
+[33;1mpong-game_1         |[0m           DEFAULT_CONTENT_TYPE: 'application/octet-stream'
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         Blob: [class Blob]
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       validateStatus: [Function: validateStatus],
+[33;1mpong-game_1         |[0m       headers: Object [AxiosHeaders] {
+[33;1mpong-game_1         |[0m         Accept: 'application/json, text/plain, */*',
+[33;1mpong-game_1         |[0m         'Content-Type': 'application/json',
+[33;1mpong-game_1         |[0m         'User-Agent': 'axios/1.11.0',
+[33;1mpong-game_1         |[0m         'Content-Length': '108',
+[33;1mpong-game_1         |[0m         'Accept-Encoding': 'gzip, compress, deflate, br'
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       method: 'post',
+[33;1mpong-game_1         |[0m       url: 'http://sqlite-db:4000/add-match',
+[33;1mpong-game_1         |[0m       data: '{"user1_id":"1","user2_id":null,"user1_score":0,"user2_score":11,"winner_id":null,"match_date":"2025-08-09"}',
+[33;1mpong-game_1         |[0m       allowAbsoluteUrls: true
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     request: <ref *3> ClientRequest {
+[33;1mpong-game_1         |[0m       _events: [Object: null prototype] {
+[33;1mpong-game_1         |[0m         abort: [Function (anonymous)],
+[33;1mpong-game_1         |[0m         aborted: [Function (anonymous)],
+[33;1mpong-game_1         |[0m         connect: [Function (anonymous)],
+[33;1mpong-game_1         |[0m         error: [Function (anonymous)],
+[33;1mpong-game_1         |[0m         socket: [Function (anonymous)],
+[33;1mpong-game_1         |[0m         timeout: [Function (anonymous)],
+[33;1mpong-game_1         |[0m         finish: [Function: requestOnFinish]
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _eventsCount: 7,
+[33;1mpong-game_1         |[0m       _maxListeners: undefined,
+[33;1mpong-game_1         |[0m       outputData: [],
+[33;1mpong-game_1         |[0m       outputSize: 0,
+[33;1mpong-game_1         |[0m       writable: true,
+[33;1mpong-game_1         |[0m       destroyed: true,
+[33;1mpong-game_1         |[0m       _last: false,
+[33;1mpong-game_1         |[0m       chunkedEncoding: false,
+[33;1mpong-game_1         |[0m       shouldKeepAlive: true,
+[33;1mpong-game_1         |[0m       maxRequestsOnConnectionReached: false,
+[33;1mpong-game_1         |[0m       _defaultKeepAlive: true,
+[33;1mpong-game_1         |[0m       useChunkedEncodingByDefault: true,
+[33;1mpong-game_1         |[0m       sendDate: false,
+[33;1mpong-game_1         |[0m       _removedConnection: false,
+[33;1mpong-game_1         |[0m       _removedContLen: false,
+[33;1mpong-game_1         |[0m       _removedTE: false,
+[33;1mpong-game_1         |[0m       strictContentLength: false,
+[33;1mpong-game_1         |[0m       _contentLength: '108',
+[33;1mpong-game_1         |[0m       _hasBody: true,
+[33;1mpong-game_1         |[0m       _trailer: '',
+[33;1mpong-game_1         |[0m       finished: true,
+[33;1mpong-game_1         |[0m       _headerSent: true,
+[33;1mpong-game_1         |[0m       _closed: true,
+[33;1mpong-game_1         |[0m       socket: <ref *1> Socket {
+[33;1mpong-game_1         |[0m         connecting: false,
+[33;1mpong-game_1         |[0m         _hadError: false,
+[33;1mpong-game_1         |[0m         _parent: null,
+[33;1mpong-game_1         |[0m         _host: 'sqlite-db',
+[33;1mpong-game_1         |[0m         _closeAfterHandlingError: false,
+[33;1mpong-game_1         |[0m         _events: {
+[33;1mpong-game_1         |[0m           close: [Function: onClose],
+[33;1mpong-game_1         |[0m           error: [Function: bound onceWrapper] {
+[33;1mpong-game_1         |[0m             listener: [Function: freeSocketErrorListener]
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           prefinish: undefined,
+[33;1mpong-game_1         |[0m           finish: undefined,
+[33;1mpong-game_1         |[0m           drain: undefined,
+[33;1mpong-game_1         |[0m           data: undefined,
+[33;1mpong-game_1         |[0m           end: [Function: onReadableStreamEnd],
+[33;1mpong-game_1         |[0m           readable: undefined,
+[33;1mpong-game_1         |[0m           connect: undefined,
+[33;1mpong-game_1         |[0m           free: [Function: onFree],
+[33;1mpong-game_1         |[0m           timeout: [Function: onTimeout],
+[33;1mpong-game_1         |[0m           agentRemove: [Function: onRemove]
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _readableState: ReadableState {
+[33;1mpong-game_1         |[0m           highWaterMark: 16384,
+[33;1mpong-game_1         |[0m           buffer: [],
+[33;1mpong-game_1         |[0m           bufferIndex: 0,
+[33;1mpong-game_1         |[0m           length: 0,
+[33;1mpong-game_1         |[0m           pipes: [],
+[33;1mpong-game_1         |[0m           awaitDrainWriters: null,
+[33;1mpong-game_1         |[0m           [Symbol(kState)]: 60303620
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _writableState: WritableState {
+[33;1mpong-game_1         |[0m           highWaterMark: 16384,
+[33;1mpong-game_1         |[0m           length: 0,
+[33;1mpong-game_1         |[0m           corked: 0,
+[33;1mpong-game_1         |[0m           onwrite: [Function: bound onwrite],
+[33;1mpong-game_1         |[0m           writelen: 0,
+[33;1mpong-game_1         |[0m           bufferedIndex: 0,
+[33;1mpong-game_1         |[0m           pendingcb: 0,
+[33;1mpong-game_1         |[0m           [Symbol(kState)]: 17563908,
+[33;1mpong-game_1         |[0m           [Symbol(kBufferedValue)]: null,
+[33;1mpong-game_1         |[0m           [Symbol(kWriteCbValue)]: null
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         allowHalfOpen: false,
+[33;1mpong-game_1         |[0m         _maxListeners: undefined,
+[33;1mpong-game_1         |[0m         _eventsCount: 6,
+[33;1mpong-game_1         |[0m         _sockname: null,
+[33;1mpong-game_1         |[0m         _pendingData: null,
+[33;1mpong-game_1         |[0m         _pendingEncoding: '',
+[33;1mpong-game_1         |[0m         server: null,
+[33;1mpong-game_1         |[0m         _server: null,
+[33;1mpong-game_1         |[0m         timeout: 5000,
+[33;1mpong-game_1         |[0m         parser: null,
+[33;1mpong-game_1         |[0m         _httpMessage: null,
+[33;1mpong-game_1         |[0m         [Symbol(async_id_symbol)]: -1,
+[33;1mpong-game_1         |[0m         [Symbol(kHandle)]: TCP {
+[33;1mpong-game_1         |[0m           reading: true,
+[33;1mpong-game_1         |[0m           onconnection: null,
+[33;1mpong-game_1         |[0m           [Symbol(owner_symbol)]: [Circular *1]
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         [Symbol(lastWriteQueueSize)]: 0,
+[33;1mpong-game_1         |[0m         [Symbol(timeout)]: <ref *2> Timeout {
+[33;1mpong-game_1         |[0m           _idleTimeout: 5000,
+[33;1mpong-game_1         |[0m           _idlePrev: TimersList {
+[33;1mpong-game_1         |[0m             _idleNext: [Circular *2],
+[33;1mpong-game_1         |[0m             _idlePrev: [Circular *2],
+[33;1mpong-game_1         |[0m             expiry: 30875,
+[33;1mpong-game_1         |[0m             id: -9007199254740974,
+[33;1mpong-game_1         |[0m             msecs: 5000,
+[33;1mpong-game_1         |[0m             priorityQueuePosition: 2
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           _idleNext: TimersList {
+[33;1mpong-game_1         |[0m             _idleNext: [Circular *2],
+[33;1mpong-game_1         |[0m             _idlePrev: [Circular *2],
+[33;1mpong-game_1         |[0m             expiry: 30875,
+[33;1mpong-game_1         |[0m             id: -9007199254740974,
+[33;1mpong-game_1         |[0m             msecs: 5000,
+[33;1mpong-game_1         |[0m             priorityQueuePosition: 2
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           _idleStart: 25882,
+[33;1mpong-game_1         |[0m           _onTimeout: [Function: bound ],
+[33;1mpong-game_1         |[0m           _timerArgs: undefined,
+[33;1mpong-game_1         |[0m           _repeat: null,
+[33;1mpong-game_1         |[0m           _destroyed: false,
+[33;1mpong-game_1         |[0m           [Symbol(refed)]: false,
+[33;1mpong-game_1         |[0m           [Symbol(kHasPrimitive)]: false,
+[33;1mpong-game_1         |[0m           [Symbol(asyncId)]: 411,
+[33;1mpong-game_1         |[0m           [Symbol(triggerId)]: 409
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         [Symbol(kBuffer)]: null,
+[33;1mpong-game_1         |[0m         [Symbol(kBufferCb)]: null,
+[33;1mpong-game_1         |[0m         [Symbol(kBufferGen)]: null,
+[33;1mpong-game_1         |[0m         [Symbol(shapeMode)]: true,
+[33;1mpong-game_1         |[0m         [Symbol(kCapture)]: false,
+[33;1mpong-game_1         |[0m         [Symbol(kSetNoDelay)]: true,
+[33;1mpong-game_1         |[0m         [Symbol(kSetKeepAlive)]: true,
+[33;1mpong-game_1         |[0m         [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[33;1mpong-game_1         |[0m         [Symbol(kBytesRead)]: 0,
+[33;1mpong-game_1         |[0m         [Symbol(kBytesWritten)]: 0
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       _header: 'POST /add-match HTTP/1.1\r\n' +
+[33;1mpong-game_1         |[0m         'Accept: application/json, text/plain, */*\r\n' +
+[33;1mpong-game_1         |[0m         'Content-Type: application/json\r\n' +
+[33;1mpong-game_1         |[0m         'User-Agent: axios/1.11.0\r\n' +
+[33;1mpong-game_1         |[0m         'Content-Length: 108\r\n' +
+[33;1mpong-game_1         |[0m         'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+[33;1mpong-game_1         |[0m         'Host: sqlite-db:4000\r\n' +
+[33;1mpong-game_1         |[0m         'Connection: keep-alive\r\n' +
+[33;1mpong-game_1         |[0m         '\r\n',
+[33;1mpong-game_1         |[0m       _keepAliveTimeout: 0,
+[33;1mpong-game_1         |[0m       _onPendingData: [Function: nop],
+[33;1mpong-game_1         |[0m       agent: Agent {
+[33;1mpong-game_1         |[0m         _events: [Object: null prototype] {
+[33;1mpong-game_1         |[0m           free: [Function (anonymous)],
+[33;1mpong-game_1         |[0m           newListener: [Function: maybeEnableKeylog]
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _eventsCount: 2,
+[33;1mpong-game_1         |[0m         _maxListeners: undefined,
+[33;1mpong-game_1         |[0m         defaultPort: 80,
+[33;1mpong-game_1         |[0m         protocol: 'http:',
+[33;1mpong-game_1         |[0m         options: [Object: null prototype] {
+[33;1mpong-game_1         |[0m           keepAlive: true,
+[33;1mpong-game_1         |[0m           scheduling: 'lifo',
+[33;1mpong-game_1         |[0m           timeout: 5000,
+[33;1mpong-game_1         |[0m           noDelay: true,
+[33;1mpong-game_1         |[0m           path: null
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         requests: [Object: null prototype] {},
+[33;1mpong-game_1         |[0m         sockets: [Object: null prototype] {},
+[33;1mpong-game_1         |[0m         freeSockets: [Object: null prototype] { 'sqlite-db:4000:': [ [Socket] ] },
+[33;1mpong-game_1         |[0m         keepAliveMsecs: 1000,
+[33;1mpong-game_1         |[0m         keepAlive: true,
+[33;1mpong-game_1         |[0m         maxSockets: Infinity,
+[33;1mpong-game_1         |[0m         maxFreeSockets: 256,
+[33;1mpong-game_1         |[0m         scheduling: 'lifo',
+[33;1mpong-game_1         |[0m         maxTotalSockets: Infinity,
+[33;1mpong-game_1         |[0m         totalSocketCount: 1,
+[33;1mpong-game_1         |[0m         [Symbol(shapeMode)]: false,
+[33;1mpong-game_1         |[0m         [Symbol(kCapture)]: false
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       socketPath: undefined,
+[33;1mpong-game_1         |[0m       method: 'POST',
+[33;1mpong-game_1         |[0m       maxHeaderSize: undefined,
+[33;1mpong-game_1         |[0m       insecureHTTPParser: undefined,
+[33;1mpong-game_1         |[0m       joinDuplicateHeaders: undefined,
+[33;1mpong-game_1         |[0m       path: '/add-match',
+[33;1mpong-game_1         |[0m       _ended: true,
+[33;1mpong-game_1         |[0m       res: IncomingMessage {
+[33;1mpong-game_1         |[0m         _events: {
+[33;1mpong-game_1         |[0m           close: undefined,
+[33;1mpong-game_1         |[0m           error: [Function: handleStreamError],
+[33;1mpong-game_1         |[0m           data: [Function: handleStreamData],
+[33;1mpong-game_1         |[0m           end: [ [Function: responseOnEnd], [Function: handleStreamEnd] ],
+[33;1mpong-game_1         |[0m           readable: undefined,
+[33;1mpong-game_1         |[0m           finish: undefined,
+[33;1mpong-game_1         |[0m           aborted: [Function: handlerStreamAborted]
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _readableState: ReadableState {
+[33;1mpong-game_1         |[0m           highWaterMark: 16384,
+[33;1mpong-game_1         |[0m           buffer: [],
+[33;1mpong-game_1         |[0m           bufferIndex: 0,
+[33;1mpong-game_1         |[0m           length: 0,
+[33;1mpong-game_1         |[0m           pipes: [],
+[33;1mpong-game_1         |[0m           awaitDrainWriters: null,
+[33;1mpong-game_1         |[0m           [Symbol(kState)]: 194779004
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _maxListeners: undefined,
+[33;1mpong-game_1         |[0m         socket: null,
+[33;1mpong-game_1         |[0m         httpVersionMajor: 1,
+[33;1mpong-game_1         |[0m         httpVersionMinor: 1,
+[33;1mpong-game_1         |[0m         httpVersion: '1.1',
+[33;1mpong-game_1         |[0m         complete: true,
+[33;1mpong-game_1         |[0m         rawHeaders: [
+[33;1mpong-game_1         |[0m           'content-type',
+[33;1mpong-game_1         |[0m           'application/json; charset=utf-8',
+[33;1mpong-game_1         |[0m           'content-length',
+[33;1mpong-game_1         |[0m           '56',
+[33;1mpong-game_1         |[0m           'Date',
+[33;1mpong-game_1         |[0m           'Sat, 09 Aug 2025 08:52:14 GMT',
+[33;1mpong-game_1         |[0m           'Connection',
+[33;1mpong-game_1         |[0m           'keep-alive',
+[33;1mpong-game_1         |[0m           'Keep-Alive',
+[33;1mpong-game_1         |[0m           'timeout=72'
+[33;1mpong-game_1         |[0m         ],
+[33;1mpong-game_1         |[0m         rawTrailers: [],
+[33;1mpong-game_1         |[0m         joinDuplicateHeaders: undefined,
+[33;1mpong-game_1         |[0m         aborted: false,
+[33;1mpong-game_1         |[0m         upgrade: false,
+[33;1mpong-game_1         |[0m         url: '',
+[33;1mpong-game_1         |[0m         method: null,
+[33;1mpong-game_1         |[0m         statusCode: 400,
+[33;1mpong-game_1         |[0m         statusMessage: 'Bad Request',
+[33;1mpong-game_1         |[0m         client: <ref *1> Socket {
+[33;1mpong-game_1         |[0m           connecting: false,
+[33;1mpong-game_1         |[0m           _hadError: false,
+[33;1mpong-game_1         |[0m           _parent: null,
+[33;1mpong-game_1         |[0m           _host: 'sqlite-db',
+[33;1mpong-game_1         |[0m           _closeAfterHandlingError: false,
+[33;1mpong-game_1         |[0m           _events: {
+[33;1mpong-game_1         |[0m             close: [Function: onClose],
+[33;1mpong-game_1         |[0m             error: [Function],
+[33;1mpong-game_1         |[0m             prefinish: undefined,
+[33;1mpong-game_1         |[0m             finish: undefined,
+[33;1mpong-game_1         |[0m             drain: undefined,
+[33;1mpong-game_1         |[0m             data: undefined,
+[33;1mpong-game_1         |[0m             end: [Function: onReadableStreamEnd],
+[33;1mpong-game_1         |[0m             readable: undefined,
+[33;1mpong-game_1         |[0m             connect: undefined,
+[33;1mpong-game_1         |[0m             free: [Function: onFree],
+[33;1mpong-game_1         |[0m             timeout: [Function: onTimeout],
+[33;1mpong-game_1         |[0m             agentRemove: [Function: onRemove]
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           _readableState: ReadableState {
+[33;1mpong-game_1         |[0m             highWaterMark: 16384,
+[33;1mpong-game_1         |[0m             buffer: [],
+[33;1mpong-game_1         |[0m             bufferIndex: 0,
+[33;1mpong-game_1         |[0m             length: 0,
+[33;1mpong-game_1         |[0m             pipes: [],
+[33;1mpong-game_1         |[0m             awaitDrainWriters: null,
+[33;1mpong-game_1         |[0m             [Symbol(kState)]: 60303620
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           _writableState: WritableState {
+[33;1mpong-game_1         |[0m             highWaterMark: 16384,
+[33;1mpong-game_1         |[0m             length: 0,
+[33;1mpong-game_1         |[0m             corked: 0,
+[33;1mpong-game_1         |[0m             onwrite: [Function: bound onwrite],
+[33;1mpong-game_1         |[0m             writelen: 0,
+[33;1mpong-game_1         |[0m             bufferedIndex: 0,
+[33;1mpong-game_1         |[0m             pendingcb: 0,
+[33;1mpong-game_1         |[0m             [Symbol(kState)]: 17563908,
+[33;1mpong-game_1         |[0m             [Symbol(kBufferedValue)]: null,
+[33;1mpong-game_1         |[0m             [Symbol(kWriteCbValue)]: null
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           allowHalfOpen: false,
+[33;1mpong-game_1         |[0m           _maxListeners: undefined,
+[33;1mpong-game_1         |[0m           _eventsCount: 6,
+[33;1mpong-game_1         |[0m           _sockname: null,
+[33;1mpong-game_1         |[0m           _pendingData: null,
+[33;1mpong-game_1         |[0m           _pendingEncoding: '',
+[33;1mpong-game_1         |[0m           server: null,
+[33;1mpong-game_1         |[0m           _server: null,
+[33;1mpong-game_1         |[0m           timeout: 5000,
+[33;1mpong-game_1         |[0m           parser: null,
+[33;1mpong-game_1         |[0m           _httpMessage: null,
+[33;1mpong-game_1         |[0m           [Symbol(async_id_symbol)]: -1,
+[33;1mpong-game_1         |[0m           [Symbol(kHandle)]: TCP {
+[33;1mpong-game_1         |[0m             reading: true,
+[33;1mpong-game_1         |[0m             onconnection: null,
+[33;1mpong-game_1         |[0m             [Symbol(owner_symbol)]: [Circular *1]
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           [Symbol(lastWriteQueueSize)]: 0,
+[33;1mpong-game_1         |[0m           [Symbol(timeout)]: <ref *2> Timeout {
+[33;1mpong-game_1         |[0m             _idleTimeout: 5000,
+[33;1mpong-game_1         |[0m             _idlePrev: [TimersList],
+[33;1mpong-game_1         |[0m             _idleNext: [TimersList],
+[33;1mpong-game_1         |[0m             _idleStart: 25882,
+[33;1mpong-game_1         |[0m             _onTimeout: [Function: bound ],
+[33;1mpong-game_1         |[0m             _timerArgs: undefined,
+[33;1mpong-game_1         |[0m             _repeat: null,
+[33;1mpong-game_1         |[0m             _destroyed: false,
+[33;1mpong-game_1         |[0m             [Symbol(refed)]: false,
+[33;1mpong-game_1         |[0m             [Symbol(kHasPrimitive)]: false,
+[33;1mpong-game_1         |[0m             [Symbol(asyncId)]: 411,
+[33;1mpong-game_1         |[0m             [Symbol(triggerId)]: 409
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           [Symbol(kBuffer)]: null,
+[33;1mpong-game_1         |[0m           [Symbol(kBufferCb)]: null,
+[33;1mpong-game_1         |[0m           [Symbol(kBufferGen)]: null,
+[33;1mpong-game_1         |[0m           [Symbol(shapeMode)]: true,
+[33;1mpong-game_1         |[0m           [Symbol(kCapture)]: false,
+[33;1mpong-game_1         |[0m           [Symbol(kSetNoDelay)]: true,
+[33;1mpong-game_1         |[0m           [Symbol(kSetKeepAlive)]: true,
+[33;1mpong-game_1         |[0m           [Symbol(kSetKeepAliveInitialDelay)]: 1,
+[33;1mpong-game_1         |[0m           [Symbol(kBytesRead)]: 0,
+[33;1mpong-game_1         |[0m           [Symbol(kBytesWritten)]: 0
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _consuming: false,
+[33;1mpong-game_1         |[0m         _dumped: false,
+[33;1mpong-game_1         |[0m         req: [Circular *3],
+[33;1mpong-game_1         |[0m         _eventsCount: 4,
+[33;1mpong-game_1         |[0m         responseUrl: 'http://sqlite-db:4000/add-match',
+[33;1mpong-game_1         |[0m         redirects: [],
+[33;1mpong-game_1         |[0m         [Symbol(shapeMode)]: true,
+[33;1mpong-game_1         |[0m         [Symbol(kCapture)]: false,
+[33;1mpong-game_1         |[0m         [Symbol(kHeaders)]: {
+[33;1mpong-game_1         |[0m           'content-type': 'application/json; charset=utf-8',
+[33;1mpong-game_1         |[0m           'content-length': '56',
+[33;1mpong-game_1         |[0m           date: 'Sat, 09 Aug 2025 08:52:14 GMT',
+[33;1mpong-game_1         |[0m           connection: 'keep-alive',
+[33;1mpong-game_1         |[0m           'keep-alive': 'timeout=72'
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         [Symbol(kHeadersCount)]: 10,
+[33;1mpong-game_1         |[0m         [Symbol(kTrailers)]: null,
+[33;1mpong-game_1         |[0m         [Symbol(kTrailersCount)]: 0
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       aborted: false,
+[33;1mpong-game_1         |[0m       timeoutCb: null,
+[33;1mpong-game_1         |[0m       upgradeOrConnect: false,
+[33;1mpong-game_1         |[0m       parser: null,
+[33;1mpong-game_1         |[0m       maxHeadersCount: null,
+[33;1mpong-game_1         |[0m       reusedSocket: false,
+[33;1mpong-game_1         |[0m       host: 'sqlite-db',
+[33;1mpong-game_1         |[0m       protocol: 'http:',
+[33;1mpong-game_1         |[0m       _redirectable: Writable {
+[33;1mpong-game_1         |[0m         _events: {
+[33;1mpong-game_1         |[0m           close: undefined,
+[33;1mpong-game_1         |[0m           error: [Function: handleRequestError],
+[33;1mpong-game_1         |[0m           prefinish: undefined,
+[33;1mpong-game_1         |[0m           finish: undefined,
+[33;1mpong-game_1         |[0m           drain: undefined,
+[33;1mpong-game_1         |[0m           response: [Function: handleResponse],
+[33;1mpong-game_1         |[0m           socket: [Function: handleRequestSocket]
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _writableState: WritableState {
+[33;1mpong-game_1         |[0m           highWaterMark: 16384,
+[33;1mpong-game_1         |[0m           length: 0,
+[33;1mpong-game_1         |[0m           corked: 0,
+[33;1mpong-game_1         |[0m           onwrite: [Function: bound onwrite],
+[33;1mpong-game_1         |[0m           writelen: 0,
+[33;1mpong-game_1         |[0m           bufferedIndex: 0,
+[33;1mpong-game_1         |[0m           pendingcb: 0,
+[33;1mpong-game_1         |[0m           [Symbol(kState)]: 17580812,
+[33;1mpong-game_1         |[0m           [Symbol(kBufferedValue)]: null
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _maxListeners: undefined,
+[33;1mpong-game_1         |[0m         _options: {
+[33;1mpong-game_1         |[0m           maxRedirects: 21,
+[33;1mpong-game_1         |[0m           maxBodyLength: Infinity,
+[33;1mpong-game_1         |[0m           protocol: 'http:',
+[33;1mpong-game_1         |[0m           path: '/add-match',
+[33;1mpong-game_1         |[0m           method: 'POST',
+[33;1mpong-game_1         |[0m           headers: [Object: null prototype] {
+[33;1mpong-game_1         |[0m             Accept: 'application/json, text/plain, */*',
+[33;1mpong-game_1         |[0m             'Content-Type': 'application/json',
+[33;1mpong-game_1         |[0m             'User-Agent': 'axios/1.11.0',
+[33;1mpong-game_1         |[0m             'Content-Length': '108',
+[33;1mpong-game_1         |[0m             'Accept-Encoding': 'gzip, compress, deflate, br'
+[33;1mpong-game_1         |[0m           },
+[33;1mpong-game_1         |[0m           agents: { http: undefined, https: undefined },
+[33;1mpong-game_1         |[0m           auth: undefined,
+[33;1mpong-game_1         |[0m           family: undefined,
+[33;1mpong-game_1         |[0m           beforeRedirect: [Function: dispatchBeforeRedirect],
+[33;1mpong-game_1         |[0m           beforeRedirects: { proxy: [Function: beforeRedirect] },
+[33;1mpong-game_1         |[0m           hostname: 'sqlite-db',
+[33;1mpong-game_1         |[0m           port: '4000',
+[33;1mpong-game_1         |[0m           agent: undefined,
+[33;1mpong-game_1         |[0m           nativeProtocols: { 'http:': [Object], 'https:': [Object] },
+[33;1mpong-game_1         |[0m           pathname: '/add-match'
+[33;1mpong-game_1         |[0m         },
+[33;1mpong-game_1         |[0m         _ended: true,
+[33;1mpong-game_1         |[0m         _ending: true,
+[33;1mpong-game_1         |[0m         _redirectCount: 0,
+[33;1mpong-game_1         |[0m         _redirects: [],
+[33;1mpong-game_1         |[0m         _requestBodyLength: 108,
+[33;1mpong-game_1         |[0m         _requestBodyBuffers: [],
+[33;1mpong-game_1         |[0m         _eventsCount: 3,
+[33;1mpong-game_1         |[0m         _onNativeResponse: [Function (anonymous)],
+[33;1mpong-game_1         |[0m         _currentRequest: [Circular *3],
+[33;1mpong-game_1         |[0m         _currentUrl: 'http://sqlite-db:4000/add-match',
+[33;1mpong-game_1         |[0m         [Symbol(shapeMode)]: true,
+[33;1mpong-game_1         |[0m         [Symbol(kCapture)]: false
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       [Symbol(shapeMode)]: false,
+[33;1mpong-game_1         |[0m       [Symbol(kCapture)]: false,
+[33;1mpong-game_1         |[0m       [Symbol(kBytesWritten)]: 0,
+[33;1mpong-game_1         |[0m       [Symbol(kNeedDrain)]: false,
+[33;1mpong-game_1         |[0m       [Symbol(corked)]: 0,
+[33;1mpong-game_1         |[0m       [Symbol(kOutHeaders)]: [Object: null prototype] {
+[33;1mpong-game_1         |[0m         accept: [ 'Accept', 'application/json, text/plain, */*' ],
+[33;1mpong-game_1         |[0m         'content-type': [ 'Content-Type', 'application/json' ],
+[33;1mpong-game_1         |[0m         'user-agent': [ 'User-Agent', 'axios/1.11.0' ],
+[33;1mpong-game_1         |[0m         'content-length': [ 'Content-Length', '108' ],
+[33;1mpong-game_1         |[0m         'accept-encoding': [ 'Accept-Encoding', 'gzip, compress, deflate, br' ],
+[33;1mpong-game_1         |[0m         host: [ 'Host', 'sqlite-db:4000' ]
+[33;1mpong-game_1         |[0m       },
+[33;1mpong-game_1         |[0m       [Symbol(errored)]: null,
+[33;1mpong-game_1         |[0m       [Symbol(kHighWaterMark)]: 16384,
+[33;1mpong-game_1         |[0m       [Symbol(kRejectNonStandardBodyWrites)]: false,
+[33;1mpong-game_1         |[0m       [Symbol(kUniqueHeaders)]: null
+[33;1mpong-game_1         |[0m     },
+[33;1mpong-game_1         |[0m     data: { error: 'NOT NULL constraint failed: matches.user2_id' }
+[33;1mpong-game_1         |[0m   },
+[33;1mpong-game_1         |[0m   status: 400
+[33;1mpong-game_1         |[0m }
+[33;1mpong-game_1         |[0m 
+[33;1mpong-game_1         |[0m Node.js v20.19.4
+[35m42_ft_transcendence_pong-game_1 exited with code 1
+[0m[33mauth_1              |[0m {"level":30,"time":1754729534863,"pid":1,"hostname":"246798d980fe","reqId":"req-9","req":{"method":"GET","url":"/validate-token","host":"auth:5000","remoteAddress":"172.21.0.2","remotePort":50888},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729534864,"pid":1,"hostname":"626c1c60d962","reqId":"req-f","req":{"method":"GET","url":"/get-user-by-username/rodalcham","host":"sqlite-db:4000","remoteAddress":"172.21.0.7","remotePort":51742},"msg":"incoming request"}
+[34msqlite-db_1         |[0m {"level":30,"time":1754729534865,"pid":1,"hostname":"626c1c60d962","reqId":"req-f","res":{"statusCode":200},"responseTime":0.4231660000514239,"msg":"request completed"}
+[33mauth_1              |[0m {"level":30,"time":1754729534865,"pid":1,"hostname":"246798d980fe","reqId":"req-9","res":{"statusCode":200},"responseTime":2.3620690000243485,"msg":"request completed"}
+[32;1mpong-game_1         |[0m (node:1) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/dist/server.js is not specified and it doesn't parse as CommonJS.
+[32;1mpong-game_1         |[0m Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+[32;1mpong-game_1         |[0m To eliminate this warning, add "type": "module" to /app/package.json.
+[32;1mpong-game_1         |[0m (Use `node --trace-warnings ...` to show where the warning was created)
+Gracefully stopping... (press Ctrl+C again to force)

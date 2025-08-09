@@ -471,7 +471,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 				google.accounts.id.renderButton(buttonContainer, {
 					theme: "outline",
 					size: "large",
-					width: "100%",
+					width: "300px",
 				});
 			}
 		} else {
