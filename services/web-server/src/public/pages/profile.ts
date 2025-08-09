@@ -3,9 +3,10 @@ import { getToken, clearUser } from "../token.js";
 import { showToast, ToastType } from "../utils/toast.js";
 import { escapeHTML } from "../utils/xss-safety.js";
 
+export let onlineStatusInterval: number | undefined;
 export const profilePage = (pageContainer: HTMLElement) => {
 	let friends: Friend[] = [];
-	let onlineStatusInterval: number | undefined;
+	clearInterval(onlineStatusInterval);
 	pageContainer.innerHTML = `
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
@@ -455,12 +456,14 @@ export const profilePage = (pageContainer: HTMLElement) => {
 				}
 			}
 			friends.forEach((friend) => {
-				friend.is_online = onlineStatus[friend.friend_id] || false;
+				if (onlineStatus.hasOwnProperty(friend.friend_id))
+					friend.is_online = onlineStatus[friend.friend_id];
 			});
 			renderFriendsList(friends);
 		};
 
 		await fetchAndRenderOnlineStatus();
+		clearInterval(onlineStatusInterval);
 		onlineStatusInterval = window.setInterval(fetchAndRenderOnlineStatus, 5000);
 
 		// Update match history table
