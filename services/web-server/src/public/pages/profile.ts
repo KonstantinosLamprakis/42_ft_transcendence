@@ -300,6 +300,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
 			const nickname = button.dataset.nickname;
 
 			if (!nickname) {
+				console.clear();
 				showToast("Invalid friend nickname", ToastType.ERROR);
 				return;
 			}
@@ -323,6 +324,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
 					showFriendProfileModal(friendData);
 				} else {
 					const error = await response.json();
+					console.clear();
 					showToast(error.error || "Failed to load friend profile", ToastType.ERROR);
 				}
 			} catch (error) {
@@ -497,6 +499,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
 		try {
 			const token = getToken();
 			if (!token) {
+				console.clear();
 				showToast("Authentication required", ToastType.ERROR);
 				return;
 			}
@@ -531,6 +534,7 @@ export const profilePage = (pageContainer: HTMLElement) => {
 				}
 			} else {
 				const error = await response.json();
+				console.clear();
 				showToast(error.error || "Failed to update profile", ToastType.ERROR);
 			}
 		} catch (error) {
