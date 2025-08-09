@@ -317,6 +317,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 					setTimeout(() => form.remove(), 300);
 					window.location.reload();
 				} else {
+					console.clear();
 					showToast(data.error || "Invalid 2FA code. Please try again.", ToastType.ERROR);
 					// Reset button state
 					submitBtn.textContent = originalText;
@@ -361,6 +362,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 			showToast("Logged in!", ToastType.SUCCESS);
 			window.location.reload();
 		} else {
+			console.clear();
 			showToast(data.error || "Login failed", ToastType.ERROR);
 		}
 	};
@@ -442,6 +444,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 			const data = await res.json();
 
 			if (data.error) {
+				console.clear();
 				showToast(`Signup failed: ${data.error}`, ToastType.ERROR);
 			} else {
 				showToast("Signup successful!", ToastType.SUCCESS);
@@ -521,6 +524,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 			if (data.qr && data.requiresActivation) {
 				showQRCodeWithActivation(data.qr, data.secret, username);
 			} else {
+				console.clear();
 				showToast(data.error || "Failed to setup 2FA", ToastType.ERROR);
 			}
 		} catch (error) {
@@ -576,7 +580,6 @@ export const loginPage = (pageContainer: HTMLElement) => {
                         <button
                             type="button"
                             id="cancel-2fa-activation"
-                            onclick="this.closest('#2fa-activation').remove()"
                             class="flex-1 py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                             Cancel
                         </button>
@@ -637,6 +640,7 @@ export const loginPage = (pageContainer: HTMLElement) => {
 					);
 					qrDiv.remove();
 				} else {
+					console.clear();
 					showToast(data.error || "Failed to activate 2FA", ToastType.ERROR);
 					submitBtn.textContent = "Activate 2FA";
 					submitBtn.disabled = false;
