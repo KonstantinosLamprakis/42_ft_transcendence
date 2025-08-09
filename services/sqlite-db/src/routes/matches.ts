@@ -41,6 +41,36 @@ export default async function matchesRoutes(fastify: FastifyInstance, opts: any)
 		return matches || { error: "No matches found" };
     });
 
+	fastify.get("/get-friend-matches/:id", async (request) => {
+		const { id } = request.params as { id: string };
+	
+		const stmt = db.prepare(`
+			SELECT
+				matches.id,
+				CASE
+					WHEN matches.winner_id = u1.id THEN u1.nickname
+					ELSE u2.nickname
+				END AS winner_nickname,
+				CASE
+					WHEN matches.winner_id = u1.id THEN u2.nickname
+					ELSE u1.nickname
+				END AS opponent_nickname,
+				matches.user1_score,
+				matches.user2_score,
+				matches.match_date
+			FROM matches
+			JOIN users u1 ON u1.id = matches.user1_id
+			JOIN users u2 ON u2.id = matches.user2_id
+			WHERE matches.user1_id = ?
+			   OR matches.user2_id = ?
+			ORDER BY matches.id DESC;
+		`);
+	
+		const matches = stmt.all(id, id);
+		return matches || { error: "No matches found" };
+	});
+	
+
 	fastify.post("/add-match", async (request, reply) => {
 		const { user1_id, user2_id, user1_score, user2_score, winner_id, match_date } = request.body as {
 			user1_id: number;
