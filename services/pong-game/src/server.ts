@@ -18,7 +18,6 @@ import { Tournament } from "./tournament.js";
 
 const fastify = Fastify();
 fastify.register(websocket);
-// const games = new Map<number, Game>();
 
 export const games = new Map<string, Game>();
 export const tournaments = new Map<string, Tournament>();
@@ -73,8 +72,6 @@ function updateTournamentStatus(Room : Tournament) {
 		Room.connectionPlayer4.send(JSON.stringify(status));
 }
 
-// let modifier = 1.0;
-
 fastify.addHook("onRequest", (request, reply, done) => {
 	if (request.raw.url?.startsWith("/pong") && request.raw.headers.upgrade === "websocket") {
 		fastify.log.info(`WebSocket request from ${request.ip}`);
@@ -105,7 +102,6 @@ fastify.register(async function (fastify) {
 				return;
 			}
 			
-			// console.log("Received message:", parsed);
 			if (parsed.type === PongMessageType.INIT) {
 				
 				let Room = findOpenGame(userId);
@@ -172,30 +168,22 @@ fastify.register(async function (fastify) {
 
 		socket.on("close", () => {
 
-			// console.log("Socket closure\n");
-			
 			const tour = socketToTournament.get(socket);
 			
 			if (tour)
 				{
-				// console.log("Tour is true\n");
 				if (!tour.started){
-					// console.log("Tour is not started\n");
 					socketToTournament.delete(socket); // FIX! doesnt always delete right tour
 					tour.removePlayer(socket, userId);
 					updateTournamentStatus(tour);
 				}
 				else{
 					socketToTournament.delete(socket);
-					//Code to remove player after start
 				}
 			}
-			// else
-				// console.log("Tournament not found!");
 
 			const _id = socketToGame.get(socket);
 			if (!_id){
-				// console.log("No game found\n");
 				return ;
 			}
 			const game = games.get(_id);
