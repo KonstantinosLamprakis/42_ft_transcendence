@@ -43,3 +43,7 @@ Welcome to **Pong Arena**, a full-featured web-based Pong game that lets users p
 - Docker (Docker Daemon running)
 - `make` installed
 
+### 🚀 Run The App
+
+- run `make docker-up` at project root. Then just visit `127.0.0.1`
+
